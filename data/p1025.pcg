@@ -1,0 +1,10 @@
+# this is figure 35.1 from cormen page 1025
+a	b	1
+b	c	1
+c	d	1
+c	e	1
+d	e	1
+d	g	1
+d	f	1
+e	f	1
+

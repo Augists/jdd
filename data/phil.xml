@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Automata name=""  major="0"  minor="9" >
+<Automaton name="Philo:1" type="Plant">
+	<Events>
+		<Event id="0" label="put1.1"/>
+		<Event id="1" label="put1.2"/>
+		<Event id="2" label="startEating1"/>
+		<Event id="3" label="take1.1"/>
+		<Event id="4" label="take1.2"/>
+	</Events>
+	<States>
+		<State id="0" name="eat"/>
+		<State id="1" name="eat2"/>
+		<State id="2" name="ld"/>
+		<State id="3" name="lu"/>
+		<State id="4" name="rd"/>
+		<State id="5" name="ru"/>
+		<State id="6" name="s0" initial="true" accepting="true"/>
+	</States>
+	<Transitions>
+		<Transition source="0" dest="1" event="2"/>
+		<Transition source="1" dest="2" event="0"/>
+		<Transition source="1" dest="4" event="1"/>
+		<Transition source="2" dest="6" event="1"/>
+		<Transition source="3" dest="0" event="4"/>
+		<Transition source="4" dest="6" event="0"/>
+		<Transition source="5" dest="0" event="3"/>
+		<Transition source="6" dest="3" event="3"/>
+		<Transition source="6" dest="5" event="4"/>
+	</Transitions>
+</Automaton>
+<Automaton name="Philo:2" type="Plant">
+	<Events>
+		<Event id="0" label="put2.1"/>
+		<Event id="1" label="put2.2"/>
+		<Event id="2" label="startEating2"/>
+		<Event id="3" label="take2.1"/>
+		<Event id="4" label="take2.2"/>
+	</Events>
+	<States>
+		<State id="0" name="eat"/>
+		<State id="1" name="eat2"/>
+		<State id="2" name="ld"/>
+		<State id="3" name="lu"/>
+		<State id="4" name="rd"/>
+		<State id="5" name="ru"/>
+		<State id="6" name="s0" initial="true" accepting="true"/>
+	</States>
+	<Transitions>
+		<Transition source="0" dest="1" event="2"/>
+		<Transition source="1" dest="2" event="1"/>
+		<Transition source="1" dest="4" event="0"/>
+		<Transition source="2" dest="6" event="0"/>
+		<Transition source="3" dest="0" event="3"/>
+		<Transition source="4" dest="6" event="1"/>
+		<Transition source="5" dest="0" event="4"/>
+		<Transition source="6" dest="3" event="4"/>
+		<Transition source="6" dest="5" event="3"/>
+	</Transitions>
+</Automaton>
+<Automaton name="Fork:1" type="Plant">
+	<Events>
+		<Event id="0" label="put1.1"/>
+		<Event id="1" label="put2.1"/>
+		<Event id="2" label="take1.1"/>
+		<Event id="3" label="take2.1"/>
+	</Events>
+	<States>
+		<State id="0" name="0" initial="true" accepting="true"/>
+		<State id="1" name="1"/>
+	</States>
+	<Transitions>
+		<Transition source="0" dest="1" event="3"/>
+		<Transition source="0" dest="1" event="2"/>
+		<Transition source="1" dest="0" event="1"/>
+		<Transition source="1" dest="0" event="0"/>
+	</Transitions>
+</Automaton>
+<Automaton name="Fork:2" type="Plant">
+	<Events>
+		<Event id="0" label="put1.2"/>
+		<Event id="1" label="put2.2"/>
+		<Event id="2" label="take1.2"/>
+		<Event id="3" label="take2.2"/>
+	</Events>
+	<States>
+		<State id="0" name="0" initial="true" accepting="true"/>
+		<State id="1" name="1"/>
+	</States>
+	<Transitions>
+		<Transition source="0" dest="1" event="2"/>
+		<Transition source="0" dest="1" event="3"/>
+		<Transition source="1" dest="0" event="0"/>
+		<Transition source="1" dest="0" event="1"/>
+	</Transitions>
+</Automaton>
+</Automata>

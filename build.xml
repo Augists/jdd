@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<project name="JDD" default="compile" basedir=".">
+<!-- This is the build.xml file for ANT (its like Makefile for make) -->
+
+ <!-- some variables -->
+ <property name="dir.src" value="src"/>
+ <property name="dir.doc" value="api"/>
+ <property name="dir.tutorial" value="tutorial"/>
+ <property name="dir.data" value="data"/>
+ <property name="dir.build" value="build"/>
+ <property name="file.backup" value="d:\backup\jdd.tgz" /> <!-- you probably want to change this -->
+ 
+ <!-- <property name="build.compiler" value="jikes" /> --> <!-- remove this if you dont have jikes ! --> 
+ <property name="build.compiler.emacs" Value="true" /> <!-- emacs style error reports from jikes -->
+
+
+
+<!-- targets -->
+ <target name="help">
+  <echo message="current ANT targets for the JDD project are:" />
+  <echo message="compile     -- compiles the JDD code" />
+  <echo message="clean       -- clean up" />
+  <echo message="backup      -- backup the build directory" />
+  <echo message="jar         -- creates the jdd.jar file" />
+  <echo message="dist        -- creates the distribution file" />
+  <echo message="test        -- runs all the tests" />
+  <echo message="jretest     -- some JRE profiling tests..." />
+ </target>
+
+ <target name="init">
+  <mkdir dir="${dir.build}" />
+ </target>
+
+ <target name="clean">
+  <delete dir="${dir.build}" />
+  <delete dir="${dir.doc}" />
+  <delete dir="${dir.tutorial}" />
+  <delete file="jdd.jar" />
+  <delete file="jdd_src.tgz" />
+  <delete file="jdd_bin.tgz" />
+  <delete file="install.tgz" />
+  <delete file="api.tgz" />
+ </target>
+
+
+ <target name="compile" depends="init">
+  <javac encoding="ISO8859-1" deprecation="no" optimize="no" srcdir="${dir.src}" destdir="${dir.build}" />
+ </target>
+
+
+
+ <!-- create the tutorial pages -->
+ <target name="tutorial" depends="compile">
+  <mkdir dir="${dir.tutorial}" />
+  <java classname="jdd.internal.tutorial.Tutorial" classpath="${dir.build}" />
+ </target>
+
+ <!-- create javadoc -->
+ <target name="doc">
+  <javadoc destdir="${dir.doc}" noindex="true" nohelp="true" >
+   <packageset dir="${dir.src}">
+   </packageset>
+
+   <link  href="http://java.sun.com/j2se/1.4.2/docs/api" packagelistLoc="." />
+   <doctitle><![CDATA[<h1>JDD API documentation</h1><br>
+   JDD is a native java library for Binary Decision Diagram and more]]></doctitle>
+   <bottom><![CDATA[<i>This file is a part of the JDD package, a native
+     <a target=_blank href="http://javadd.sf.net/jdd">Java Binary Decision Diagram Library</a>.</i>]]></bottom>
+  </javadoc>
+
+
+  <tar tarfile="api.tar" basedir="api"/>
+  <gzip destfile="api.tgz" src="api.tar"/>
+  <delete file="api.tar" />
+ </target>
+
+ <!-- backup and creating the dists -->
+ <target name="backup">
+  <tar destfile="tmp.tar" >
+   <tarfileset dir="." >
+    <include name="${dir.src}/**" />
+    <include name="${dir.data}/**" />
+    <include name="dimacs/**" />
+    <include name="doc/**" />
+    <include name="www/**" />
+    <include name="build.xml" />
+    <include name="*.bat" />
+    <exclude name="**/CVS" />
+   </tarfileset>
+  </tar>
+
+  <gzip destfile="${file.backup}" src="tmp.tar" />
+  <delete file="tmp.tar" />
+ </target>
+
+ <!-- create a JAR file -->
+ <target name="jar" depends="compile">
+ 	<jar destfile="jdd.jar">
+     <fileset dir="${dir.build}" >
+      <exclude name="jdd/internal/**" />
+     </fileset>
+     <fileset dir=".">
+      <include name="dimacs/*.gz" />
+     </fileset>
+    </jar>
+
+ 	<jar destfile="minijdd.jar">
+     <fileset dir="${dir.build}" >
+      <include name="jdd/bdd/**" />
+      <include name="jdd/util/**" />
+      <include name="jdd/Version.class" />
+      <exclude name="jdd/util/mixedradix/**" />
+     </fileset>
+    </jar>
+
+ </target>
+
+
+ <!-- source dist is created here -->
+ <target name="srcdist">
+  <tar destfile="tmp.tar" >
+   <tarfileset dir="." >
+    <include name="${dir.src}/**" />
+    <include name="${dir.data}/**" />
+    <include name="dimacs/**" />
+    <include name="doc/**" />
+    <include name="build.xml" />
+   </tarfileset>
+  </tar>
+  <gzip destfile="jdd_src.tgz" src="tmp.tar" />
+  <delete file="tmp.tar" />
+ </target>
+
+ <!-- binary dist is created here -->
+ <target name="bindist" depends="jar,tutorial,doc">
+  <tar destfile="tmp.tar" >
+   <tarfileset dir="." >
+    <include name="jdd.jar" />
+    <include name="doc/README.*" />
+    <include name="${dir.tutorial}/*" />
+    <include name="doc.tgz" />
+    <include name="${dir.src}/jdd/examples/*.java" />
+   </tarfileset>
+  </tar>
+  <gzip destfile="jdd_bin.tgz" src="tmp.tar" />
+  <delete file="tmp.tar" />
+ </target>
+
+ <!-- create the binary and source dist -->
+ <target name="dist" depends="bindist,srcdist">
+ </target>
+
+
+
+ <!-- ALL TEST GOES HERE -->
+ <target name="test" depends="compile">
+  <!-- we shouldnt have FORK here, but it solves the problem of stupid ANT aking over Class.forName() for us -->
+  <java classname="jdd.internal.tests.RunTests" fork="yes" classpath="${dir.build}" />
+ </target>
+
+
+ <target name="bug" depends="compile">
+  <!-- no bugs today -->
+ </target>
+
+ <target name="jretest" depends="compile">
+  <java classname="jdd.util.jre.JRETest" classpath="${dir.build}" />
+ </target>
+
+ <!-- run the internal profiler -->
+ <target name="profile" depends="compile">
+   <java classname="jdd.internal.profiler.ProfilerGUI" fork="yes" classpath="${dir.build}" />
+ </target>
+
+<!-- run the hash test-->
+ <target name="hashtest" depends="compile">
+   <java classname="jdd.internal.hashtest.HashTest" fork="yes" classpath="${dir.build}" />
+ </target>
+ 
+
+</project>

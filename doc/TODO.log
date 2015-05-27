@@ -1,0 +1,79 @@
+
+   (  this file is used by the developers, please ignore it  )
+
+
+
+
+
+------ [ TODO ] -----------------------------------------
+
+
+DES/PETRINETS: add backward reachability too
+DES/PETRINETS: include some PN-algerba rutines for a change [place invariance, etc]
+
+
+
+SET: all SET tests should be removed to a single class (they are the same regardless the implementation)
+SET: an implementation based on bit-state hashing is needed!
+DES/AUTOMATA: the reachability stuff could be done breadth-first instead avoiding stack-overflows!!
+
+
+DES: AutomataIO does not load/save event costs (needed for A*)
+
+
+BASE DD: inline code that uses too much array-access
+		or convert recursive calls to stack-based
+		to avoid expensive bound-checking
+
+GRAPH: all maximum-flow algos
+
+
+TODO: optimized ZDD exclude() function
+
+
+WalkSAT iand WalkSAT-SKC  are slow and inefficient 
+[and not very good solvers either].
+
+
+TODO: BDD "simplify" operator
+
+
+------ [ Already done ] ------------------------------------
+DONE: DES/PETRINETS: add flags to places/transitions. modify the PetrinetIO too ... [only transitions modified!]
+DONE: GRAPH: strongly connected components [p 554] + needs DFS
+DONE: restirct
+DONE: nodecount
+DONE: relprod
+DONE: dont clean cahces if they have not been accessed !
+DONE: onesat
+DONE: maybe makring things 'final' speed up computation somewhat? [ a little] 
+DONE: cache uses power-of-two sizes instead of primes [small speedup]
+DONE: NodeHT remembers that last miss and uses insert_to_last_miss() [5% speedup]
+DONE: until a certain size, NodeTable should simply be doubled [to avoid small fractions ?]
+DONE: all recursive and MARKING algorithms in NodeTable and NodeHT should check if low == high [in case its a ZDD!]
+DONE: mixed-radix version of set
+DONE: hash functions  are now H(i,j,k) = (i * DD_P1 + j * DD_P2 + k * DD_P3) & cache_mask;
+DONE: create a debuged cahce that compares the answer of a cache with the ideal when it is a hit!
+DONE: satCount needs a cache 
+DONE: in des.automata.bdd: AutomataOrder needs a cost function.
+DONE: fix the IO-classes so we can have petri nets and automata in the same XML file!
+
+------ [ the-who-cares-section ] --------------------------------------
+
+IGNORED: what happens if the cache is grown between a lookup and an insert (the hash_value wont be correct anymore, but that wont do any real harm?)
+
+
+------ [ just some thoughts ] -----------------------------------------
+
+[SATZOO's ordering algo sucks for BDDs]
+DONE: add Satzoos variable ordering algo to Solver, need to add CNF data structure then!
+
+[didnt help much ?] 
+DONE: test if inserting negations into neg_cache clear fastens thing a bit?
+
+[speed lose due to slow JVM]
+DONE: coded a C++ version which was _slower_ :(
+
+[DOESNT SEEM LIKELY after coding another version] 
+DONE: speed difference may be due to sparse memory layout [anti-cache ?]
+

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- This is the internal format used by JDD, it requires the Petri Net to be 1-safe -->
+<Petrinet>
+	<Places>
+		<Place label="p1" token="1"/>
+		<Place label="p2"/>
+		<Place label="p3" token="1"/>
+		<Place label="p4"/>
+		<Place label="p5"/>
+		<Place label="p6"/>
+		<Place label="bad1" token="1"/>
+		<Place label="bad2" token="1"/>
+	</Places>
+	<Transitions>
+		<Transition label="a">
+			<Input  place="p1"/>
+			<Input  place="p3"/>
+			<Output  place="p2"/>
+			<Output  place="p4"/>
+		</Transition>
+		<Transition label="b1" event="b1">
+			<Input  place="p2"/>
+			<Input  place="p4"/>
+			<Output  place="p5"/>
+			<Output  place="p1"/>
+		</Transition>
+		<Transition label="b2" event="b2">
+			<Input  place="p5"/>
+			<Input  place="p2"/>
+			<Output  place="p6"/>
+			<Output  place="p1"/>
+		</Transition>
+		<Transition label="tbad1">
+			<Input  place="bad1"/>
+			<Input  place="p1"/>
+			<Input  place="p4"/>
+		</Transition>
+		<Transition label="tbad2">
+			<Input  place="bad2"/>
+			<Input  place="p1"/>
+			<Input  place="p5"/>
+		</Transition>
+	</Transitions>
+</Petrinet>

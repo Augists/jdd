@@ -1,0 +1,84 @@
+
+CHANGES:
+--------
+
+This is the list of the latest changes in the JDD source.
+It is based on the major build number, not versions numbers etc.
+
+============ pending
+ADDED:
+	The Flags class will hopefully make the code more readable :)
+	
+CHANGED:
+	The XML files now can start with a <Document> top-node. this allows us to include multiple types of data in a single XML file. Such files can then be loaded in JDD and DescoGUI but not in Supremica :(
+	The XML loaders are have now state information for more correct translation.
+	The automaton Event class will store its flags in a Flag object instead of booleans
+
+FIXED:
+
+============ 101:
+ADDED:
+	the Fibonacci example :)
+	
+CHANGED:
+	SimpleCache now uses a monolithic array
+	
+FIXED:
+	NodeTable grow() bug introduced in build 100 is gone now.
+
+============ Build 100:
+ADDED:
+ * The Mersenne Twister PRNG (and more to come)
+ * better profiling support.
+ * Automata+BDD operations are more advanced now. added automata ordering + disj/conj partitioning and search
+ * The AGV model is now also included as a Petri net
+ * Node makring can now use a non-recursive method
+ 
+CHANGED
+ * new BED code added
+ * node-table access refactored.  
+ * Node-table now uses a double linked list instead of a hash-table.
+ * Hash functions cleaned up and moved to their own class
+ * the graph package has been moved from jdd.util.graph to jdd.graph
+ * ZDD stuff now use the new cache classes (OptimizedCache instead of Cache)
+ * ZDD code follows the standard of the BDD codes more now (e.g. Configuration stuff)
+
+FIXED
+ * minor bug in NodeTable (compressed array resizing)
+ 
+============ Build 99:
+CHANGED
+ * OptimizedCache simplified and in use again (for BDDs at least)
+ * BDDIO now saves BDDs with gzip compression. minor bug fixes
+ * code cleaned up to remove some of those stupid jikes warnings
+ 
+ 
+============ Build 98:
+ADDED:
+ * the jdd.internal package has been added
+ 
+CHANGED:
+ * the tests are moved from main() to internal_test()
+ * we are now using ANT instead of nmake (finally)
+
+
+============ Build 97:
+
+ADDED:
+ * SimpleCache divided into two files: SimpleCache and OptimizedCache.
+   Reason: "optimization is the mother of evil"
+ * BDDIO added for loading /saving BDDs.
+ 
+FIXED:
+ * MAJOR performance bug in the cache structure fixed (we hope :)
+
+CHANGED:
+ * a small performance improvement in NodeHT by changing the hash function.
+ * small performance improvement in Simple/Optimized Cache by migrating CUDDs hash function.
+ 
+ 
+
+
+============ Build 96:
+
+the birth of this file
