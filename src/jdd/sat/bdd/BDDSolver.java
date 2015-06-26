@@ -11,8 +11,7 @@ import java.io.*;
 public class BDDSolver  implements Solver {
 	protected CNF cnf;
 	protected boolean verbose;
-	protected int [] bdd_vars;
-	protected int vars_count, clause_count, bdd_all;
+	protected int clause_count, bdd_all;
 	protected BDD jdd;
 
 
@@ -34,12 +33,11 @@ public class BDDSolver  implements Solver {
 		long time = System.currentTimeMillis();
 
 		// alloc BDD vars
-		bdd_vars = new int[cnf.num_lits];
-		vars_count = 0;
 		Var [] vars = cnf.vars;
-		for(int i = 0; i < bdd_vars.length; i++) {
-			bdd_vars[i] = jdd.createVar();
-			vars[i].var.bdd = vars[i].negvar.bdd = -1;
+		for(int i = 0; i < cnf.num_lits; i++) {
+                        final int v = jdd.createVar();
+                        vars[i].var.bdd = v;
+                        vars[i].negvar.bdd = jdd.ref( jdd.not(v));
 		}
 		clause_count = 0;
 
@@ -64,7 +62,7 @@ public class BDDSolver  implements Solver {
 		if(bdd_all == 0) JDDConsole.out.println("UNSAT/" + time + "ms");
 		else {
 			double count = jdd.satCount(bdd_all);
-			JDDConsole.out.println("SAT(" + count + " solutions)/"+time + "ms");
+                        JDDConsole.out.println("SAT(" + count + " solutions)/"+time + "ms");
 			tmp = jdd.oneSat(bdd_all, null);
 
 			// convert to the original literal ordering
@@ -85,13 +83,6 @@ public class BDDSolver  implements Solver {
 	}
 
 	protected int getBDD(Lit l) {
-		if(l.bdd == -1) {
-			Var v = l.var;
-			v.offset = vars_count;
-			v.var.bdd = bdd_vars[vars_count];
-			v.negvar.bdd = jdd.ref( jdd.not(v.var.bdd) );
-			vars_count++;
-		}
 		return l.bdd;
 	}
 
