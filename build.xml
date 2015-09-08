@@ -5,7 +5,6 @@
  <!-- some variables -->
  <property name="dir.src" value="src"/>
  <property name="dir.doc" value="api"/>
- <property name="dir.tutorial" value="tutorial"/>
  <property name="dir.data" value="data"/>
  <property name="dir.build" value="build"/>
  <property name="file.backup" value="d:\backup\jdd.tgz" /> <!-- you probably want to change this -->
@@ -34,7 +33,6 @@
  <target name="clean">
   <delete dir="${dir.build}" />
   <delete dir="${dir.doc}" />
-  <delete dir="${dir.tutorial}" />
   <delete file="jdd.jar" />
   <delete file="jdd_src.tgz" />
   <delete file="jdd_bin.tgz" />
@@ -49,11 +47,6 @@
 
 
 
- <!-- create the tutorial pages -->
- <target name="tutorial" depends="compile">
-  <mkdir dir="${dir.tutorial}" />
-  <java classname="jdd.internal.tutorial.Tutorial" classpath="${dir.build}" />
- </target>
 
  <!-- create javadoc -->
  <target name="doc">
@@ -61,7 +54,7 @@
    <packageset dir="${dir.src}">
    </packageset>
 
-   <link  href="http://java.sun.com/j2se/1.4.2/docs/api" packagelistLoc="." />
+   <link  href="http://java.sun.com/j2se/1.5.0/docs/api" packagelistLoc="." />
    <doctitle><![CDATA[<h1>JDD API documentation</h1><br>
    JDD is a native java library for Binary Decision Diagram and more]]></doctitle>
    <bottom><![CDATA[<i>This file is a part of the JDD package, a native
@@ -103,16 +96,6 @@
       <include name="dimacs/*.gz" />
      </fileset>
     </jar>
-
- 	<jar destfile="minijdd.jar">
-     <fileset dir="${dir.build}" >
-      <include name="jdd/bdd/**" />
-      <include name="jdd/util/**" />
-      <include name="jdd/Version.class" />
-      <exclude name="jdd/util/mixedradix/**" />
-     </fileset>
-    </jar>
-
  </target>
 
 
@@ -132,12 +115,11 @@
  </target>
 
  <!-- binary dist is created here -->
- <target name="bindist" depends="jar,tutorial,doc">
+ <target name="bindist" depends="jar,doc">
   <tar destfile="tmp.tar" >
    <tarfileset dir="." >
     <include name="jdd.jar" />
     <include name="doc/README.*" />
-    <include name="${dir.tutorial}/*" />
     <include name="doc.tgz" />
     <include name="${dir.src}/jdd/examples/*.java" />
    </tarfileset>

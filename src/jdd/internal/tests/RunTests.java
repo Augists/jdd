@@ -73,53 +73,6 @@ public class RunTests {
 			jdd.zdd.ZDDCSP.internal_test();
 
 
-			// Boolean Expression Diagrams (under development)
-			jdd.bed.BED.internal_test();
-
-
-
-			// graph theory
-			jdd.graph.Graph.internal_test();
-			jdd.graph.GraphIO.internal_test();
-			jdd.graph.Factory.internal_test();
-			jdd.graph.GraphOperation.internal_test();
-			jdd.graph.SimpleAlgorithms.internal_test();
-			jdd.graph.ApproximationAlgorithms.internal_test();
-			jdd.graph.ShortestPath.internal_test();
-			jdd.graph.MaximumFlow.internal_test();
-			jdd.graph.MinimumSpanningTree.internal_test();
-			jdd.graph.StronglyConnectedComponent.internal_test();
-			jdd.graph.TopologicalSort.internal_test();
-			jdd.graph.WeakTopologicalOrdering.internal_test();
-			jdd.graph.BreadthFirstSearch.internal_test();
-			jdd.graph.DepthFirstSearch.internal_test();
-
-
-			// CNF SAT (where are BDD/GSAT/etc tests ???)
-			jdd.sat.CNF.internal_test();
-			jdd.sat.Clause.internal_test();
-
-
-
-			// Petri nets
-			jdd.des.petrinets.Petrinet.internal_test();
-			jdd.des.petrinets.PetrinetIO.internal_test();
-			jdd.des.petrinets.interactive.IPetrinet.internal_test();
-			jdd.des.petrinets.ZDDPN.internal_test();
-			jdd.des.petrinets.SymbolicPetrinet.internal_test();
-
-			// DFA stuff
-			jdd.des.automata.Automaton.internal_test();
-			jdd.des.automata.ReachabilityTool.internal_test();
-			jdd.des.automata.AutomataComposer.internal_test();
-			jdd.des.automata.AutomataIO.internal_test();
-			jdd.des.automata.AutomataOperations.internal_test();
-			jdd.des.automata.bdd.BDDAutomata.internal_test();
-
-			// DES language stuff
-			jdd.des.strings.ZDDStrings.internal_test();
-			// jdd.des.strings.AutomataSublanguage.internal_test();
-
 			// the examples are used as tests too :(
 			jdd.examples.BDDQueens.internal_test();
 			jdd.examples.ZDDQueens.internal_test();

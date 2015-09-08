@@ -41,8 +41,6 @@ public class QueensApplet extends Applet implements ActionListener  {
 		cSolver.add("BDD");
 		cSolver.add("ZDD");
 		cSolver.add("ZDD-CSP");
-		cSolver.add("GSAT");
-		cSolver.add("DPLL");
 
 		p.add( cbVerbose = new Checkbox("Verbose") );
 
@@ -73,8 +71,6 @@ public class QueensApplet extends Applet implements ActionListener  {
 			case 0: return new BDDQueens( n);
 			case 1: return new ZDDQueens( n);
 			case 2: return new ZDDCSPQueens( n);
-			case 3: return new SATQueens(n, new jdd.sat.gsat.GSAT2Solver(5000));
-			case 4: return new SATQueens(n, new jdd.sat.dpll.DPLLSolver(5000));
 		}
 		return null; // ERROR
 	}

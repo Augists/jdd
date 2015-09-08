@@ -201,22 +201,4 @@ public class Configuration {
 	/** above this number of hits, a cached value cannot be overwritten, range: 8-32 */
 	public static byte cacheentryStickyHits = DEFAULT_CACHEENTRY_STICKY_HITS;
 
-
-
-	// ------- Automata stuff:
-	/**
-	 * these are the valid values for automataStateSetType
-	 * @see #automataStateSetType
-	 */
-	public final static int AUTOMATA_STATES_BDD = 0, AUTOMATA_STATES_MIXEDRADIX = 1;
-	/**
-	 * this variable decides what type of state sets are used for storing large
-	 * sets of states in jdd.des.automata package
-	 *
-	 * @see jdd.des.automata.ReachabilityTool
-	 * @see jdd.des.automata.AutomataComposer
-	 */
-	public static int automataStateSetType = AUTOMATA_STATES_BDD;
-
-
 }

@@ -9,8 +9,8 @@ package jdd;
  */
 
 public class Version {
-	public static final int build = 104;
-	public static final String date = "12 February 2012";
+	public static final int build = 105;
+	public static final String date = "2015-09";
 
 	public static void main(String[]_) {
 		System.out.println("JDD build " + build);

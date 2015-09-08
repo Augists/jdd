@@ -4,7 +4,7 @@
 #
 
 if [ $# -eq 0 ] ; then
-    echo "Valid targets are: time1, time2, ztime1, profile, sat, trace"
+    echo "Valid targets are: time1, time2, ztime1, profile, trace"
     exit 20
 fi
 
@@ -101,19 +101,6 @@ do
             java -cp build -Xmx512M -Xms128M jdd.bdd.debug.BDDTraceSuite data/velev_sss.zip 200000 > build/jdd_sss_traces.txt
             ;;
 
-        "sat" )
-#            FILES="dimacs/8xQueens.cnf.gz dimacs/aim-100-1_6-no-2.cnf.gz dimacs/aim-100-6_0-yes1-2.cnf.gz dimacs/aim-200-2_0-yes1-2.cnf.gz dimacs/aim-200-3_4-yes1-3.cnf.gz dimacs/aim-50-1_6-no-2.cnf.gz dimacs/aim-50-2_0-yes1-2.cnf.gz dimacs/aim-50-3_4-yes1-4.cnf.gz dimacs/dubois22.cnf.gz dimacs/par16-4.cnf.gz"
-            FILES="data/dimacs100a.cnf  data/dimacs200.cnf  data/dimacs50b.cnf  data/Q8.cnf data/dimacs100b.cnf  data/dimacs50a.cnf  data/dimcs100.cnf"
-            SOLVERS="jdd.sat.bdd.BDDSolver jdd.sat.bdd.BDDSolver2 jdd.sat.dpll.DPLLSolver_MOMS jdd.sat.dpll.DPLLSolver jdd.sat.gsat.GSATSolver jdd.sat.gsat.GSAT2Solver jdd.sat.gsat.WalkSATSKCSolver jdd.sat.gsat.WalkSATSolver"            
-            for SOLVER in $SOLVERS
-            do
-                echo " *** Using $SOLVER *** "
-                for FILE in $FILES
-                do
-                    time java -cp  build -Xmx512M -Xms128M $SOLVER $FILE
-                done
-            done
-        ;;
 
         *)
             echo "Unkown target"

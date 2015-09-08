@@ -5,6 +5,13 @@ CHANGES:
 This is the list of the latest changes in the JDD source.
 It is based on the major build number, not versions numbers etc.
 
+============ 105:
+REMOVED:
+    SAT and DES and graph theory stuff
+    profiler
+    tutorials
+
+
 ============ pending
 ADDED:
 	The Flags class will hopefully make the code more readable :)
