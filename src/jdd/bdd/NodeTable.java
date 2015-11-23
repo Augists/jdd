@@ -3,7 +3,6 @@ package jdd.bdd;
 
 import jdd.util.*;
 import jdd.util.math.*;
-import jdd.util.zip.*;
 import jdd.bdd.debug.*;
 
 import java.util.*;
@@ -281,7 +280,7 @@ public class NodeTable {
 
 		// 2. resize tables
 		int old_size = table_size;
-		safe_resize(new_size);
+		resize(new_size);
 		table_size = new_size;
 
 
@@ -411,43 +410,18 @@ public class NodeTable {
 
 	// ---- [resizeing algo] ---------------------------------------------------
 
-	/** resize the tables. if not possible, try the compressed method */
-	private void safe_resize(int new_size) {
+	/** resize the tables */
+	private void resize(int new_size) {
 
-		// currently, ZipArray only handles int[]
 		t_ref = Array.resize(t_ref, table_size, new_size);
 		try {
 			t_nodes = Array.resize(t_nodes, NODE_WIDTH * table_size, NODE_WIDTH * new_size);
 			t_list = Array.resize(t_list, LIST_WIDTH * table_size, LIST_WIDTH * new_size);
 		} catch(OutOfMemoryError ignored) {
-
-			// if we end up here, then at leats one of the array could not be allocated.
-			// find the old arrays and use compressed memory to try allocate them again
 			if(Options.verbose) {
-				JDDConsole.out.println("NodeTable.safe_resize failed. trying the compressed method...");
+				JDDConsole.out.println("NodeTable.resize failed...");
 			}
-			compressed_resize(new_size);
-		}
-	}
-
-	/**
-	 * to free space, first compress to a gzip structure, then free vectors and allocate
-	 * larger ones. beware that this methods is extremely slow!
-	 */
-	private void compressed_resize(int new_size) {
-		// TODO: fill invalid nodes with ZEROS for better compression
-		if(t_nodes.length != NODE_WIDTH * new_size) {
-			MemoryInputStream mis_nodes  = ZipArray.compressArray(t_nodes);
-			t_nodes = null; t_nodes = new int[NODE_WIDTH * new_size];
-			ZipArray.decompressArray(mis_nodes, t_nodes);
-			mis_nodes.free(); mis_nodes = null;
-		}
-
-		if(t_list.length != LIST_WIDTH * new_size) {
-			MemoryInputStream mis_nodes  = ZipArray.compressArray(t_list);
-			t_list = null; t_list = new int[LIST_WIDTH * new_size];
-			ZipArray.decompressArray(mis_nodes, t_list);
-			mis_nodes.free(); mis_nodes = null;
+                    System.exit(20);
 		}
 	}
 
@@ -513,7 +487,7 @@ public class NodeTable {
 
 	// -----------------------------------------------------------------------------------------
 	// low-level access to the node table
-	private final void setVar(final int bdd, int v) {	t_nodes[OFFSET_VAR + NODE_WIDTH * bdd] = v;			}
+	private final void setVar(final int bdd, int v) { t_nodes[OFFSET_VAR + NODE_WIDTH * bdd] = v; }
 	private final void setLow(int bdd, int v) { t_nodes[OFFSET_LOW + NODE_WIDTH * bdd] = v; }
 	private final void setHigh(int bdd, int v) { t_nodes[OFFSET_HIGH + NODE_WIDTH * bdd] = v; }
 

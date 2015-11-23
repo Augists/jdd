@@ -42,13 +42,6 @@ public class RunTests {
 			jdd.util.math.FastRandom.internal_test();
 			jdd.util.math.HashFunctions.internal_test();
 
-
-
-			// compressed array
-			jdd.util.zip.MemoryOutputStream.internal_test();
-			jdd.util.zip.ZipArray.internal_test();
-
-
 			// BDDs, yikes!
 			jdd.bdd.NodeTable.internal_test();
 			/// REMOVED jdd.bdd.NodeHT.internal_test();

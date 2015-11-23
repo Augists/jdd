@@ -9,7 +9,7 @@ package jdd;
  */
 
 public class Version {
-	public static final int build = 106;
+	public static final int build = 107;
 	public static final String date = "2015-11";
 
 	public static void main(String[]_) {
