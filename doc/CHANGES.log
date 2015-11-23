@@ -5,6 +5,11 @@ CHANGES:
 This is the list of the latest changes in the JDD source.
 It is based on the major build number, not versions numbers etc.
 
+
+============ 106:
+REMOVED:
+    data files for the stuff removed in 105
+
 ============ 105:
 REMOVED:
     SAT and DES and graph theory stuff

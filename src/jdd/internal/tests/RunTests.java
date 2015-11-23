@@ -33,15 +33,12 @@ public class RunTests {
 
 			// most used utilities here
 			jdd.util.Array.internal_test();
-			jdd.util.DisjointSet.internal_test();
-			jdd.util.Sort.internal_test();
 			jdd.util.Flags.internal_test();
 
 
 			// math utils
 			jdd.util.math.Prime.internal_test();
 			jdd.util.math.Digits.internal_test();
-			jdd.util.math.BitMatrix.internal_test();
 			jdd.util.math.FastRandom.internal_test();
 			jdd.util.math.HashFunctions.internal_test();
 
@@ -82,13 +79,6 @@ public class RunTests {
 			// BDD sets
 			jdd.bdd.sets.BDDUniverse.internal_test();
 			jdd.bdd.sets.BDDSet.internal_test();
-
-
-			// bitset/mixedradix sets
-			jdd.util.mixedradix.MRUniverse.internal_test();
-			jdd.util.mixedradix.MRSet.internal_test();
-
-
 
 
 

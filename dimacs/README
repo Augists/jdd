@@ -1,4 +1,0 @@
-This directory contains some CNF formulas in the DIMACS format.
-They are mostly taken from different benchmark suits on the internet.
-
-Note that these files are included in jdd.jar.
