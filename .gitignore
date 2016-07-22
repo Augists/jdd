@@ -4,3 +4,4 @@ api
 tmp
 *.jar
 *.tgz
+*~
