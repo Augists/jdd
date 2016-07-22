@@ -1,0 +1,8 @@
+image: java
+
+pipelines:
+  default:
+    - step:
+        script: # Modify the commands below to build your repository.
+          - ant build
+          - ant test
