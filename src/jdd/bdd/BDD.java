@@ -869,7 +869,12 @@ public class BDD extends NodeTable {
 	 */
 	public int relProd(int u1, int u2, int c) {
 
-
+		/* this code should equal to:
+		int tmp = ref( and(u1,u2));
+		int ret = exists(tmp, c);
+		deref(tmp);
+		return ret;
+		*/
 
 		if(c < 2) return and_rec(u1, u2);
 
@@ -880,59 +885,9 @@ public class BDD extends NodeTable {
 		quant_id = CACHE_EXISTS;	// for cache lookup in quant_rec()
 		quant_cube = c;
 		return relProd_rec(u1, u2);
-
-
-
-		/*
-		int tmp = ref( and(u1,u2));
-		int ret = exists(tmp, c);
-		deref(tmp);
-		return ret;
-		*/
 	}
 
 
-	/** EXPRIMENT: JFactory.relprod_rec() from javabdd */
-	private final int relProd_rec_JAVABDD(int l, int r) {
-		int entry;
-		int res;
-
-		if (l == 0 || r == 0)				return 0;
-		if (l == r)				return quant_rec(l);
-		if (l == 1)				return quant_rec(r);
-		if (r == 1)				return quant_rec(l);
-
-		int LEVEL_l = getVar(l);
-		int LEVEL_r = getVar(r);
-
-
-		if (LEVEL_l > varset_last && LEVEL_r > varset_last) {
-			res = and_rec(l, r);
-		} else {
-			if(relprod_cache.lookup(l, r, quant_cube))   return relprod_cache.answer;
-			entry = relprod_cache.hash_value;
-
-			if (LEVEL_l == LEVEL_r) {
-				int a = work_stack[work_stack_tos++] = relProd_rec( getLow(l), getLow(r) );
-				int b = work_stack[work_stack_tos++] = relProd_rec( getHigh(l), getHigh(r) );
-				if( varset_vec[LEVEL_l] ) res = or_rec(a,b);
-				else res = mk(LEVEL_l, a, b);
-			} else if (LEVEL_l < LEVEL_r) {
-				int a = work_stack[work_stack_tos++] = relProd_rec( getLow(l), r );
-				int b = work_stack[work_stack_tos++] = relProd_rec( getHigh(l), r );
-				if( varset_vec[LEVEL_l] ) res = or_rec(a,b);
-				else res = mk(LEVEL_l, a, b);
-			} else {
-				int a = work_stack[work_stack_tos++] = relProd_rec( l, getLow(r) );
-				int b = work_stack[work_stack_tos++] = relProd_rec( l, getHigh(r) );
-				if( varset_vec[LEVEL_r] ) res = or_rec(a,b);
-				else res = mk(LEVEL_r, a, b);
-			}
-			work_stack_tos -= 2;
-			relprod_cache.insert(entry, l, r, quant_cube, res );
-		}
-		return res;
-	}
 
 	/** 1. the simplest relProd_rec without input re-ordering */
 	private final int relProd_rec_ORG(int u1, int u2) {
@@ -1001,7 +956,7 @@ public class BDD extends NodeTable {
 
 
 	/** 3. internal recursive function for relProd: this versions is optimized and made unreadable :( */
-	// XXX: there is a bug in here somewehere makring the algo to not terminate
+	// XXX: there is a bug in here somewehere makeing the algorithm to not terminate
 	//      * we can re-produce the bug with code in the jdd.internal.bugs package
 	//      * the line with and_rec seems never to get called in this particular example
 	//         (NOTE: this is ok, since the very last variable is quantified, so we wont ever end at and_rec())
