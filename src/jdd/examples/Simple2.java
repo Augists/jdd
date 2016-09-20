@@ -91,9 +91,9 @@ public class Simple2 {
 
 		// 6. That's it folks!
 		// But before you go out to celebrate, don't forget to clean up the mess:
-		bdd.ref(a);
-		bdd.ref(b);
-		bdd.ref(f);
+		bdd.deref(a);
+		bdd.deref(b);
+		bdd.deref(f);
 		bdd.ref(cube);
 
 		// and finally
