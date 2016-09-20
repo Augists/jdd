@@ -10,7 +10,7 @@ import jdd.util.*;
  * learned to do BDD operations and are hungry to learn more.
  *
  * <p>
- * The comments in the code will guide you Thor creating a very simple
+ * The comments in the code will guide you through creating a very simple
  * BDD Application
  */
 

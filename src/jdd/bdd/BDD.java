@@ -1692,28 +1692,28 @@ public class BDD extends NodeTable {
 
 
             // test: oneSat:
-            jdd = new BDD(200);            
+            jdd = new BDD(200);
             v1 = jdd.createVar();
             v2 = jdd.createVar();
             v3 = jdd.createVar();
-            
+
             dum = jdd.ref( jdd.not(v2));
-            
+
             p1 = jdd.ref( jdd.and(v1, dum));
             p2 = jdd.ref( jdd.and(v1, v3));
-            
+
             int [] os1 = jdd.oneSat(p1, null);
             Test.checkEquality(os1[0], 1, "onesat_v1 (1)");
             Test.checkEquality(os1[1], 0, "onesat_v2 (1)");
             Test.checkEquality(os1[2], -1, "onesat_v3 (1)");
-            
-            
+
+
             os1 = jdd.oneSat(p2, null);
             Test.checkEquality(os1[0], 1, "onesat_v1 (2)");
             Test.checkEquality(os1[1], -1, "onesat_v2 (2)");
             Test.checkEquality(os1[2], 1, "onesat_v3 (2)");
-            
-            
+
+
 		// TEST MEMBER: taken from the brace/rudell/bryant paper
 		jdd = new BDD(200);
 		v1 = jdd.createVar();

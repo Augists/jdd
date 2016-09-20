@@ -10,7 +10,7 @@ import jdd.util.*;
  * BDD coding for the first time.
  *
  * <p>
- * The comments in the code will guide you thr creating a very simple
+ * The comments in the code will guide you through creating a very simple
  * BDD Application
  */
 
