@@ -18,9 +18,10 @@
  <!-- define Maven coordinates -->
  <property name="groupId" value="org.bitbucket" />
  <property name="artifactId" value="jdd" />
- <property name="version" value="107" />
+ <property name="version" value="108" />
 
  <!-- define artifacts' name, which follows the convention of Maven -->
+ <property name="pom" value="${dir.dist}/${artifactId}-${version}.pom" />
  <property name="jar" value="${dir.dist}/${artifactId}-${version}.jar" />
  <property name="tgz" value="${dir.dist}/${artifactId}-${version}.tgz" />
  <property name="javadoc-jar" value="${dir.dist}/${artifactId}-${version}-javadoc.jar" />
@@ -106,8 +107,10 @@
    <gzip destfile="${tgz}" src="tmp.tar" />
    <delete file="tmp.tar" />
 
- </target>
+   <!-- pom file -->
+   <copy file="pom.xml" tofile="${pom}"/>
 
+ </target>
 
 
  <!-- ALL TEST GOES HERE -->

@@ -63,7 +63,6 @@ import jdd.util.math.*;
  * The opposite of the mixed-radix package.
  * <p>The set operators (unions, diff, etc) are however very efficient (BDDs, remember?).
  *
- * @see jdd.util.mixedradix.MRUniverse
  */
 public class BDDUniverse extends BDD implements Universe {
 	private int [] int_subdomains, int_bits;

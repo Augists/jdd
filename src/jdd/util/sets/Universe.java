@@ -14,7 +14,6 @@ package jdd.util.sets;
  * Each element in the space is represented by an int-vector of length n.
  *
  * @see Set
- * @see jdd.util.mixedradix.MRUniverse
  * @see jdd.bdd.sets.BDDUniverse
  */
 
@@ -53,4 +52,3 @@ public interface Universe {
 	void free();
 
 }
-

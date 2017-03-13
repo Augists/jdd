@@ -1,7 +1,3 @@
 build
-dist
-api
-tmp
-*.jar
-*.tgz
+target
 *~
