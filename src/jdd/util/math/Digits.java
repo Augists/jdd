@@ -77,25 +77,4 @@ public class Digits {
 		int i = (int) (100 * ( n + div / 200) / div); // 2 for rounding, 100 for two decimals
 		return ((double)i) / 100;
 	}
-
-	/** testbench. do not call */
-	public static void internal_test() {
-		Test.start("Digits");
-		Test.checkEquality(log2_ceil(3), 2, "log2_ceil (1)");
-		Test.checkEquality(log2_ceil(4), 2, "log2_ceil (2)");
-		Test.checkEquality(log2_ceil(10), 4, "log2_ceil (3)");
-		Test.checkEquality(log2_ceil(16), 4, "log2_ceil (4)");
-		Test.checkEquality(log2_ceil(17), 5, "log2_ceil (5)");
-
-
-
-		Test.checkEquality(closest_log2(5), 2, "closest_log2 (1)");
-		Test.checkEquality(closest_log2(4), 2, "closest_log2 (2)");
-		Test.checkEquality(closest_log2(7), 3, "closest_log2 (3)");
-		Test.checkEquality(closest_log2(16), 4, "closest_log2 (4)");
-		Test.checkEquality(closest_log2(17), 4, "closest_log2 (5)");
-		Test.checkEquality(closest_log2(31), 5, "closest_log2 (5)");
-
-		Test.end();
-	}
 }

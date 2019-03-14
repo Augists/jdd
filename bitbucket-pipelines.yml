@@ -4,5 +4,6 @@ pipelines:
   default:
     - step:
         script:
-          - ant jretest
-          - ant test
+          - ./gradlew clean
+          - ./gradlew test
+          - ./gradlew jar

@@ -274,45 +274,5 @@ public final class Array {
 	public static final boolean equals(int []v1, int []v2, int len) {
 			for(int i = 0; i < len; i++) if(v1[i] != v2[i]) return false;
 			return true;
-	}
-
-	// --- [test bed] ---------------------------------------------
-
-	/** testbench. do not call */
-	public static void internal_test() {
-		Test.start("Array");
-
-
-		// check array resizing
-		int [] x = new int[]{2,3};
-		int [] x2 = resize(x, 2, 5);
-		Test.check(x2.length == 5, "new array size OK");
-		Test.check(x2[0] == 2 && x2[1] == 3, "old data copied");
-
-		int [] x3 = resize(x, 2, 1);
-		Test.check(x3.length == 1, "new array size OK, even when decreasing");
-
-
-		// check set
-		set(x2, 5);
-		for(int i = 0; i < x2.length; i++) Test.check(x2[i] == 5, "array set");
-
-		// check copy() !!!
-		final int size = 1024;
-		int [] a = new int[size];
-		for(int i = 0; i < size; i++) a[i] = i;
-		Test.checkEquality(a[0], 0, "Im an idiot");
-		copy(a, a, size-1, 0, 1);
-		Test.checkEquality(a[0], 0, "Im still an idiot");
-		Test.checkEquality(a[1], 0, "backward_copy 1");
-		Test.checkEquality(a[size-1], size-2, "backward_copy 2");
-
-		copy(a, a, size-1, 1, 0);
-		Test.checkEquality(a[3], 3, "forward_copy 1");
-		Test.checkEquality(a[size-1], size-2, "forward_copy 2, not touched!");
-		Test.checkEquality(a[size-2], size-2, "forward_copy 3, has been chagned back!");
-
-
-		Test.end();
-	}
+	}	
 }

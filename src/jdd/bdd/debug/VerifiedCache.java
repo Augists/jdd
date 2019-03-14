@@ -141,11 +141,4 @@ import java.util.*;
 		JDDConsole.out.print("NORMAL:"); cache.showStats();
 	}
 
-
-	// ----------------------------------------------------------------
-
-	public static void main(String [] args) {
-		// XXX: no test yet
-	}
-
 }

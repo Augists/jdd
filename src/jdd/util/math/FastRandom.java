@@ -86,25 +86,4 @@ public class FastRandom {
 		// XXX: this is possibly a problem, but we dont want out PRNG to return -3, do we?
 		return y & 0x7FFFFFFF;
 	 }
-
-
-	// ------------------------------------------------------------
-	/** testbed, do not call ! */
-	public static void internal_test(){
-		Test.start("FastRandom");
-
-		final int MAX = 1000;
-		java.util.Random rnd = new java.util.Random();
-
-		Chi2Test  mt_c2t = new Chi2Test(MAX);
-		Chi2Test  java_c2t = new Chi2Test(MAX);
-		while(mt_c2t.more()) {
-			mt_c2t.add( mtrand() % MAX );
-			java_c2t.add(rnd.nextInt(MAX));
-		}
-		Test.check( mt_c2t.isStandardDeviationAcceptable(), "Mersenne Twister PRNG working ok");
-		Test.check( java_c2t.isStandardDeviationAcceptable(), "Java PRNG working ok");
-
-		Test.end();
-	}
 }

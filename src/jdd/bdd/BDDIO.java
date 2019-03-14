@@ -326,51 +326,5 @@ public class BDDIO {
 				BDDIO.wr = null;
 			}
 		}
-
-
-	// -----------------------------------------------
-	/** testbench. do not call */
-	public static void internal_test() {
-
-		Test.start("BDDIO");
-		try {
-			BDD bdd = new BDD(100,10);
-			int v1 = bdd.createVar();
-			int v2 = bdd.createVar();
-			int v3 = bdd.createVar();
-			int v4 = bdd.createVar();
-
-			int test = bdd.cube("1-01");
-			BDDIO.save(bdd, test, "test.bdd");
-			double sat = bdd.satCount(test);
-			int nodes = bdd.nodeCount(test);
-
-			BDD bdd2 = new BDD(1,10); // force GC in the middle of job
-			int x = BDDIO.load(bdd2, "test.bdd");
-			Test.checkEquality(sat, bdd2.satCount(x), "sat-count (1)");
-			Test.checkEquality(nodes, bdd2.nodeCount(x), "node-count (1)");
-
-
-
-			BDDIO.save(bdd2, x, "test.bdd");
-			int x2 = BDDIO.load(bdd, "test.bdd");
-			Test.checkEquality(test, x2, "BDD consistency failed");
-
-
-
-			// and cleanup...
-			FileUtility.delete("test.bdd");
-
-
-
-			// XXX: how do we test saveBuDDy ???
-
-
-		} catch(IOException exx) {
-			Test.check(false, "EXCEPTION CAUGHT: " + exx.getMessage() );
-		}
-
-		Test.end();
-	}
 }
 

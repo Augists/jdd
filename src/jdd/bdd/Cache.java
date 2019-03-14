@@ -186,7 +186,7 @@ public final class Cache {
 
 
 	// ------------------------------ private helpers for the tests
-	private void insert3(byte type, int op1, int op2, int answer) {
+	/* package */ void insert3(byte type, int op1, int op2, int answer) {
 		CacheEntry ce = access3(type, op1, op2);
 		ce.type = type;
 		ce.op1 = op1;
@@ -194,29 +194,29 @@ public final class Cache {
 		ce.ret = answer;
 	}
 
-	private void insert2(byte type, int op, int answer) {
+	/* package */ void insert2(byte type, int op, int answer) {
 		CacheEntry ce = access2(type, op);
 		ce.type = type;
 		ce.op1  = op;
 		ce.ret  = answer;
 	}
-	private  void insert1(int op, int answer) {
+	/* package */ void insert1(int op, int answer) {
 		CacheEntry ce = access1( op);
 		ce.op1  = op;
 		ce.ret  = answer;
 	}
 
 
-	private int lookup3(byte type, int op1, int op2) {
+	/* package */ int lookup3(byte type, int op1, int op2) {
 		CacheEntry ce = access3(type, op1, op2);
 		return (ce.op1 == op1 && ce.op2 == op2 && ce.type == type) ? ce.ret : -1;
 	}
 
-	private int lookup2(byte type, int op) {
+	/* package */ int lookup2(byte type, int op) {
 		CacheEntry ce = access2(type, op);
 		return (ce.op1 == op && ce.type == type) ? ce.ret : -1;
 	}
-	private int lookup1( int op) {
+	/* package */ int lookup1( int op) {
 		CacheEntry ce = access1(op);
 		return (ce.op1 == op) ? ce.ret : -1;
 	}
@@ -311,52 +311,6 @@ public final class Cache {
 						JDDConsole.out.println("" + i + " --> " +  entries[i].op1 + "/" +  entries[i].op2 + "/"+ entries[i].ret + "  " +  entries[i].type);
 						break;
 				}
-
-	}
-
-	/** runs some statistic tests on the hash functions ... */
-	/** testbench. do not call */
-	public static void internal_test() {
-
-		Test.start("Cache");
-
-		// 3 elements
-		Cache cache = new Cache(200, 3);
-
-		cache.insert3((byte)2, 1,2,3);
-		Test.check( cache.lookup3((byte) 2,1,2) == 3, "lookup 3");
-		cache.insert3((byte)2, 1,2,5);
-		Test.check( cache.lookup3((byte) 2,1,2) == 5, "lookup overwritten with 5");
-		Test.check( cache.lookup3((byte) 1,1,2) == -1, "non-existing entry 1");
-		Test.check( cache.lookup3((byte) 2,2,2) == -1, "non-existing entry 2");
-		Test.check( cache.lookup3((byte) 2,2,1) == -1, "non-existing entry 3");
-
-
-
-		// 2 elements
-		cache = new Cache(200, 2);
-
-		cache.insert2((byte)2, 1,3);
-		Test.check( cache.lookup2((byte) 2,1) == 3, "lookup 3");
-		cache.insert2((byte)2, 1,5);
-		Test.check( cache.lookup2((byte) 2,1) == 5, "lookup overwritten with 5");
-		Test.check( cache.lookup2((byte) 1,1) == -1, "non-existing entry 1");
-		Test.check( cache.lookup2((byte) 2,2) == -1, "non-existing entry 2");
-
-
-
-		// 1 element
-		cache = new Cache(200, 1);
-
-		cache.insert1(1,3);
-		Test.check( cache.lookup1(1) == 3, "lookup 3");
-		cache.insert1(1,5);
-		Test.check( cache.lookup1(1) == 5, "lookup overwritten with 5");
-		Test.check( cache.lookup1(2) == -1, "non-existing entry 1");
-		Test.check( cache.lookup1(3) == -1, "non-existing entry 2");
-
-
-		Test.end();
 
 	}
 }

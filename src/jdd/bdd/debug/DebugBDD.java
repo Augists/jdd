@@ -9,12 +9,29 @@ The only function of the class is to verify the integrity of your BDD app by doi
 tests on every BDD operation. Not to be used in production (slow!!)
 */
 public class DebugBDD extends BDD {
+	private NodeTableChecker ntc;
 
+	public DebugBDD(int nodesize) { 
+		this(nodesize, Configuration.DEFAULT_BDD_CACHE_SIZE);
+	}
 
-	public DebugBDD(int nodesize) { this(nodesize, Configuration.DEFAULT_BDD_CACHE_SIZE); }
 	public DebugBDD(int nodesize, int cache_size) {
 		super(nodesize, cache_size);
+		ntc = new NodeTableChecker(this);
 		// Options.verbose = true;
+	}
+
+	private void check_node(int bdd, String msg) {
+		String err = null;
+
+		if(getRef(bdd) <= 0)
+			err = "Unrefrenced node , '" + msg + "'";
+		else
+			err = ntc.checkNode(bdd, msg);
+		if(err != null) {
+			JDDConsole.out.println("nodeCheck failed: " + err);
+			System.exit(20);
+		}
 	}
 
 	public int and(int a, int b) {
@@ -83,12 +100,7 @@ public class DebugBDD extends BDD {
 		check_node(c , "relProd c");
 		return super.relProd(u1,u2,c);
 	}
-	// ----------------------------------------------------
 
-	public void check_node(int n, String str) {
-		Test.check( getRef(n) > 0, "Unrefrenced node in a call, '" + str + "'");
-		super.check_node(n,str);
-	}
 	// ----------------------------------------------------
 
 	protected void post_removal_callbak() {

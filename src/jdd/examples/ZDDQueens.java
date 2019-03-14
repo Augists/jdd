@@ -111,20 +111,4 @@ public class ZDDQueens extends ZDD2 implements Queens {
 			return;
 		}
 	}
-
-
-	/** testbench. do not call */
-	public static void internal_test() {
-
-		Test.start("ZDDQueens");
-		int [] correct = { 1, 0,0,2, 10, 4, 40,  92 ,  352, 724, 2680  };
-		for(int i = 0; i < correct.length; i++) {
-			ZDDQueens q = new ZDDQueens( i + 1 );
-			Test.check(q.numberOfSolutions() == correct[i], "correct solutions for " + (i + 1) + " queens");
-		}
-		Test.end();
-
-		ZDDQueens zq = new ZDDQueens(6);
-	}
-
 }

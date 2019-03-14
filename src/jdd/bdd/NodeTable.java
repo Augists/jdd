@@ -24,8 +24,7 @@ public class NodeTable {
 
 	/** used to mark/unmark BDD nodes */
 	public static final int NODE_MARK = 0x80000000, NODE_UNMARK = 0x7FFFFFFF;
-
-	private static final short MAX_REFCOUNT = 32767; /** the largest possible ref-count */
+	public static final short MAX_REFCOUNT = 32767; /** the largest possible ref-count */
 
 	// monolithic nodetable stuff
 	private static final int NODE_WIDTH = 3; // how many ints a node occupy
@@ -471,7 +470,7 @@ public class NodeTable {
 
 
 	// low-level access to the ref-counter
-	private final short getRefPlain(int bdd) { return t_ref[bdd]; }	/** just return the number */
+	/* package */ final short getRefPlain(int bdd) { return t_ref[bdd]; }	/** just return the number */
 	private final void setRef(final int bdd, final short r) {		t_ref[bdd] = r;	}
 
 	/**
@@ -673,127 +672,23 @@ public class NodeTable {
 	}
 
 
-	/**
-	 * count the number of ROOT bdd nodes.
-	 *
-	 */
-	public int countRootNodes() {
-		int c = 0;
-		for(int i = 0; i < table_size; i++)
-			if(isValid(i) && (getRef(i) > 0 && getRef(i) != MAX_REFCOUNT)) c++;
-		return c;
+	// mainly used with test code etc
+	public int debug_work_stack_size() {
+		return work_stack_tos;
+	}
+	public int debug_work_stack_item(int index) {
+		return work_stack[index];
 	}
 
-	protected void show_tuple(int i) {
-		JDDConsole.out.println("" + i + "\t" + getVar(i) + "\t" + getLow(i) + "\t" + getHigh(i) + "\t: " + getRef(i) );
+	public int debug_table_size() {
+		return table_size;
 	}
 
-	protected void show_table() {
-		JDDConsole.out.println("Node-table:");
-		for(int i = 0; i < table_size; i++)
-			if(isValid(i) ) show_tuple(i);
-	}
-	protected void show_table_all() {
-		JDDConsole.out.println("Node-table (complete):");
-		for(int i = 0; i < table_size; i++)	show_tuple(i);
+	public int debug_free_nodes_count() {
+		return free_nodes_count;
 	}
 
-
-	// --------------------------------------------------------------------
-
-	void check() {
-
-		// see if the number of free nodes is correct
-		int c = 2, b = 0;
-		for(int i = 2; i < table_size; i ++)	if(isValid(i) ) c++; else b++;
-		Test.check( c == (table_size - free_nodes_count), "Invalid # of free nodes: #live= " +c + ", table_size="+table_size + ", free_nodes_count=" +free_nodes_count);
-
-		// see if a nodes children point to invalid entries:
-		for(int i = 0; i < table_size; i ++) {
-			if(isValid(i)) {
-				if(getLow(i) < 0 || getHigh(i) < 0) {
-					show_tuple(i);
-					Test.check(false, "Invalied node entry");
-				}
-				if( ( getLow(i) > 1 && !isValid(getLow(i))  ) || (getHigh(i) > 1 && !isValid( getHigh(i)) )  ) {
-					System.err.println();
-					show_tuple(i);
-					show_tuple(getLow(i) );
-					show_tuple(getHigh(i) );
-					Test.check(false);
-				}
-			}
-		}
-
-		if(table_size > 100) {
-			// out.println("(omitting slow parts of NodeTable.check(), table too large)");
-			return;
-		}
-
-		// stupid O(N * N) test to see if there are two of any nodes in the table
-		for(int i = 0; i < table_size; i ++) {
-			if(isValid(i)) {
-				for(int j = i + 1; j < table_size; j++) {
-					if(getVar(i) == getVar(j) && getLow(i) == getLow(j) && getHigh(i) == getHigh(j)) {
-						JDDConsole.out.println("Duplicate entries in NodeTable (" + i + " and " + j +"): ");
-						show_tuple(i);
-						show_tuple(j);
-						System.exit(20);
-					}
-				}
-			}
-		}
-	}
-
-
-
-	// --------------------------------------------------------
-	/** show some statistics ... */
-	public void showStats() {
-
-		JDDConsole.out.println("NT nodes/free/#grow/grow-time/dead/root: " +
-			table_size + "/" + free_nodes_count + "/" + stat_nt_grow + "/" + stat_grow_time +
-			"/" + dead_nodes + "/" + countRootNodes() );
-
-
-		JDDConsole.out.println("HT chain/access: "
-		+ ht_chain + "/" + stat_lookup_count);
-
-		JDDConsole.out.println("GC #times/#freed/signal-time/gc-time: " +
-			stat_gc_count + "/" + stat_gc_freed + "/" + stat_notify_time + "/" + stat_gc_time );
-	}
-
-	// --[ recursive node test operators ]------------------------------------------------------
-	private String check_say = null;
-	/** check if all nodes are ok. it will test validaty and ref-count of nodes in the table */
-	public void check_all_nodes() {
-		for(int i = 0; i < work_stack_tos; i++)
-			check_node(work_stack[i]);
-
-		for(int i = 0; i < table_size; i++)
-			if( isValid(i) && getRefPlain(i) > 0 )
-				check_node(i);
-	}
-
-	/** check if some node is ok. it actuallt check the whole tree below the node */
-	public void check_node(int node, String str) {
-		check_say = str;
-		check_node(node);
-	}
-	private void check_node(int node) {
-		if(node < 2) return;
-		if(!isValid(node)) {
-			show_tuple(node);
-			Test.check(false, "Node " + node + " invalid " + ((check_say != null) ? check_say : ""));
-		}
-
-		// XXX: this is gode, but we should mark nodes so we dont check them multiple
-		//      times if we are doing anything recursive!
-		// check_node( getLow(node));
-		// check_node( getHigh(node));
-	}
-
-	private int count_free_nodes() {
+	public int debug_compute_free_nodes_count() {
 		int ret = 0, root = first_free_node;
 		while(root != 0) {
 			ret++;
@@ -802,61 +697,33 @@ public class NodeTable {
 		return ret;
 	}
 
-	// -------------- [testbed] ----------------------------
-	/** testbench. do not call */
-	public static void internal_test() {
-		Test.start("NodeTable");
-
-		NodeTable nt = new NodeTable(10);
-		// nt.show_table(); nt.show_unused();
 
 
-		// NOT WORKING ANYMORE
-		// Test.check(nt.table_size == 10 && nt.free_nodes_tos == 8, "Table ok before grow");
-		nt.add(4,0,1);
-		Test.check(nt.table_size == nt.free_nodes_count  + 3, "Table ok after grow"); // bad test, I know
-		nt.check();
+	/**
+	 * count the number of ROOT bdd nodes.
+	 *
+	 */
+	public int debug_compute_root_nodes() {
+		int c = 0;
+		for(int i = 0; i < table_size; i++)
+			if(isValid(i) && (getRef(i) > 0 && getRef(i) != MAX_REFCOUNT)) c++;
+		return c;
+	}
+
+	// --------------------------------------------------------
+	/** show some statistics ... */
+	public void showStats() {
+
+		JDDConsole.out.println("NT nodes/free/#grow/grow-time/dead/root: " +
+			table_size + "/" + free_nodes_count + "/" + stat_nt_grow + "/" + stat_grow_time +
+			"/" + dead_nodes + "/" + debug_compute_root_nodes() );
 
 
-		// now, this is not a test, its just for profiling huge grows:
-		int MAX = 15;
-		nt = new NodeTable(MAX);
-		int last = 0;
-		for(int i = 2; i < MAX; i++) last = nt.add(i , last, last);
-		nt.check();
-		nt.grow();	nt.check();
-		nt.grow();	nt.check();
-		nt.grow();	nt.check();
+		JDDConsole.out.println("HT chain/access: "
+		+ ht_chain + "/" + stat_lookup_count);
 
-
-		// test the hash-table stuff
-		nt = new NodeTable(10);
-		// save by work_stack
-		int a = nt.add(4,0,1);
-		nt.work_stack[0] = a;
-		nt.work_stack_tos++;
-
-		// save by ref
-		int b = nt.add(4,1,0);
-		nt.ref(b);
-
-		// dont save:
-		int c = nt.add(3,0,1);
-		Test.checkEquality( nt.count_free_nodes(), nt.free_nodes_count, "free node count correct (1)");
-
-		nt.gc();
-		Test.check( nt.isValid( a), "saved by work_stack");
-		Test.check( nt.isValid( b), "saved by ref");
-		Test.check(!nt.isValid( c), "should have been removed");
-		Test.checkEquality( nt.count_free_nodes(), nt.free_nodes_count, "free node count correct (2)");
-
-		nt.grow();
-		Test.check( nt.isValid( a), "saved by work_stack");
-		Test.check( nt.isValid( b), "saved by ref");
-		Test.check(!nt.isValid( c), "should have been removed");
-		Test.checkEquality( nt.count_free_nodes(), nt.free_nodes_count, "free node count correct (3)");
-
-		Test.end();
+		JDDConsole.out.println("GC #times/#freed/signal-time/gc-time: " +
+			stat_gc_count + "/" + stat_gc_freed + "/" + stat_notify_time + "/" + stat_gc_time );
 	}
 
 }

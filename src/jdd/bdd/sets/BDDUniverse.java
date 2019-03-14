@@ -213,42 +213,4 @@ public class BDDUniverse extends BDD implements Universe {
 			satOneVector_rec( getLow(bdd) );
 		}
 	}
-	// -------------------------------------------------------
-	static int [] dum = { 3, 4, 5 , 1};
-	/** testbench. do not call */
-	public static void internal_test() {
-		Test.start("BDDUniverse");
-
-
-		BDDUniverse u = new BDDUniverse(dum);
-		Set s1 = u.createEmptySet();
-		Set s2 = u.createFullSet();
-
-		// test trivial stuff
-		Test.checkEquality( s1.cardinality(), 0.0, "Empty set has zero cardinality");
-		Test.checkEquality( s2.cardinality(), u.domainSize(), "Full set as large as the universe");
-		Test.checkEquality( u.cardinality(dum), 1, "Single cardinality");
-		dum[0] = -1;
-		Test.checkEquality( u.cardinality(dum), 3, "DC leads to higher cardinality");
-
-
-/*
-		// fill the vectors with junk
-		for(int i = 0; i < 3; i++) { u.randomMember(dum); s1.insert(dum ); }
-		s2.assign(s1);
-		for(int i = 0; i < 3; i++) { u.randomMember(dum); s2.insert(dum ); }
-		s1.show("S1");
-		s2.show("S2");
-
-
-		test simplify: choose s2 such that s1 <= s2 <= s3
-		Set s3 = u.simplify(s2, s1);
-		s3.show("S3");
-		s3.free();
-*/
-		s1.free();
-		s2.free();
-
-		Test.end();
-	}
 }

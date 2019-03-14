@@ -3,22 +3,20 @@
 # script for quickl running some big examples...
 #
 
+set -e
+
 if [ $# -eq 0 ] ; then
-    echo "Valid targets are: time1, time2, ztime1, profile, trace"
+    echo "Valid targets are: time1, time2, ztime1, trace"
     exit 20
 fi
 
-export J="java -cp build/classes -Xmx512M -Xms256M"
+./gradlew jar
+
+export J="java -cp build/libs/jdd.jar -Xmx512M -Xms256M"
 
 for arg in "$@"
 do
     case $arg in
-        "profile" )
-            echo generate some profiling info
-            $J -Xprof jdd.examples.BDDQueens 12 > build/queens12.prof
-            $J -Xprof jdd.examples.Adder 1024 > build/adder1024.prof
-            $J -Xprof jdd.examples.Milner 76 > build/milner76.prof
-        ;;
 
         "time1" )
             echo timinng queens

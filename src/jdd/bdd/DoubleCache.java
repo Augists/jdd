@@ -260,18 +260,4 @@ public final class DoubleCache extends CacheBase {
 			JDDConsole.out.println();
 		}
 	}
-
-
-	// ----------------------------------------------------------------
-
-	/** testbench. do not call */
-	public static void internal_test() {
-		Test.start("DoubleCache");
-
-		// XXX: i was going to right this testbed, but then i got high... because got high, because got high....
-		// (just kidding, it was actually my girlfriend called me and wanted to hang out)
-
-		Test.end();
-	}
-
 }

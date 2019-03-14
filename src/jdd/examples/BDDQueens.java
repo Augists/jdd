@@ -165,16 +165,4 @@ public class BDDQueens	extends BDD implements Queens
 			JDDConsole.out.println("There are " + q.numberOfSolutions() + " solutions (time: " + q.getTime() + ", memory: " + mem + " MB)");
 		}
 	}
-
-	/** testbench. do not call */
-	public static void internal_test() {
-		Test.start("BDDQueens");
-		int [] correct = { 1, 0,0,2, 10, 4, 40,  92 /*,  352, 724 */ };
-		for(int i = 0; i < correct.length; i++) {
-			BDDQueens q = new BDDQueens( i + 1 );
-			// System.out.println("Q"+ (i + 1) + " --> " + q.numberOfSolutions());
-			Test.checkEquality(q.numberOfSolutions(),correct[i], "correct solutions for " + (i + 1) + " queens");
-		}
-		Test.end();
-	}
 }
