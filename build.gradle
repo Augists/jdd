@@ -1,6 +1,10 @@
 plugins {
-    id 'java-library'
+	id 'java-library'
+	id "com.jfrog.bintray" version "1.7"
 }
+
+group = 'org.bitbucket.vahidi'
+version = '108'
 
 repositories {
     jcenter()
@@ -13,4 +17,25 @@ sourceSets {
 
 dependencies {
     testImplementation 'junit:junit:4.12'
+}
+
+
+
+// based on https://github.com/bintray/bintray-examples/blob/master/gradle-bintray-plugin-examples/configurations-example/build.gradle
+bintray {
+	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+	key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+	configurations = ['archives']
+	pkg {
+		repo = 'generic'
+		name = 'JDD'
+		userOrg = user
+		licenses = ['ZLIB']
+		vcsUrl = 'https://github.com/bitbucket.org/vahidi/jdd'
+		version {
+			name = project.version
+			desc = 'JDD: Java library for Binary & Zero-suppressed Decision Diagram'
+			vcsTag = project.version
+		}
+	}
 }

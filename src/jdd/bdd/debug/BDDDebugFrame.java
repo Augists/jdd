@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- * This class will report BDD statistics suing a minimalistic GUI.
+ * This class will report BDD statistics using a minimalistic GUI.
  * Currently only cache stats are reported.
  *
  * Note: you should not use this class by itself.
