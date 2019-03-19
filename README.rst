@@ -13,7 +13,7 @@ Using JDD
 To import JDD in gradle::
 
     dependencies {
-        compile 'org.bitbucket.vahidi.jdd:108'
+        compile 'org.bitbucket.vahidi.jdd:109'
     }
 
 To import JDD in maven::
