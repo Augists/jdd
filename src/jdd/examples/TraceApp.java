@@ -1,11 +1,6 @@
-
-package jdd.applet;
-
+package jdd.examples;
 
 import java.io.*;
-// import java.net.*;
-
-import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -13,10 +8,12 @@ import jdd.util.*;
 import jdd.bdd.*;
 import jdd.bdd.debug.*;
 
-
-public class TraceApplet extends Applet implements ActionListener  {
+/**
+ * TraceApp is a simple AWT app for running traces
+ */
+public class TraceApp extends Frame implements ActionListener, WindowListener {
 	private TextArea msg, code;
-	private Button bRun, bClear;
+	private Button bRun, bClear, bLoad;
 	private Checkbox cbVerbose;
 	private Choice initialNodes;
 
@@ -36,17 +33,17 @@ public class TraceApplet extends Applet implements ActionListener  {
 		"	print_bdd(23gat);\n"+
 		"ENDMODULE\n";
 
-	public TraceApplet() {
-		Color bgcolor = new Color(0xE0, 0xE0, 0xE0) ;
-		setBackground( bgcolor );
-
+	public TraceApp() {
 		setLayout( new BorderLayout() );
 
 		Panel p = new Panel( new FlowLayout( FlowLayout.LEFT) );
-		p.setBackground( bgcolor );
 		add(p, BorderLayout.NORTH);
 		p.add( bRun = new Button("Run") );
+		p.add( bLoad = new Button("Load file"));
 		p.add( bClear = new Button("Clear") );
+		bRun.addActionListener( this );
+		bLoad.addActionListener( this );
+		bClear.addActionListener( this );
 
 		p.add( new Label("  Initial node-base") );
 		p.add( initialNodes = new Choice() );
@@ -56,50 +53,42 @@ public class TraceApplet extends Applet implements ActionListener  {
 		initialNodes.add("10000");
 		initialNodes.add("100000");
 		initialNodes.select(3);
-
 		p.add( cbVerbose = new Checkbox("verbose", false));
 
 		add(code = new TextArea(25,80), BorderLayout.CENTER);
 		add(msg = new TextArea(16,80), BorderLayout.SOUTH);
-
-
-
 		msg.setEditable(false);
-		msg.setBackground( bgcolor );
+		msg.setText("\n       This is C17, from Yirng-An Chen's ISCAS'85 traces.\n\n");
+		msg.setFont( new Font(null, 0, 10) );
+		JDDConsole.out = new TextAreaTarget(msg) ;
 
-		// status.setEditable(false);
-		bRun.addActionListener( this );
-		bClear.addActionListener( this );
-
-
-
-		jdd.util.JDDConsole.out = new TextAreaTarget(msg) ;
-
-
-		code.setFont( new Font("Monospaced", 0, 12) );
+		code.setFont( new Font("Monospaced", 0, 16) );
 		code.setBackground( Color.yellow);
 		code.setForeground( Color.red);
 		code.setText(initial_text);
 
-
-		msg.setText("\n       This is C17, from Yirng-An Chen's ISCAS'85 traces.\n\n");
-		msg.setFont( new Font(null, 0, 10) );
-
-
+		addWindowListener( this);
+		pack();
 	}
 
+	// ----------------------------------
+	public void windowActivated(WindowEvent e) { }
+	public void windowClosed(WindowEvent e) { }
+	public void windowClosing(WindowEvent e) {setVisible(false); dispose();  }
+	public void windowDeactivated(WindowEvent e) { }
+	public void windowDeiconified(WindowEvent e) { }
+	public void windowIconified(WindowEvent e) { }
+	public void windowOpened(WindowEvent e) { }
 
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 		if(src == bRun) doRun();
 		else if(src == bClear) doClear();
-
+		else if(src == bLoad) doLoad();
 	}
 
-	// ----------------------------------
 	private void doClear() {
 		msg.setText("");
-		// code.setText("");
 	}
 
 	private void doRun() {
@@ -111,6 +100,31 @@ public class TraceApplet extends Applet implements ActionListener  {
 		} catch(IOException exx) {
 			JDDConsole.out.println("ERROR: " + exx);
 		}
+	}
 
+	private void doLoad() {
+		FileDialog fd = new FileDialog(this, "Load trace file", FileDialog.LOAD);
+		fd.setVisible(true);
+
+		try {
+			for(File f : fd.getFiles()) {
+
+				// load all file conetnts: File -> String
+				InputStream is = new FileInputStream(f);
+				StringBuilder sb = new StringBuilder();
+				for(int i = is.read(); i != -1; i = is.read())
+					sb.append((char) i);
+				is.close();
+				code.setText( sb.toString() );
+				return;
+			}
+		} catch(Exception ex) {
+			JDDConsole.out.println("ERROR: " + ex);
+		}
+	}
+
+	public static void main(String [] args) {
+		TraceApp app = new TraceApp();
+		app.setVisible(true);
 	}
 }

@@ -141,7 +141,6 @@ public class BDDTrace {
 		public void execute() throws IOException {
 			// check_all_variables(); // DEBUG
 
-
 			bdd.deref( ret.bdd);
 
 			if(op.equals("not")) do_not();
@@ -168,7 +167,6 @@ public class BDDTrace {
 			last_assignment = ret;
 			checkVar(this);
 
-
 			if(size != -1) {
 				int size2 = node_count(ret);
 				if(size != size2) {
@@ -187,7 +185,6 @@ public class BDDTrace {
 			checkEquality(ops, 1, "do_not");
 			ret.bdd = bdd.not( op1.bdd);
 		}
-
 
 		private void do_assign() throws IOException {
 			checkEquality(ops, 1, "do_assign");
@@ -248,7 +245,6 @@ public class BDDTrace {
 
 		}
 
-
 		private void do_xor() throws IOException { check(ops == 2); ret.bdd = bdd.xor(op1.bdd, op2.bdd); }
 		private void do_xnor() throws IOException { check(ops == 2); ret.bdd = bdd.biimp(op1.bdd, op2.bdd); }
 
@@ -262,8 +258,6 @@ public class BDDTrace {
 		private void do_forall() throws IOException { check(ops == 2); ret.bdd = bdd.forall(op2.bdd, op1.bdd); }
 		private void do_restrict() throws IOException { check(ops == 2); ret.bdd =  bdd.restrict(op1.bdd, op2.bdd); }
 		private void do_relprod() throws IOException { check(ops == 3); ret.bdd = bdd.relProd(op2.bdd, op3.bdd, op1.bdd); }
-
-
 
 		// -------------------------------------------------------------------------
 
@@ -314,16 +308,17 @@ public class BDDTrace {
 	/** this is our extra VERBOSE flags, to enable trace_verbose_print() output*/
 	public static boolean verbose = false;
 
-	public BDDTrace(String file) throws IOException
-		{ this(file, new FileInputStream(file),  DEFAULT_NODES); }
+	public BDDTrace(String file) throws IOException {
+		this(file, new FileInputStream(file),  DEFAULT_NODES);
+	}
 
-	public BDDTrace(String file, int nodes) throws IOException
-			{ this(file, new FileInputStream(file), nodes); }
+	public BDDTrace(String file, int nodes) throws IOException {
+		this(file, new FileInputStream(file), nodes);
+	}
 
-
-	public BDDTrace(String file, InputStream is) throws IOException
-		{ this(file, is, DEFAULT_NODES); }
-
+	public BDDTrace(String file, InputStream is) throws IOException {
+		this(file, is, DEFAULT_NODES);
+	}
 
 	public BDDTrace(String file, InputStream is, int nodes) throws IOException {
 		this.filename = file;
@@ -354,7 +349,6 @@ public class BDDTrace {
 		map.put("1", vret);
 
 		last_assignment = null;
-
 
 		parse();
 		// show_code();
@@ -484,8 +478,6 @@ public class BDDTrace {
 		time = System.currentTimeMillis() - time;
 		JDDConsole.out.println("" + op_count + " operations performed, total execution time: " + time + " [ms]");
 
-
-
 		if(Options.verbose) {
 			if(last_assignment != null) {
 				int size =  node_count(last_assignment);
@@ -495,6 +487,9 @@ public class BDDTrace {
 			}
 			bdd.showStats();
 		}
+
+		// just something to see on the console
+		System.err.println("Trace\tFile=" + filename + "\ttime="+ time);
 	}
 
 	/** check if the variables to be used are OK */
@@ -551,7 +546,6 @@ public class BDDTrace {
 
 			op_count++;
 
-
 			if(ret.equals("trace_verbose_print")) {
 				need("("); String str = getString(); need(")"); need(";");
 				createDebugOperation(str);
@@ -570,19 +564,14 @@ public class BDDTrace {
 				skip_eol();
 			} else {
 
-
 				TracedVariable vret = (TracedVariable) map.get(ret);
 				if(vret == null) // just used a new variable
 					vret = addTemporaryVariable(ret);
 
-
-
 				need("=");
 				String op = need();
 
-
 				updateUsage(vret);
-
 
 				TracedBDDOperation tp = createBDDOperation();
 				TracedVariable var = (TracedVariable) map.get(op);
@@ -626,7 +615,6 @@ public class BDDTrace {
 	private void read_input() throws IOException {
 		boolean interleave = false;
 		LinkedList list = new LinkedList();
-
 
 		need("INPUT");
 
@@ -675,7 +663,6 @@ public class BDDTrace {
 		sp2s = bdd.createPermutation(v2, v1);
 
 		// s2sp.show();
-
 
 	}
 
@@ -789,10 +776,8 @@ public class BDDTrace {
 			return ""+((char)c);
 		}
 
-
 		return sb.toString();
 	}
-
 
 	/* package */ void checkEquality(int a, int b, String txt) throws IOException {
 		if(a != b) throw new IOException(txt + ", " + a + " != " + b);
@@ -812,7 +797,6 @@ public class BDDTrace {
 		BDDTrace.verbose = true;
 		Options.verbose = true;
 		Options.profile_cache = true;
-
 
 		try {
 			if(args.length == 2) {

@@ -158,7 +158,7 @@ public class Adder
 			Options.verbose = verbose;
 
 			if(n > 0) {
-				JDDConsole.out.print("" + n + "-bit adder, ");
+				JDDConsole.out.print("Adder\tN=" + n);
 				long c1 = System.currentTimeMillis();
 				Adder adder = new Adder(n);
 				if(dump) adder.dump();
@@ -171,7 +171,7 @@ public class Adder
 
 
 				long c2 = System.currentTimeMillis();
-				JDDConsole.out.println(" " + (c2-c1) + " [ms]");
+				JDDConsole.out.println("\ttime=" + (c2-c1));
 
 				if(verbose) adder.showStats();
 				adder.cleanup();

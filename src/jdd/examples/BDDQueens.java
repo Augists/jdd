@@ -1,6 +1,4 @@
-
 package jdd.examples;
-
 
 import jdd.bdd.*;
 import jdd.util.*;
@@ -56,15 +54,11 @@ public class BDDQueens	extends BDD implements Queens
 		    deref(e);
 		}
 
-
-
-
 		for (int i=0 ; i<N ; i++)
 			for(int j = 0; j < N; j++) {
 				build(i,j);
 				// Test.check(work_stack_tos == 0, "in QUEENS: workset stack should be empty");
 			}
-
 
 		sols = satCount(queen);
 		time = System.currentTimeMillis()  -time;
@@ -79,8 +73,6 @@ public class BDDQueens	extends BDD implements Queens
 
 		cleanup();
 	}
-
-
 
 	private void build(int i, int j) {
 		int a, b, c, d;
@@ -135,7 +127,6 @@ public class BDDQueens	extends BDD implements Queens
         deref(b);
 		queen = andTo(queen, a);
 		deref(a);
-
 	}
 
 	public void showOneSolution() {
@@ -147,7 +138,6 @@ public class BDDQueens	extends BDD implements Queens
 		JDDConsole.out.println();
 	}
 
-
 	// ---------------------------------------
 	public int getN() { return N; }
 	public double numberOfSolutions() { return sols; }
@@ -157,12 +147,13 @@ public class BDDQueens	extends BDD implements Queens
 
 	// -------------------------------------------
 	public static void main(String [] args) {
-		if(args.length == 1) {
-			// Options.verbose = true;
-			BDDQueens q = new BDDQueens( Integer.parseInt( args[0] ) );
+		// Options.verbose = true;
+		for(String str :args) {
+			final int n = Integer.parseInt(str );
+			BDDQueens q = new BDDQueens( n );
 			// q.showOneSolution();
 			double mem = Digits.numberDivided( q.getMemory(), 1024 * 1024);
-			JDDConsole.out.println("There are " + q.numberOfSolutions() + " solutions (time: " + q.getTime() + ", memory: " + mem + " MB)");
+			JDDConsole.out.println("BDD-Queen\tSolutions=" + q.numberOfSolutions() + "\tN=" + n + "\tmem=" + mem + "\ttime=" + q.getTime()  );
 		}
 	}
 }

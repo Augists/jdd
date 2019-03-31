@@ -58,18 +58,16 @@ public class BDDTraceSuite {
 		// enable verbose temporary!
 		boolean save = Options.verbose;
 		Options.verbose = true;
-
-		System.err.println("Tracing " + name + "...");
 		try {
 			if(size == -1) new BDDTrace(name, is);
 			else new BDDTrace(name, is, size);
-		} catch(Exception exx) {
-			JDDConsole.out.println("FAILED: " + exx.getMessage()  + "\n\n");
-			exx.printStackTrace();
+		} catch(Exception ex) {
+			JDDConsole.out.println("FAILED when running " + name + ":" +
+				ex.getMessage()  + "\n\n");
+			ex.printStackTrace();
 		}
 
 		Options.verbose = save;		// set back verbose to its old value
-
 		// let's cleanup, so we dont affect the next run so much:
 		for(int i = 0; i < 6; i++) System.gc();
 

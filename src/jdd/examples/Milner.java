@@ -191,7 +191,7 @@ public class Milner extends ProfiledBDD2 {
 					JDDConsole.out.println("Calc        = " + (n * Math.pow(2, 1 + n) * Math.pow(2, 3 * n)) );
 					JDDConsole.out.println("Time: " + (c2-c1) + " [ms]");
 				} else {
-					JDDConsole.out.println("" + n + " milner cyclers, time: "+ (c2-c1) + " [ms]");
+					JDDConsole.out.println("Milner\tN=" + n + "\ttime="+ (c2-c1));
 				}
 
 				milner.cleanup();

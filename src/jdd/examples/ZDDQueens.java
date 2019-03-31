@@ -3,6 +3,7 @@ package jdd.examples;
 
 import jdd.util.*;
 import jdd.zdd.*;
+import jdd.util.math.*; // for Digits
 
 /**
  * N Queen with Z-BDDs. Check out Minatos unate cube paper [ cant remember the name of it :( ]
@@ -105,10 +106,12 @@ public class ZDDQueens extends ZDD2 implements Queens {
 	}
 
 	public static void main(String [] args) {
-		if(args.length == 1) {
-			ZDDQueens q = new ZDDQueens( Integer.parseInt( args[0] ) );
-			JDDConsole.out.println("There are " + q.numberOfSolutions() + " solutions (time: " + q.getTime() + ")");
-			return;
+		for(String str :args) {
+			final int n = Integer.parseInt(str );
+
+			ZDDQueens q = new ZDDQueens( n );
+			double mem = Digits.numberDivided( q.getMemory(), 1024 * 1024);
+			JDDConsole.out.println("ZDD-Queen\tSolutions=" + q.numberOfSolutions() + "\tN=" + n + "\tmem=" + mem + "\ttime=" + q.getTime()  );
 		}
 	}
 }

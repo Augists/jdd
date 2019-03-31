@@ -3,6 +3,7 @@ package jdd.examples;
 
 import jdd.util.*;
 import jdd.zdd.*;
+import jdd.util.math.*; // for Digits
 
 /**
  * <pre>
@@ -113,9 +114,12 @@ public class ZDDCSPQueens extends ZDDCSP implements Queens {
 	}
 
 	public static void main(String [] args) {
-		if(args.length == 1) {
-			ZDDCSPQueens q = new ZDDCSPQueens( Integer.parseInt( args[0] ) );
-			JDDConsole.out.println("There are " + q.numberOfSolutions() + " solutions (time: " + q.getTime() + ")");
+		for(String str :args) {
+			final int n = Integer.parseInt(str );
+
+			ZDDCSPQueens q = new ZDDCSPQueens( n );
+			double mem = Digits.numberDivided( q.getMemory(), 1024 * 1024);
+			JDDConsole.out.println("ZDD-CSP-Queen\tSolutions=" + q.numberOfSolutions() + "\tN=" + n + "\tmem=" + mem + "\ttime=" + q.getTime()  );
 		}
 	}
 }
