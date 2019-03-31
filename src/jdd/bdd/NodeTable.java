@@ -7,6 +7,7 @@ import jdd.bdd.debug.*;
 
 import java.util.*;
 
+
 /**
  * implementation of a node table of elements (var,low,high,ref-count) that supports garbage collections.
  *
@@ -53,11 +54,9 @@ public class NodeTable {
 	// GC/grow stuff
 	protected int stat_gc_count, stat_lookup_count;
 	protected long stat_gc_freed, stat_gc_time, stat_grow_time, stat_notify_time;
-	protected int [] work_stack, mark_stack;
-	protected int work_stack_tos;
 	protected long ht_chain;
-
-
+	final protected NodeStack nstack = new NodeStack(32);
+	final private NodeStack mstack = new NodeStack(32);
 
 	public NodeTable(int nodesize) {
 		debugers = new LinkedList();
@@ -96,11 +95,6 @@ public class NodeTable {
 		stat_gc_count = stat_lookup_count = 0;
 		stat_gc_freed = stat_gc_time = stat_grow_time = stat_notify_time = 0L;
 		ht_chain = 0;
-
-		work_stack = Allocator.allocateIntArray(32); // just some silly number
-		mark_stack = Allocator.allocateIntArray( work_stack.length );
-		work_stack_tos = 0;
-
 		stack_marking_enabled = false; // disable by default
 	}
 
@@ -110,8 +104,6 @@ public class NodeTable {
 		t_ref = null;
 		t_nodes = null;
 		t_list = null;
-		work_stack = null;
-		mark_stack = null;
 	}
 
 	/**
@@ -119,10 +111,8 @@ public class NodeTable {
 	 *  (such as the number of variables in a BDD) has changed!
 	 */
 	protected void tree_depth_changed(int n) {
-		// mark_stack is the stack used for recursive tree marking
-		int need = n * 4 + 3;
-		if(mark_stack.length < need)
-			mark_stack = Allocator.allocateIntArray(need * 2); // twice, so we dont need to do it too often....
+		// mark stack is the stack used for recursive tree marking
+		mstack.grow(n * 4 + 3);
 	}
 	// --- [ HT stuff ] ----------------------------------------------------------------
 	// compute hash for the triple (i,l,h)
@@ -231,7 +221,9 @@ public class NodeTable {
 	 */
 	private final void mark_nodes_in_use() {
 		// insert the stuff we are working on:
-		for(int i = 0; i < work_stack_tos; i++)	mark_tree(work_stack[i]);
+		final int tos = nstack.getTOS();
+		final int [] stack = nstack.getData();
+		for(int i = 0; i < tos; i++)	mark_tree(stack[i]);
 
 		// and referenced nodes.
 		// it looks inefficient, but you cant do it much faster than this :(
@@ -603,7 +595,7 @@ public class NodeTable {
 	private final void mark_tree_stack(int bdd) {
 		// ok, it works like this:
 		// we dont want to do recursive calls in such a tight functions so we do an
-		// artifical recursive call by haveing out own stack. the stack is "mark_stack"
+		// artifical recursive call by haveing out own stack. the stack is "mstack"
 		// and it is important to have the right size. this is why the user must call
 		// recursive_mark_tree() as soon as the tree depth changes
 
@@ -612,23 +604,23 @@ public class NodeTable {
 		if(bdd < 2 ) return;
 
 		// insert the first one
-		int tos = 0; // top of stack
-		mark_stack[tos++] = bdd;
+		mstack.reset();
+		mstack.push(bdd);
 		mark_node(bdd);
 
 		// here we go, recursively mark the nodes in this tree:
-		while(tos > 0) {
-			int next = mark_stack[--tos];
+		while(mstack.getTOS() > 0) {
+			int next = mstack.pop();
 			int tmp = getLow(next);
 			if( tmp > 1 && !isNodeMarked(tmp)) {
 				mark_node(tmp);
-				mark_stack[tos++] = tmp;
+				mstack.push(tmp);
 			}
 
 			tmp = getHigh(next);
 			if( tmp > 1 && !isNodeMarked(tmp)) {
 				mark_node(tmp);
-				mark_stack[tos++] = tmp;
+				mstack.push(tmp);
 			}
 		}
 	}
@@ -665,19 +657,19 @@ public class NodeTable {
 		if (t_nodes!= null) ret += t_nodes.length * 4;
 		if (t_list!= null) ret += t_list.length * 4;
 		if (t_ref != null) ret += t_ref.length * 2;
-		if (work_stack != null) ret += work_stack.length * 4;
-		if (mark_stack != null) ret += mark_stack.length * 4;
+		if (nstack != null) ret += nstack.getCapacity() * 4;
+		if (mstack != null) ret += mstack.getCapacity() * 4;
 
 		return ret;
 	}
 
 
 	// mainly used with test code etc
-	public int debug_work_stack_size() {
-		return work_stack_tos;
+	public int debug_nstack_size() {
+		return nstack.getTOS();
 	}
-	public int debug_work_stack_item(int index) {
-		return work_stack[index];
+	public int debug_nstack_item(int index) {
+		return nstack.getData()[index];
 	}
 
 	public int debug_table_size() {

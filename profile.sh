@@ -12,7 +12,7 @@ fi
 
 ./gradlew build
 
-export J="java -cp build/classes/java/main -Xmx512M -Xms256M"
+export J="java -cp build/classes/java/main -Xmx512M -Xms2M"
 
 for arg in "$@"
 do
@@ -45,9 +45,9 @@ do
         "trace" )
             echo run the traces
             $J jdd.bdd.debug.BDDTraceSuite data/yangs_traces.zip 10240 > build/jdd_yangs_traces.txt
-            $J jdd.bdd.debug.BDDTraceSuite data/iscas_c6288.zip 500000 > build/jdd_ISCAS85_traces.txt
-            $J jdd.bdd.debug.BDDTraceSuite data/iscas_rest.zip 100000 >> build/jdd_ISCAS85_traces.txt
             $J jdd.bdd.debug.BDDTraceSuite data/velev_sss.zip 200000 > build/jdd_sss_traces.txt
+            $J jdd.bdd.debug.BDDTraceSuite data/iscas_rest.zip 100000 >> build/jdd_ISCAS85_traces.txt
+            $J jdd.bdd.debug.BDDTraceSuite data/iscas_c6288.zip 500000 > build/jdd_ISCAS85_traces.txt
             ;;
 
 

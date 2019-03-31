@@ -4,8 +4,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class TestNodeTable {
-	
-	@Test public void testSize() {	
+
+	@Test public void testSize() {
 		NodeTable nt = new NodeTable(10);
 		NodeTableChecker ntc = new NodeTableChecker(nt);
 
@@ -27,16 +27,15 @@ public class TestNodeTable {
 		for(int i = 0; i < 5; i++) {
 			assertEquals("Nodetable check " + i, null, ntc.check());
 			nt.grow();
-		}	
+		}
 	}
 
 	@Test public void testHash() {
 		NodeTable nt = new NodeTable(10);
 
-		// save by work_stack
+		// save by nstack
 		int a = nt.add(4,0,1);
-		nt.work_stack[0] = a;
-		nt.work_stack_tos++;
+		nt.nstack.push(a);
 
 		// save by ref
 		int b = nt.add(4,1,0);
@@ -45,15 +44,15 @@ public class TestNodeTable {
 		// dont save:
 		int c = nt.add(3,0,1);
 		assertEquals("free node count correct (1)",  nt.debug_compute_free_nodes_count(), nt.debug_free_nodes_count() );
-		
+
 		nt.gc();
-		assertTrue("saved by work_stack", nt.isValid( a));
+		assertTrue("saved by nstack", nt.isValid( a));
 		assertTrue("saved by ref", nt.isValid( b));
 		assertTrue("should have been removed", !nt.isValid( c));
 		assertEquals("free node count correct (2)",  nt.debug_compute_free_nodes_count(), nt.debug_free_nodes_count() );
 
 		nt.grow();
-		assertTrue("saved by work_stack", nt.isValid( a));
+		assertTrue("saved by nstack", nt.isValid( a));
 		assertTrue("saved by ref", nt.isValid( b));
 		assertTrue("should have been removed", !nt.isValid( c));
 		assertEquals("free node count correct (3)",  nt.debug_compute_free_nodes_count(), nt.debug_free_nodes_count() );

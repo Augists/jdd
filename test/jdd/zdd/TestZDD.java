@@ -27,8 +27,8 @@ public class TestZDD {
 		int e = zdd.union(c,d);
 		int f = zdd.union(b,e);
 		int g = zdd.diff(f,c);
-		
-		
+
+
 		// directly from minatos paper, figure 9
 		// [until we find a better way to test isomorphism...]
 		assertEquals("emptyset = 0", 0, a);
@@ -129,18 +129,18 @@ public class TestZDD {
         int tmp3 = zdd.intersect(tmp, tmp2);
 		int answer = zdd.cube("11");
 		assertEquals("intersect test", tmp3, answer);
-		assertEquals("TOS restored after intersect", zdd.debug_work_stack_size(), 0);
+		assertEquals("TOS restored after intersect", zdd.debug_nstack_size(), 0);
 
 		// 2. UNION
 		tmp3 = zdd.union(tmp, tmp2);
 		answer = zdd.union(tmp, 1);
 		assertEquals("union test", tmp3, answer);
-		assertEquals("TOS restored after union", zdd.debug_work_stack_size(), 0);
+		assertEquals("TOS restored after union", zdd.debug_nstack_size(), 0);
 
 		// 3. DIFF
 		tmp3 = zdd.diff(tmp, tmp2);
 		answer = zdd.union( zdd.cube("10"), zdd.cube("100") );
 		assertEquals("diff test", tmp3, answer);
-		assertEquals("TOS restored after diff", zdd.debug_work_stack_size(), 0);
+		assertEquals("TOS restored after diff", zdd.debug_nstack_size(), 0);
 	}
 }

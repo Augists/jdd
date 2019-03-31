@@ -107,49 +107,47 @@ public class ZDD extends NodeTable  {
 	public int createVar() {
 		int ret = num_vars++;
 		// we want to keep the work stack at least so large
-		int need = 5 * num_vars + 3;
-		if(work_stack.length < need)
-			work_stack = Array.resize(work_stack, work_stack_tos, need);
+		nstack.grow(5 * num_vars + 3);
 
 		tree_depth_changed(num_vars); // MUST be called
 		return ret;
 	}
 	// --------------------------------------------------------
-    
+
     /** returns {} */
 	public final int empty() { return 0; }
-    
+
     /** returns {{}} */
 	public final int base() { return 1; }
-    
+
     /** create a tree of a variable. single(vx) = { vx } */
 	public final int single(int var) { return mk(var, 0, 1); }
 
 	public final int universe() {
 		int last = 1;
 		for(int i = 0; i < num_vars; i++) {
-			work_stack[work_stack_tos++] = last;
+			nstack.push(last);
 			last = mk(i, last, last);
-			work_stack_tos--;
+			nstack.pop();
 		}
 		return last;
 	}
-    
+
     /** cube of a single variable v */
 	public final int cube(int v) { return mk(v, 0, 1) ; }
-    
+
     /** cube of a selection of variables */
 	public final int cube(boolean [] v) {
 		int last = 1;
 		for(int i = 0; i < v.length; i++)
 			if( v[i] ) {
-				work_stack[work_stack_tos++] = last;
+				nstack.push(last);
 				last = mk(i, 0, last);
-				work_stack_tos--;
+				nstack.pop();
 			}
 		return last;
 	}
-    
+
     /**
      * cube of a selection of variables, represented as
      * a string, e.g. "11001"
@@ -159,24 +157,24 @@ public class ZDD extends NodeTable  {
 		int last = 1;
 		for(int i = 0; i < len; i++)
 			if( s.charAt(len - i - 1) == '1') {
-				work_stack[work_stack_tos++] = last;
+				nstack.push(last);
 				last = mk(i, 0, last);
-				work_stack_tos--;
+				nstack.pop();
 			}
 		return last;
 	}
     /**
      * Union of cubes, each represented by a string token.
-     * 
+     *
      * This function was added to ease fast creation of
      * sets of sets in tests.
-     * 
+     *
      * E.g. "0001 1000 1101" => { v1, v4, v4v3v1 }
      */
     public int cubes_union(String s) {
         return do_cubes_op(s, true);
     }
-    
+
     /**
      * Intersection of cubes. same as
      * cubes_unon() but uses intersect instead of union
@@ -184,15 +182,15 @@ public class ZDD extends NodeTable  {
     public int cubes_intersect(String s) {
         return do_cubes_op(s, false);
     }
-    
+
     private int do_cubes_op(String s, boolean do_union) {
         StringTokenizer st = new StringTokenizer(s," \t\n,;");
         int ret = -1;
-        
+
         while(st.hasMoreTokens()) {
-            String str = st.nextToken();            
+            String str = st.nextToken();
             int c = cube(str);
-            
+
             if(ret == -1) ret = c;
             else {
                 ref(ret);
@@ -205,14 +203,14 @@ public class ZDD extends NodeTable  {
         }
         return ret;
     }
-    
+
 	public int subsets(boolean [] v) {
 		int last = 1;
 		for(int i = 0; i < v.length; i++)
 			if( v[i] ) {
-				work_stack[work_stack_tos++] = last;
+				nstack.push(last);
 				last = mk(i, last, last);
-				work_stack_tos--;
+				nstack.pop();
 			}
 		return last;
 	}
@@ -230,10 +228,10 @@ public class ZDD extends NodeTable  {
 		if(unary_cache.lookup(zdd, var, CACHE_SUBSET1)) return unary_cache.answer;
 		int hash = unary_cache.hash_value;
 
-		int l = work_stack[work_stack_tos++] = subset1( getLow(zdd), var);
-		int h = work_stack[work_stack_tos++] = subset1( getHigh(zdd), var);
+		int l = nstack.push( subset1( getLow(zdd), var));
+		int h = nstack.push( subset1( getHigh(zdd), var));
 		l = mk( getVar(zdd), l, h);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 
 		unary_cache.insert(hash, zdd, var, CACHE_SUBSET1, l);
 		return l;
@@ -250,10 +248,10 @@ public class ZDD extends NodeTable  {
 		if(unary_cache.lookup(zdd, var, CACHE_SUBSET0)) return unary_cache.answer;
 		int hash = unary_cache.hash_value;
 
-		int l = work_stack[work_stack_tos++] = subset0( getLow(zdd), var);
-		int h = work_stack[work_stack_tos++] = subset0( getHigh(zdd), var);
+		int l = nstack.push( subset0( getLow(zdd), var));
+		int h = nstack.push( subset0( getHigh(zdd), var));
 		l = mk( getVar(zdd), l, h);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		unary_cache.insert(hash, zdd, var, CACHE_SUBSET0, l);
 		return l;
 	}
@@ -263,7 +261,7 @@ public class ZDD extends NodeTable  {
 
 
 		if(getVar(zdd) < var) return mk(var, 0, zdd);
-		// XXX: ARASH FIX THIS TRUELY STUPID BUG: if(getVar(zdd) == var) return mk(var, getVar(zdd), getVar(zdd));
+		// XXX: FIX THIS: if(getVar(zdd) == var) return mk(var, getVar(zdd), getVar(zdd));
 		if(getVar(zdd) == var) return mk(var, getHigh(zdd), getLow(zdd));
 
 		// else if(v > var)
@@ -271,10 +269,10 @@ public class ZDD extends NodeTable  {
 		int hash = unary_cache.hash_value;
 
 
-		int l = work_stack[work_stack_tos++] = change( getLow(zdd), var);
-		int h = work_stack[work_stack_tos++] = change( getHigh(zdd), var);
+		int l = nstack.push( change( getLow(zdd), var));
+		int h = nstack.push( change( getHigh(zdd), var));
 		l = mk( getVar(zdd), l, h);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 
 		unary_cache.insert(hash, zdd, var, CACHE_CHANGE, l);
 		return l;
@@ -293,14 +291,14 @@ public class ZDD extends NodeTable  {
 
 		int l;
 		if(getVar(p) < getVar(q)) {
-			l = work_stack[work_stack_tos++] = union(p, getLow(q));
+			l = nstack.push( union(p, getLow(q)));
 			l = mk(getVar(q), l, getHigh(q));
-			work_stack_tos--;
+			nstack.pop();
 		} else {
-			l = work_stack[work_stack_tos++] = union( getLow(p), getLow(q));
-			int h = work_stack[work_stack_tos++] = union(getHigh(p), getHigh(q));
+			l = nstack.push( union( getLow(p), getLow(q)));
+			int h = nstack.push( union(getHigh(p), getHigh(q)));
 			l = mk( getVar(p), l, h);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 		}
 
 		binary_cache.insert(hash, p, q, CACHE_UNION, l);
@@ -324,10 +322,10 @@ public class ZDD extends NodeTable  {
 		else if(getVar(p) < getVar(q)) l =  intersect( p, getLow(q));
 		else {
 		// else if getVar(p) == getVar(q)
-			l = work_stack[work_stack_tos++] = intersect( getLow(p), getLow(q));
-			int h = work_stack[work_stack_tos++] = intersect(getHigh(p), getHigh(q));
+			l = nstack.push( intersect( getLow(p), getLow(q)));
+			int h = nstack.push( intersect(getHigh(p), getHigh(q)));
 			l = mk( getVar(p), l, h);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 		}
 
 		binary_cache.insert(hash, p, q, CACHE_INTERSECT, l);
@@ -344,14 +342,14 @@ public class ZDD extends NodeTable  {
 		int l = 0;
 		if(getVar(p) < getVar(q)) l =  diff( p, getLow(q));
 		else if(getVar(p) > getVar(q)) {
-			l = work_stack[work_stack_tos++] = diff( getLow(p), q);
+			l = nstack.push( diff( getLow(p), q));
 			l = mk( getVar(p), l, getHigh(p));
-			work_stack_tos--;
+			nstack.pop();
 		} else { // getVar(p) == getVar(q);
-			l = work_stack[work_stack_tos++] = diff( getLow(p), getLow(q));
-			int h = work_stack[work_stack_tos++] = diff(getHigh(p), getHigh(q));
+			l = nstack.push( diff( getLow(p), getLow(q)));
+			int h = nstack.push( diff(getHigh(p), getHigh(q)));
 			l = mk( getVar(p), l, h);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 		}
 
 		binary_cache.insert(hash, p, q, CACHE_DIFF, l);
@@ -380,9 +378,9 @@ public class ZDD extends NodeTable  {
 	/** computes set U {base} */
 	private final int insert_base(int set) {
 		if(set < 2) return 1; // <-- the magic happens here
-		int l = work_stack[work_stack_tos++] = insert_base(getLow(set));
+		int l = nstack.push( insert_base(getLow(set)));
 		l = (getLow(set) == l) ? set : mk(getVar(set), l, getHigh(set));
-		work_stack_tos--;
+		nstack.pop();
 		return l;
 	}
 

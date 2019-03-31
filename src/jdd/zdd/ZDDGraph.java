@@ -17,12 +17,12 @@ import jdd.bdd.*;
 public class ZDDGraph  extends ZDD  {
     protected  static final int CACHE_NOSUBSET = 0, CACHE_NOSUPSET = 1;
 	protected OptimizedCache graph_cache;
-    
+
 	public ZDDGraph(int nodesize, int cachesize) {
 		super(nodesize, cachesize);
         graph_cache = new OptimizedCache("graph", cachesize / Configuration.zddGraphCacheDiv , 3, 2);
 	}
-    
+
     // ---------------------------------------------------------------
 	public void cleanup() {
 		super.cleanup();
@@ -47,33 +47,33 @@ public class ZDDGraph  extends ZDD  {
 		if(to < from) return 0;
 
 		int left = 0, right = mk(from, 0,1);
-		work_stack[work_stack_tos++]  = left; // place holders
-		work_stack[work_stack_tos++]  = right;
+		nstack.push( left); // place holders
+		nstack.push( right);
 		for(int i = from+1; i < to; i++) {
-			int tmp1 = work_stack[work_stack_tos++]  = mk(i,left, right);
-			int tmp2 = work_stack[work_stack_tos++]  = mk(i,right, 1);
-			work_stack_tos -= 4;
-			left = work_stack[work_stack_tos++]  = tmp1;
-			right = work_stack[work_stack_tos++]  = tmp2;
+			int tmp1 = nstack.push( mk(i,left, right));
+			int tmp2 = nstack.push( mk(i,right, 1));
+			nstack.drop(4);
+			left = nstack.push( tmp1);
+			right = nstack.push( tmp2);
 		}
 		int ret = mk(to, left, right);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return ret;
 	}
 
-	// ------------------------------------------------------------------------    
-    
-    /** 
-     * 
-     * noSubset(F, C) = {f \in F | \lnot \exist c \in C. f \subseteq c } 
-     * 
+	// ------------------------------------------------------------------------
+
+    /**
+     *
+     * noSubset(F, C) = {f \in F | \lnot \exist c \in C. f \subseteq c }
+     *
      */
-    
-    public final int noSubset(int F, int C) {        
+
+    public final int noSubset(int F, int C) {
         if(F == C || F == 1 || F == 0) return 0;
         if(C == 0) return F;
         if(C == 1) return diff(F, 1);
-                
+
         if(graph_cache.lookup(F, C, CACHE_NOSUBSET)) return graph_cache.answer;
 		int hash = graph_cache.hash_value;
 
@@ -81,33 +81,33 @@ public class ZDDGraph  extends ZDD  {
         int fvar = getVar(F);
         int cvar = getVar(C);
         if(fvar > cvar) {
-            int tmp1 = work_stack[work_stack_tos++] = noSubset(getLow(F), C);
+            int tmp1 = nstack.push( noSubset(getLow(F), C));
             ret = mk (fvar, tmp1, getHigh(F));
-            work_stack_tos--;
+            nstack.pop();
         } else if(fvar < cvar) {
-            int tmp1 = work_stack[work_stack_tos++] = noSubset(F, getLow(C));
-            int tmp2 = work_stack[work_stack_tos++] = noSubset(F, getHigh(C));
+            int tmp1 = nstack.push( noSubset(F, getLow(C)));
+            int tmp2 = nstack.push( noSubset(F, getHigh(C)));
             ret = intersect( tmp1, tmp2);
-            work_stack_tos -= 2;
+            nstack.drop(2);
         } else {
-            int tmp1 = work_stack[work_stack_tos++] = noSubset(getLow(F), getLow(C));
-            int tmp2 = work_stack[work_stack_tos++] = noSubset(getLow(F), getHigh(C));
-            
+            int tmp1 = nstack.push( noSubset(getLow(F), getLow(C)));
+            int tmp2 = nstack.push( noSubset(getLow(F), getHigh(C)));
+
             tmp1 = intersect( tmp1, tmp2);
-            work_stack_tos -= 2; 
-            work_stack[work_stack_tos++] = tmp1;
-            
-            tmp2 = work_stack[work_stack_tos++] = noSubset(getHigh(F), getHigh(C));
+            nstack.drop(2);
+            nstack.push( tmp1);
+
+            tmp2 = nstack.push( noSubset(getHigh(F), getHigh(C)));
             ret = mk( fvar, tmp1, tmp2);
-            work_stack_tos -= 2;
+            nstack.drop(2);
         }
-        
+
         graph_cache.insert(hash, F, C, CACHE_NOSUBSET, ret);
-        
+
         return ret;
     }
-    
-    
+
+
     /**
 	 * noSupset is used to compute exclude.
 	 *
@@ -121,10 +121,10 @@ public class ZDDGraph  extends ZDD  {
 
 
     private final int noSupset_rec(int F, int C) {
-        
+
 		if(F == 0 || C == 1 || F == C) return 0;
-        if(F == 1 || C == 0) return F;         
-        
+        if(F == 1 || C == 0) return F;
+
 		if(graph_cache.lookup(F, C, CACHE_NOSUPSET)) return graph_cache.answer;
 		int hash = graph_cache.hash_value;
 
@@ -135,37 +135,37 @@ public class ZDDGraph  extends ZDD  {
 		if (fvar < cvar) {
 			ret = noSupset_rec(F, getLow(C));
 		} else if (fvar > cvar) {
-			int tmp1 = work_stack[work_stack_tos++] = noSupset_rec(getHigh(F), C);
-			int tmp2 = work_stack[work_stack_tos++] = noSupset_rec(getLow(F) , C);
+			int tmp1 = nstack.push( noSupset_rec(getHigh(F), C));
+			int tmp2 = nstack.push( noSupset_rec(getLow(F) , C));
 			ret = mk(fvar, tmp2, tmp1);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 		} else {
-            
+
             int tmp1, tmp2;
             int C1 = getHigh(C);
-            
-            if( emptyIn(C1)) { 
+
+            if( emptyIn(C1)) {
                 // special case, beause  noSupset( getHigh(F), C1) = 0
-                work_stack[work_stack_tos++] = tmp1 = 0;
+                tmp1 = nstack.push(0);
             } else {
-                tmp1 = work_stack[work_stack_tos++] = noSupset_rec( getHigh(F), getLow(C));
-                tmp2 = work_stack[work_stack_tos++] = noSupset_rec( getHigh(F), C1);                
+                tmp1 = nstack.push( noSupset_rec( getHigh(F), getLow(C)));
+                tmp2 = nstack.push( noSupset_rec( getHigh(F), C1));
                 tmp1 = intersect(tmp1, tmp2);
-                work_stack_tos -= 2;
-                work_stack[work_stack_tos++] = tmp1;
+                nstack.drop(2);
+                nstack.push( tmp1);
             }
 
 
-			tmp2 = work_stack[work_stack_tos++] = noSupset_rec( getLow(F), getLow(C));
+			tmp2 = nstack.push( noSupset_rec( getLow(F), getLow(C)));
 			ret = mk(fvar, tmp2, tmp1);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 		}
 
 		graph_cache.insert(hash, F, C, CACHE_NOSUPSET, ret);
 		return ret;
     }
-     
-  
+
+
 
 	// ------------------------------------------------------------------------
 
@@ -176,32 +176,13 @@ public class ZDDGraph  extends ZDD  {
 	 */
 	 public int maxSet(int X) {
 		if(X < 2) return X;
-		int T0 = work_stack[work_stack_tos++] = maxSet( getLow(X)) ;
-		int T1 = work_stack[work_stack_tos++] = maxSet( getHigh(X));
-		int T2 = work_stack[work_stack_tos++] = noSubset(T0, T1);
+		int T0 = nstack.push( maxSet( getLow(X)));
+		int T1 = nstack.push( maxSet( getHigh(X)));
+		int T2 = nstack.push( noSubset(T0, T1));
 
 		T0 = mk( getVar(X), T2, T1);
-		work_stack_tos -= 3;
+		nstack.drop(3);
 		return T0;
-	 }
-	 // ------------------------------------------------------------------------
-	 /**
-	  *
-	  * MaxDot(X,Y) = { x \cup y | x \in x, y \in y }.
-	  *
-	  * <b>XXX: this function is still under development! DO NOT USE</b>
-	  */
-	 public int MaxDot(int X, int Y) {
-		if(X  < 2) return X;
-		if(Y  < 2) return Y;
-
-		int v = Math.max( getVar(X), getVar(Y) );
-		int Xh = work_stack[work_stack_tos++]  = subset1( X, v);
-		int Yh = work_stack[work_stack_tos++]  = subset1( Y, v);
-		int Xl = work_stack[work_stack_tos++]  = subset0( X, v);
-		int Yl = work_stack[work_stack_tos++]  = subset0( Y, v);
-
-		return 0; // TODO
 	 }
 }
 

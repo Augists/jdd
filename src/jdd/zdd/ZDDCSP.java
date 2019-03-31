@@ -9,19 +9,19 @@ import jdd.bdd.*;
  * ZDD operations for CSP problems.
  * based on "On the properties of combination set operations", by Okuno, Minato and Isozaki.
  *
- * I am also thankfull to Paolo Bonzini who suggested 
+ * I am also thankfull to Paolo Bonzini who suggested
  * replaceing the slow Exclude() with noSubset() :)
  */
 public class ZDDCSP  extends ZDD2  {
 	protected static final int  CACHE_RESTRICT = 0, CACHE_NOSUPSET = 1;
 
 	protected OptimizedCache csp_cache;
-    
+
 	public ZDDCSP(int nodesize, int cachesize) {
 		super(nodesize, cachesize);
 		csp_cache = new OptimizedCache("csp", cachesize / Configuration.zddCSPCacheDiv , 3, 2);
 	}
-    
+
 
 	// ---------------------------------------------------------------
 	public void cleanup() {
@@ -48,22 +48,23 @@ public class ZDDCSP  extends ZDD2  {
 
 		int ret = 0, v = getVar(F);
 		if(v < getVar(C)) { // F0 = F, F1 = 0 ==> restrict(F1,Cn) = 0
-			int tmp =  work_stack[work_stack_tos++] = restrict(F,getLow(C));
+			int tmp =  nstack.push( restrict(F,getLow(C)));
 			ret = mk(getVar(C), tmp, 0);
-			work_stack_tos--;
+			nstack.pop();
 		} else if(v > getVar(C)) { // C0 = C, C1 = 0 => restrict(F1,C1) = 0
-			int tmp  = work_stack[work_stack_tos++] = restrict( getHigh(F), C);
-			int tmp2 = work_stack[work_stack_tos++] = restrict( getLow(F), C);
+			int tmp  = nstack.push( restrict( getHigh(F), C));
+			int tmp2 = nstack.push( restrict( getLow(F), C));
 			ret = mk(v, tmp2, tmp);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 		} else {
-			int tmp1 = work_stack[work_stack_tos++]  = restrict(getHigh(F), getHigh(C));
-			int tmp2 = work_stack[work_stack_tos++]  = restrict(getHigh(F), getLow(C));
+			int tmp1 = nstack.push( restrict(getHigh(F), getHigh(C)));
+			int tmp2 = nstack.push( restrict(getHigh(F), getLow(C)));
 			tmp1 = union(tmp1, tmp2);
-			work_stack_tos-= 2; work_stack[work_stack_tos++] = tmp1;
-			tmp2 = work_stack[work_stack_tos++] = restrict(getLow(F),getLow(C));
+			nstack.drop(2);
+			nstack.push( tmp1);
+			tmp2 = nstack.push( restrict(getLow(F),getLow(C)));
 			ret = mk(v, tmp2, tmp1);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 		}
 
 
@@ -72,23 +73,23 @@ public class ZDDCSP  extends ZDD2  {
 	}
 	// ---------------------------------------------------------------
     /**
-     * slow Exclude conputed using the definition: 
+     * slow Exclude conputed using the definition:
      * Exclude(F,C) = F - Restrict(F,C)
      */
 	private final int exclude_slow(int F, int C) {
-		int tmp = work_stack[work_stack_tos++] = restrict(F,C);
+		int tmp = nstack.push( restrict(F,C));
 		tmp = diff(F, tmp);
-		work_stack_tos--;
+		nstack.pop();
 		return tmp;
 	}
-    
-    
-	// ---------------------------------------------------------------	 
+
+
+	// ---------------------------------------------------------------
     /**
      * fast Exclude computed under its other name "noSupset":
 	 *
 	 * noSupset(F, C) = {f \in F | \lnot \exist c \in C, c \subseteq f }
-     * 
+     *
      * NOTE THAT THE SAME CODE IS ALSO FOUND IN ZDDGraph.noSupset(F,C)
      * We could have used some OOP tricks to reuse that code here, but
      * I decided not to...
@@ -101,10 +102,10 @@ public class ZDDCSP  extends ZDD2  {
 
 
     private final int noSupset_rec(int F, int C) {
-        
+
 		if(F == 0 || C == 1 || F == C) return 0;
-        if(F == 1 || C == 0) return F;         
-        
+        if(F == 1 || C == 0) return F;
+
 		if(csp_cache.lookup(F, C, CACHE_NOSUPSET)) return csp_cache.answer;
 		int hash = csp_cache.hash_value;
 
@@ -115,29 +116,29 @@ public class ZDDCSP  extends ZDD2  {
 		if (fvar < cvar) {
 			ret = noSupset_rec(F, getLow(C));
 		} else if (fvar > cvar) {
-			int tmp1 = work_stack[work_stack_tos++] = noSupset_rec(getHigh(F), C);
-			int tmp2 = work_stack[work_stack_tos++] = noSupset_rec(getLow(F) , C);
+			int tmp1 = nstack.push( noSupset_rec(getHigh(F), C));
+			int tmp2 = nstack.push( noSupset_rec(getLow(F) , C));
 			ret = mk(fvar, tmp2, tmp1);
-			work_stack_tos -= 2;
-		} else {            
-            int tmp1, tmp2;            
+			nstack.drop(2);
+		} else {
+            int tmp1, tmp2;
             int C1 = getHigh(C);
-            
-            if( emptyIn(C1)) { 
+
+            if( emptyIn(C1)) {
                 // special case, because noSupset( getHigh(F), C1) = 0
-               tmp1 = work_stack[work_stack_tos++] = 0;
+               tmp1 = nstack.push( 0);
             } else {
                 int F1 = getHigh(F);
-                tmp1 = work_stack[work_stack_tos++] = noSupset_rec( F1, getLow(C));
-                tmp2 = work_stack[work_stack_tos++] = noSupset_rec( F1, C1);                
+                tmp1 = nstack.push( noSupset_rec( F1, getLow(C)));
+                tmp2 = nstack.push( noSupset_rec( F1, C1));
                 tmp1 = intersect(tmp1, tmp2);
-                work_stack_tos -= 2;
-                work_stack[work_stack_tos++] = tmp1;
-            }                        
+                nstack.drop(2);
+                nstack.push( tmp1);
+            }
 
-			tmp2 = work_stack[work_stack_tos++] = noSupset_rec( getLow(F), getLow(C));
+			tmp2 = nstack.push( noSupset_rec( getLow(F), getLow(C)));
 			ret  = mk(fvar, tmp2, tmp1);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 		}
 
 		csp_cache.insert(hash, F, C, CACHE_NOSUPSET, ret);

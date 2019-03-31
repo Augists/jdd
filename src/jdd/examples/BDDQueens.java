@@ -16,7 +16,7 @@ import jdd.util.math.*; // for Digits
  * </pre>
  */
 
-public class BDDQueens	extends BDD implements Queens
+public class BDDQueens extends BDD implements Queens
 {
 	private int [] bdds, nbdds;
 	private int N, queen;
@@ -57,7 +57,7 @@ public class BDDQueens	extends BDD implements Queens
 		for (int i=0 ; i<N ; i++)
 			for(int j = 0; j < N; j++) {
 				build(i,j);
-				// Test.check(work_stack_tos == 0, "in QUEENS: workset stack should be empty");
+				// Test.check(nstack.getTOS() == 0, "in QUEENS: workset stack should be empty");
 			}
 
 		sols = satCount(queen);

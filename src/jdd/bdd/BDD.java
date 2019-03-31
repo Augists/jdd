@@ -154,9 +154,9 @@ public class BDD extends NodeTable {
 
 	/** create a new BDD variable */
 	public int createVar() {
-		int var = work_stack[work_stack_tos++] = mk(num_vars, 0, 1);
+		int var = nstack.push( mk(num_vars, 0, 1) );
 		int nvar = mk(num_vars, 1, 0);
-		work_stack_tos--;
+		nstack.pop();
 		num_vars++;
 
 		saturate(var);
@@ -167,10 +167,7 @@ public class BDD extends NodeTable {
 
 
 		// we want to keep the work stack at least so large
-		int need = 6 * num_vars + 1;
-		if(work_stack.length < need) {
-			work_stack = Array.resize(work_stack, work_stack_tos, need);
-		}
+		nstack.grow(6 * num_vars + 1);
 
 		if(varset_vec.length < num_vars) {
 			varset_vec = Allocator.allocateBooleanArray(num_vars * 3);
@@ -234,9 +231,9 @@ public class BDD extends NodeTable {
 		int last = 1, len = Math.min(v.length, num_vars);
 		for(int i = 0; i < len; i++) {
 			int var = len - i - 1;
-			work_stack[work_stack_tos++] = last;
+			nstack.push(last);
 			if(v[var]) last = mk(var, 0, last);
-			work_stack_tos--;
+			nstack.pop();
 		}
 		return last;
 	}
@@ -251,9 +248,9 @@ public class BDD extends NodeTable {
 		int len = s.length(), last = 1;
 		for(int i = 0; i < len;i++) {
 			int var = len - i - 1;
-			work_stack[work_stack_tos++] = last;
+			nstack.push(last);
 			if(s.charAt(var) == '1') last = mk(var, 0, last);
-			work_stack_tos--;
+			nstack.pop();
 		}
 		return last;
 	}
@@ -267,9 +264,9 @@ public class BDD extends NodeTable {
 		int last = 1, len = Math.min(v.length, num_vars);
 		for(int i = 0; i < len; i++) {
 			int var = len - i - 1;
-			work_stack[work_stack_tos++] = last;
+			nstack.push(last);
 			last = (v[var] ? mk(var, 0, last) : mk(var, last, 0));
-			work_stack_tos--;
+			nstack.pop();
 		}
 		return last;
 	}
@@ -286,10 +283,10 @@ public class BDD extends NodeTable {
 		int len = s.length(), last = 1;
 		for(int i = 0; i < len;i++) {
 			int var = len - i - 1;
-			work_stack[work_stack_tos++] = last;
+			nstack.push(last);
 			last = ((s.charAt(var) == '1') ? mk(var, 0, last) :
 				( (s.charAt(var) == '0') ? mk(var, last, 0) : last));
-			work_stack_tos--;
+			nstack.pop();
 		}
 		return last;
 	}
@@ -330,17 +327,17 @@ public class BDD extends NodeTable {
 
 		if(g == 1) return or_rec(f,h);
 		if(g == 0) {
-			int tmp = work_stack[work_stack_tos++] = not_rec(h);
+			int tmp = nstack.push(not_rec(h));
 			tmp = nor_rec(f,tmp);
-			work_stack_tos --;
+			nstack.pop();
 			return tmp;
 		}
 
 		if(h == 0) return and_rec(f,g);
 		if(h == 1) {
-			int tmp = work_stack[work_stack_tos++] = not_rec(g);
+			int tmp = nstack.push( not_rec(g) );
 			tmp = nand_rec(f,tmp);
-			work_stack_tos --;
+			nstack.pop();
 			return tmp;
 		}
 
@@ -348,14 +345,14 @@ public class BDD extends NodeTable {
 		int hash = ite_cache.hash_value;
 
 		int v = Math.min(getVar(f), Math.min(getVar(g), getVar(h)));
-		int l = work_stack[work_stack_tos++] = ite_rec(
-				(v == getVar(f)) ? getLow(f) : f, (v == getVar(g)) ? getLow(g) : g, (v == getVar(h)) ? getLow(h) : h);
+		int l = nstack.push( ite_rec(
+				(v == getVar(f)) ? getLow(f) : f, (v == getVar(g)) ? getLow(g) : g, (v == getVar(h)) ? getLow(h) : h));
 
-		int H = work_stack[work_stack_tos++] = ite_rec(
-				(v == getVar(f)) ? getHigh(f) : f, (v == getVar(g)) ? getHigh(g) : g, (v == getVar(h)) ? getHigh(h) : h);
+		int H = nstack.push(ite_rec(
+				(v == getVar(f)) ? getHigh(f) : f, (v == getVar(g)) ? getHigh(g) : g, (v == getVar(h)) ? getHigh(h) : h) );
 
 		l = mk(v,l,H);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 
 		ite_cache.insert(hash, f,g,h, l);
 		return l;
@@ -368,10 +365,10 @@ public class BDD extends NodeTable {
 	 * @return u1 AND u2
 	 */
 	public int and(int u1, int u2) {
-		work_stack[work_stack_tos++] = u1;
-		work_stack[work_stack_tos++] = u2;
+		nstack.push(u1);
+		nstack.push(u2);
 		int ret = and_rec(u1,u2);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return ret;
 
 	}
@@ -388,15 +385,15 @@ public class BDD extends NodeTable {
 		int hash = op_cache.hash_value;
 
 		if( v == getVar(u2)) {
-			l = work_stack[work_stack_tos++] = and_rec(getLow(u1), getLow(u2));
-			h = work_stack[work_stack_tos++] = and_rec(getHigh(u1), getHigh(u2));
+			l = nstack.push(and_rec(getLow(u1), getLow(u2)));
+			h = nstack.push(and_rec(getHigh(u1), getHigh(u2)));
 		} else { // v < getVar(u2)
-			l = work_stack[work_stack_tos++] = and_rec(getLow(u1), u2);
-			h = work_stack[work_stack_tos++] = and_rec(getHigh(u1), u2);
+			l = nstack.push( and_rec(getLow(u1), u2));
+			h = nstack.push( and_rec(getHigh(u1), u2));
 		}
 
 		if(l != h) l = mk(v,l,h);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 
 		op_cache.insert(hash, u1, u2, CACHE_AND, l);
 		return l;
@@ -415,19 +412,19 @@ public class BDD extends NodeTable {
 
 		int ret;
 		if( getVar(u1) == getVar(u2)) {
-			int l = work_stack[work_stack_tos++] = and_rec(getLow(u1), getLow(u2));
-			int h = work_stack[work_stack_tos++] = and_rec(getHigh(u1), getHigh(u2));
+			int l = nstack.push( and_rec(getLow(u1), getLow(u2)));
+			int h = nstack.push( and_rec(getHigh(u1), getHigh(u2)));
 			ret = mk( getVar(u1), l, h);
 		} else if( getVar(u1) < getVar(u2) ) {
-			int l = work_stack[work_stack_tos++] = and_rec(getLow(u1), u2);
-			int h = work_stack[work_stack_tos++] = and_rec(getHigh(u1), u2);
+			int l = nstack.push( and_rec(getLow(u1), u2));
+			int h = nstack.push( and_rec(getHigh(u1), u2));
 			ret = mk( getVar(u1), l, h);
 		} else {
-			int l = work_stack[work_stack_tos++] = and_rec(u1, getLow(u2));
-			int h = work_stack[work_stack_tos++] = and_rec(u1, getHigh(u2));
+			int l = nstack.push( and_rec(u1, getLow(u2)));
+			int h = nstack.push( and_rec(u1, getHigh(u2)));
 			ret = mk( getVar(u2), l, h);
 		}
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		op_cache.insert(hash, u1, u2, CACHE_AND, ret);
 		return ret;
 	}
@@ -439,10 +436,10 @@ public class BDD extends NodeTable {
 	 * @return u1 NAND u2
 	 */
 	public int nand(int u1, int u2) {
-		work_stack[work_stack_tos++] = u1;
-		work_stack[work_stack_tos++] = u2;
+		nstack.push( u1);
+		nstack.push( u2);
 		int ret = nand_rec(u1,u2);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return ret;
 	}
 
@@ -458,16 +455,16 @@ public class BDD extends NodeTable {
 		int hash = op_cache.hash_value;
 
 		if( v == getVar(u2)) {
-			l = work_stack[work_stack_tos++] = nand_rec(getLow(u1), getLow(u2));
-			h = work_stack[work_stack_tos++] = nand_rec(getHigh(u1), getHigh(u2));
+			l = nstack.push( nand_rec(getLow(u1), getLow(u2)));
+			h = nstack.push( nand_rec(getHigh(u1), getHigh(u2)));
 		} else { // v < getVar(u2)
-			l = work_stack[work_stack_tos++] = nand_rec(getLow(u1), u2);
-			h = work_stack[work_stack_tos++] = nand_rec(getHigh(u1), u2);
+			l = nstack.push( nand_rec(getLow(u1), u2) );
+			h = nstack.push( nand_rec(getHigh(u1), u2));
 		}
 
 		if(l != h) l = mk(v,l,h);
 		op_cache.insert(hash, u1, u2, CACHE_NAND, l);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return l;
 
 	}
@@ -479,10 +476,10 @@ public class BDD extends NodeTable {
 	 * @return u1 OR u2
 	 */
 	public int or(int u1, int u2) {
-		work_stack[work_stack_tos++] = u1;
-		work_stack[work_stack_tos++] = u2;
+		nstack.push( u1);
+		nstack.push( u2);
 		int ret = or_rec(u1,u2);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return ret;
 
 	}
@@ -499,16 +496,16 @@ public class BDD extends NodeTable {
 		int hash = op_cache.hash_value;
 
 		if( v == getVar(u2)) {
-			l = work_stack[work_stack_tos++] = or_rec(getLow(u1), getLow(u2));
-			h = work_stack[work_stack_tos++] = or_rec(getHigh(u1), getHigh(u2));
+			l = nstack.push( or_rec(getLow(u1), getLow(u2)));
+			h = nstack.push( or_rec(getHigh(u1), getHigh(u2)));
 		} else { // v < getVar(u2)
-			l = work_stack[work_stack_tos++] = or_rec(getLow(u1), u2);
-			h = work_stack[work_stack_tos++] = or_rec(getHigh(u1), u2);
+			l = nstack.push( or_rec(getLow(u1), u2));
+			h = nstack.push( or_rec(getHigh(u1), u2));
 		}
 
 		if(l != h) l = mk(v,l,h);
 		op_cache.insert(hash, u1, u2, CACHE_OR, l);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return l;
 
 	}
@@ -519,10 +516,10 @@ public class BDD extends NodeTable {
 	 * @return u1 NOR u2
 	 */
 	public int nor(int u1, int u2) {
-		work_stack[work_stack_tos++] = u1;
-		work_stack[work_stack_tos++] = u2;
+		nstack.push( u1);
+		nstack.push( u2);
 		int ret = nor_rec(u1,u2);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return ret;
 
 	}
@@ -540,16 +537,16 @@ public class BDD extends NodeTable {
 		int hash = op_cache.hash_value;
 
 		if( v == getVar(u2)) {
-			l = work_stack[work_stack_tos++] = nor_rec(getLow(u1), getLow(u2));
-			h = work_stack[work_stack_tos++] = nor_rec(getHigh(u1), getHigh(u2));
+			l = nstack.push( nor_rec(getLow(u1), getLow(u2)));
+			h = nstack.push( nor_rec(getHigh(u1), getHigh(u2)));
 		} else { // v < getVar(u2)
-			l = work_stack[work_stack_tos++] = nor_rec(getLow(u1), u2);
-			h = work_stack[work_stack_tos++] = nor_rec(getHigh(u1), u2);
+			l = nstack.push( nor_rec(getLow(u1), u2));
+			h = nstack.push( nor_rec(getHigh(u1), u2));
 		}
 
 		if(l != h) l = mk(v,l,h);
 		op_cache.insert(hash, u1, u2, CACHE_NOR, l);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 
 		return l;
 	}
@@ -562,10 +559,10 @@ public class BDD extends NodeTable {
 	 * @return u1 XOR u2
 	 */
 	public int xor(int u1, int u2) {
-		work_stack[work_stack_tos++] = u1;
-		work_stack[work_stack_tos++] = u2;
+		nstack.push( u1);
+		nstack.push( u2);
 		int ret = xor_rec(u1,u2);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return ret;
 
 	}
@@ -586,16 +583,16 @@ public class BDD extends NodeTable {
 		int hash = op_cache.hash_value;
 
 		if( v == getVar(u2)) {
-			l = work_stack[work_stack_tos++] = xor_rec(getLow(u1), getLow(u2));
-			h = work_stack[work_stack_tos++] = xor_rec(getHigh(u1), getHigh(u2));
+			l = nstack.push( xor_rec(getLow(u1), getLow(u2)));
+			h = nstack.push( xor_rec(getHigh(u1), getHigh(u2)));
 		} else { // v < getVar(u2)
-			l = work_stack[work_stack_tos++] = xor_rec(getLow(u1), u2);
-			h = work_stack[work_stack_tos++] = xor_rec(getHigh(u1), u2);
+			l = nstack.push( xor_rec(getLow(u1), u2));
+			h = nstack.push( xor_rec(getHigh(u1), u2));
 		}
 
 		if(l != h) l = mk(v,l,h);
 		op_cache.insert(hash, u1, u2, CACHE_XOR, l);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return l;
 	}
 
@@ -606,10 +603,10 @@ public class BDD extends NodeTable {
 	 * @return (u1 <--> u2)
 	 */
 	public int biimp(int u1, int u2) {
-		work_stack[work_stack_tos++] = u1;
-		work_stack[work_stack_tos++] = u2;
+		nstack.push( u1);
+		nstack.push( u2);
 		int ret = biimp_rec(u1,u2);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return ret;
 	}
 
@@ -629,16 +626,16 @@ public class BDD extends NodeTable {
 		int hash = op_cache.hash_value;
 
 		if( v == getVar(u2)) {
-			l = work_stack[work_stack_tos++] = biimp_rec(getLow(u1), getLow(u2));
-			h = work_stack[work_stack_tos++] = biimp_rec(getHigh(u1), getHigh(u2));
+			l = nstack.push( biimp_rec(getLow(u1), getLow(u2)));
+			h = nstack.push( biimp_rec(getHigh(u1), getHigh(u2)));
 		} else { // v < getVar(u2)
-			l = work_stack[work_stack_tos++] = biimp_rec(getLow(u1), u2);
-			h = work_stack[work_stack_tos++] = biimp_rec(getHigh(u1), u2);
+			l = nstack.push( biimp_rec(getLow(u1), u2));
+			h = nstack.push( biimp_rec(getHigh(u1), u2));
 		}
 
 		if(l != h) l = mk(v,l,h);
 		op_cache.insert(hash, u1, u2, CACHE_BIIMP, l);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return l;
 	}
 
@@ -648,10 +645,10 @@ public class BDD extends NodeTable {
 	 * @return u1 -> u2
 	 */
 	public int imp(int u1, int u2) {
-		work_stack[work_stack_tos++] = u1;
-		work_stack[work_stack_tos++] = u2;
+		nstack.push( u1);
+		nstack.push( u2);
 		int ret = imp_rec(u1,u2);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return ret;
 
 	}
@@ -668,19 +665,19 @@ public class BDD extends NodeTable {
 
 		int l, h, v = getVar(u1);
 		if( getVar(u1) == getVar(u2)) {
-			l = work_stack[work_stack_tos++] = imp_rec(getLow(u1), getLow(u2));
-			h = work_stack[work_stack_tos++] = imp_rec(getHigh(u1), getHigh(u2));
+			l = nstack.push( imp_rec(getLow(u1), getLow(u2)));
+			h = nstack.push( imp_rec(getHigh(u1), getHigh(u2)));
 		} else if (/* (u2 == 0) || */ getVar(u1) < getVar(u2)) {
-			l = work_stack[work_stack_tos++] = imp_rec(getLow(u1), u2);
-			h = work_stack[work_stack_tos++] = imp_rec(getHigh(u1), u2);
+			l = nstack.push( imp_rec(getLow(u1), u2));
+			h = nstack.push( imp_rec(getHigh(u1), u2));
 		} else  {
-			l = work_stack[work_stack_tos++] = imp_rec(u1, getLow(u2));
-			h = work_stack[work_stack_tos++] = imp_rec(u1, getHigh(u2));
+			l = nstack.push( imp_rec(u1, getLow(u2)));
+			h = nstack.push( imp_rec(u1, getHigh(u2)));
 			v = getVar(u2);
 		}
 		if(l != h) l = mk(v,l,h);
 		op_cache.insert(hash, u1, u2, CACHE_IMP, l);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 
 		return l;
 	}
@@ -692,9 +689,9 @@ public class BDD extends NodeTable {
 	 */
 
 	public int not(int u1) {
-		work_stack[work_stack_tos++] = u1;
+		nstack.push( u1);
 		int ret = not_rec(u1);
-		work_stack_tos --;
+		nstack.pop();
 		return ret;
 	}
 
@@ -704,10 +701,10 @@ public class BDD extends NodeTable {
 		if( not_cache.lookup(bdd)) return not_cache.answer;
 		int hash = not_cache.hash_value;
 
-		int l = work_stack[work_stack_tos++] = not_rec(getLow(bdd));
-		int h = work_stack[work_stack_tos++] = not_rec(getHigh(bdd));
+		int l = nstack.push( not_rec(getLow(bdd)));
+		int h = nstack.push( not_rec(getHigh(bdd)));
 		if(l != h)  l = mk( getVar(bdd), l, h);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 
 		not_cache.insert(hash, bdd, l);
 		return l;
@@ -802,13 +799,13 @@ public class BDD extends NodeTable {
 
 
 
-		int a = work_stack[work_stack_tos++] = quant_rec( getLow(r) );
-		int b = work_stack[work_stack_tos++] = quant_rec( getHigh(r) );
+		int a = nstack.push( quant_rec( getLow(r) ));
+		int b = nstack.push( quant_rec( getHigh(r) ));
 
 		if(varset_vec[ getVar(r)]) {
 			res = quant_conj ? and_rec(a,b) : or_rec(a,b);
 		} else res = mk( getVar(r), a, b);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 
 		quant_cache.insert(entry, r, quant_cube, quant_id, res );
 		return res;
@@ -842,16 +839,16 @@ public class BDD extends NodeTable {
 				// "l" is our result, no need to compute more
 				// 0 AND x = 0, 1 OR x = 1
 			} else {
-				work_stack[work_stack_tos++] = l; // SAVE l
-				h = work_stack[work_stack_tos++] = quant_rec( h);
+				nstack.push( l); // SAVE l
+				h = nstack.push( quant_rec( h));
 				l = quant_conj ? and_rec(l,h) : or_rec(l,h);
-				work_stack_tos -= 2;
+				nstack.drop(2);
 			}
 		} else {
-			l = work_stack[work_stack_tos++] = quant_rec( getLow(bdd) );
-			int h = work_stack[work_stack_tos++] = quant_rec( getHigh(bdd) );
+			l = nstack.push( quant_rec( getLow(bdd) ));
+			int h = nstack.push( quant_rec( getHigh(bdd) ));
 			l = mk( var, l, h);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 		}
 
 		quant_cache.insert(hash, bdd, quant_cube, quant_id, l );
@@ -904,21 +901,21 @@ public class BDD extends NodeTable {
 		int l, h;
 
 		if(getVar(u1) == getVar(u2)) {
-			l = work_stack[work_stack_tos++] = relProd_rec( getLow(u1), getLow(u2));
-			h = work_stack[work_stack_tos++] = relProd_rec( getHigh(u1), getHigh(u2));
+			l = nstack.push( relProd_rec( getLow(u1), getLow(u2)));
+			h = nstack.push( relProd_rec( getHigh(u1), getHigh(u2)));
 			l = varset_vec[ getVar(u2) ] ? or_rec(l,h) : mk(getVar(u2), l, h);
 		} else if(getVar(u1) > getVar(u2))  {
-			l = work_stack[work_stack_tos++] = relProd_rec( u1, getLow(u2));
-			h = work_stack[work_stack_tos++] = relProd_rec( u1, getHigh(u2));
+			l = nstack.push( relProd_rec( u1, getLow(u2)));
+			h = nstack.push( relProd_rec( u1, getHigh(u2)));
 			l = varset_vec[ getVar(u2) ]  ? or_rec(l,h) : mk(getVar(u2), l, h);
 		} else /* (getVar(u1) < getVar(u2)) */ {
-			l = work_stack[work_stack_tos++] = relProd_rec( getLow(u1), u2);
-			h = work_stack[work_stack_tos++] = relProd_rec( getHigh(u1), u2);
+			l = nstack.push( relProd_rec( getLow(u1), u2));
+			h = nstack.push( relProd_rec( getHigh(u1), u2));
 			l = varset_vec[ getVar(u1) ]  ? or_rec(l,h) : mk(getVar(u1), l, h);
 		}
 
 		relprod_cache.insert(hash, u1, u2, quant_cube, l );
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return l;
 	}
 
@@ -940,17 +937,17 @@ public class BDD extends NodeTable {
 
 		int l, h;
 		if(getVar(u1) == getVar(u2)) {
-			l = work_stack[work_stack_tos++] = relProd_rec( getLow(u1), getLow(u2));
-			h = work_stack[work_stack_tos++] = relProd_rec( getHigh(u1), getHigh(u2));
+			l = nstack.push( relProd_rec( getLow(u1), getLow(u2)));
+			h = nstack.push( relProd_rec( getHigh(u1), getHigh(u2)));
 		} else /* (getVar(u1) > getVar(u2)) */ {
-			l = work_stack[work_stack_tos++] = relProd_rec( u1, getLow(u2));
-			h = work_stack[work_stack_tos++] = relProd_rec( u1, getHigh(u2));
+			l = nstack.push( relProd_rec( u1, getLow(u2)));
+			h = nstack.push( relProd_rec( u1, getHigh(u2)));
 		}
 
 		l = varset_vec[ getVar(u2) ]  ? or_rec(l,h) : mk(getVar(u2), l, h);
 
 		relprod_cache.insert(hash, u1, u2, quant_cube, l );
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return l;
 	}
 
@@ -991,8 +988,8 @@ public class BDD extends NodeTable {
 		}
 
 
-		work_stack[work_stack_tos++]  = l;
-		h = work_stack[work_stack_tos++] = relProd_rec( getHigh(u1), (v == getVar(u2)) ? getHigh(u2) : u2);
+		nstack.push(l);
+		h = nstack.push( relProd_rec( getHigh(u1), (v == getVar(u2)) ? getHigh(u2) : u2));
 
 		if(l != h) {
 			if(varset_vec[ v ]) l = or_rec(l, h);
@@ -1000,7 +997,7 @@ public class BDD extends NodeTable {
 		}
 
 		relprod_cache.insert(hash, u1, u2, quant_cube, l );
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return l;
 	}
 
@@ -1061,13 +1058,13 @@ public class BDD extends NodeTable {
 		if(replace_cache.lookup(bdd, perm_id)) return replace_cache.answer;
 		int hash = replace_cache.hash_value;
 
-		int l = work_stack[work_stack_tos++] = replace_rec( getLow(bdd) );
-		int h = work_stack[work_stack_tos++] = replace_rec( getHigh(bdd) );
+		int l = nstack.push( replace_rec( getLow(bdd)));
+		int h = nstack.push( replace_rec( getHigh(bdd)));
 
 		perm_var = perm_vec[ getVar(bdd) ];
 		l = mkAndOrder(l,h);
 
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		replace_cache.insert(hash, bdd, perm_id, l );
 		return l;
 	}
@@ -1087,18 +1084,18 @@ public class BDD extends NodeTable {
 
 		int x, y, v = vl;
 		if( vl == vh) {
-			x = work_stack[work_stack_tos++] = mkAndOrder( getLow(l), getLow(h) );
-			y = work_stack[work_stack_tos++] = mkAndOrder( getHigh(l), getHigh(h) );
+			x = nstack.push( mkAndOrder( getLow(l), getLow(h) ));
+			y = nstack.push( mkAndOrder( getHigh(l), getHigh(h) ));
 		} else if( vl < vh) {
-			x = work_stack[work_stack_tos++] = mkAndOrder( getLow(l), h );
-			y = work_stack[work_stack_tos++] = mkAndOrder( getHigh(l), h );
+			x = nstack.push( mkAndOrder( getLow(l), h ));
+			y = nstack.push( mkAndOrder( getHigh(l), h ));
 		} else { // if( getVar(l) > getVar(h))
-			x = work_stack[work_stack_tos++] = mkAndOrder( l, getLow(h) );
-			y = work_stack[work_stack_tos++] = mkAndOrder( l, getHigh(h) );
+			x = nstack.push( mkAndOrder( l, getLow(h) ));
+			y = nstack.push( mkAndOrder( l, getHigh(h) ));
 			v = vh;
 		}
 		x = mk( v, x, y);
-		work_stack_tos -= 2;
+		nstack.drop(2);
 		return x;
 	}
 
@@ -1129,10 +1126,10 @@ public class BDD extends NodeTable {
 		if(varset_vec[ getVar(u)] ) {
 				ret = restrict_rec( sign_vec[getVar(u)] ? getHigh(u) : getLow(u) );
 		} else {
-			int l = work_stack[work_stack_tos++] = restrict_rec( getLow(u) );
-			int h = work_stack[work_stack_tos++] = restrict_rec( getHigh(u) );
+			int l = nstack.push( restrict_rec( getLow(u) ));
+			int h = nstack.push( restrict_rec( getHigh(u) ));
 			ret = mk( getVar(u), l, h);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 		}
 
 		op_cache.insert(hash, u, restrict_careset, CACHE_RESTRICT, ret );
@@ -1153,33 +1150,33 @@ public class BDD extends NodeTable {
 		if(u <  2) return u;
 
 		if(d == 1) {
-			int l = work_stack[work_stack_tos++] = simplify(d, getLow(u) );
-			int h = work_stack[work_stack_tos++] = simplify(d, getHigh(u) );
+			int l = nstack.push( simplify(d, getLow(u) ));
+			int h = nstack.push( simplify(d, getHigh(u) ));
 			h = mk( getVar(u), l, h);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 			return h;
 		} else if( getVar(d) == getVar(u)) {
 			if(getLow(d)  == 0) return simplify(getHigh(d), getHigh(u));
 			if(getHigh(d) == 0) return simplify( getLow(d),  getLow(u));
 
-			int l = work_stack[work_stack_tos++] = simplify( getLow(d),  getLow(u) );
-			int h = work_stack[work_stack_tos++] = simplify(getHigh(d), getHigh(u) );
+			int l = nstack.push( simplify( getLow(d),  getLow(u) ));
+			int h = nstack.push( simplify(getHigh(d), getHigh(u) ));
 
 			h = mk( getVar(u), l, h);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 			return h;
 		} else if( getVar(d) < getVar(u)) {
-			int l = work_stack[work_stack_tos++] = simplify( getLow(d), u );
-			int h = work_stack[work_stack_tos++] = simplify(getHigh(d), u );
+			int l = nstack.push( simplify( getLow(d), u ));
+			int h = nstack.push( simplify(getHigh(d), u ));
 			h = mk( getVar(d), l, h);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 			return h;
 		} else {
-			int l = work_stack[work_stack_tos++] = simplify( d,  getLow(u) );
-			int h = work_stack[work_stack_tos++] = simplify( d, getHigh(u) );
+			int l = nstack.push( simplify( d,  getLow(u) ));
+			int h = nstack.push( simplify( d, getHigh(u) ));
 
 			h = mk( getVar(u), l, h);
-			work_stack_tos -= 2;
+			nstack.drop(2);
 			return h;
 		}
 	}
@@ -1268,14 +1265,14 @@ public class BDD extends NodeTable {
 		if( bdd < 2) return bdd;
 
 		if(getLow(bdd) == 0) {
-			int high = work_stack[work_stack_tos++] = oneSat(getHigh(bdd));
+			int high = nstack.push( oneSat(getHigh(bdd)));
 			int u = mk( getVar(bdd), 0, high);
-			work_stack_tos--;
+			nstack.pop();
 			return u;
 		} else {
-			int low= work_stack[work_stack_tos++] = oneSat(getLow(bdd));
+			int low= nstack.push( oneSat(getLow(bdd)));
 			int u = mk( getVar(bdd), low, 0);
-			work_stack_tos--;
+			nstack.pop();
 			return u;
 		}
 	}

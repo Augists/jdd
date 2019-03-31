@@ -13,14 +13,11 @@ import java.util.*;
  */
 
 public class NodeTableChecker {
-	
 	private NodeTable nt;
 
 	public NodeTableChecker(NodeTable nt) {
-		this.nt = nt;	
+		this.nt = nt;
 	}
-
-	
 
 	// --------------------------------------------------------------------
 
@@ -30,9 +27,7 @@ public class NodeTableChecker {
 
 	public void showTable(boolean complete) {
 		final int size = nt.debug_table_size();
-
 		JDDConsole.out.println(complete ? "Node-table (complete):" : "Node-table:");
-
 		for(int i = 0; i < size; i++) {
 			if(complete || nt.isValid(i))
 				show_tuple(i);
@@ -40,12 +35,12 @@ public class NodeTableChecker {
 	}
 
 	// --------------------------------------------------------------------
-	
+
 	/** check if one node is okay */
 	public String checkNode(int node, String msg) {
 		if(node < 2)
 			return null;
-		
+
 		if(!nt.isValid(node)) {
 			show_tuple(node);
 			return "Node " + node + " invalid " + ((msg != null) ? msg : "");
@@ -62,9 +57,9 @@ public class NodeTableChecker {
 	public String checkAllNodes(String msg) {
 		String err = null;
 
-		for(int i = 0; err != null && i < nt.debug_work_stack_size(); i++)
-			err = checkNode(nt.debug_work_stack_item(i), msg);
-			
+		for(int i = 0; err != null && i < nt.debug_nstack_size(); i++)
+			err = checkNode(nt.debug_nstack_item(i), msg);
+
 		for(int i = 0; err != null && i < nt.debug_table_size(); i++)
 			if( nt.isValid(i) && nt.getRefPlain(i) > 0 )
 				err = checkNode(i, msg);
@@ -77,9 +72,9 @@ public class NodeTableChecker {
 
 		// see if the number of free nodes is correct
 		int c = 2, b = 0;
-		for(int i = 2; i < table_size; i ++)	
-			if(nt.isValid(i) ) 
-				c++; 
+		for(int i = 2; i < table_size; i ++)
+			if(nt.isValid(i) )
+				c++;
 			else b++;
 
 		if(table_size - c != free_nodes_count)
@@ -95,11 +90,11 @@ public class NodeTableChecker {
 
 				int low = nt.getLow(i);
 				int high = nt.getHigh(i);
-				if( ( low > 1 && !nt.isValid(low)  ) || (high > 1 && !nt.isValid( high) )  ) {				
+				if( ( low > 1 && !nt.isValid(low)  ) || (high > 1 && !nt.isValid( high) )  ) {
 					show_tuple(i);
 					show_tuple(low);
 					show_tuple(high);
-					return "Children of " + i + " are not valid: " + low + "/" + high;					
+					return "Children of " + i + " are not valid: " + low + "/" + high;
 				}
 			}
 		}
@@ -114,7 +109,7 @@ public class NodeTableChecker {
 		for(int i = 0; i < table_size; i ++) {
 			if(!nt.isValid(i))
 				continue;
-			
+
 			int var = nt.getVar(i);
 			int low = nt.getLow(i);
 			int high = nt.getHigh(i);
@@ -127,7 +122,7 @@ public class NodeTableChecker {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

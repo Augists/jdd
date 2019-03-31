@@ -19,7 +19,7 @@ public class TestBDD {
 		// check deadnodes counter
 		int dum = jdd.and(v3,v2);
 		assertEquals(" no dead nodes at start", 0, jdd.dead_nodes );
-		
+
 		jdd.ref( dum );
 		assertEquals(" still no dead nodes", 0, jdd.dead_nodes);
 
@@ -117,7 +117,7 @@ public class TestBDD {
 		jdd.deref(no2);
 		jdd.deref(noeq);
 
-		assertEquals("workset stack should be empty", 0, jdd.work_stack_tos);
+		assertEquals("workset stack should be empty", 0, jdd.nstack.getTOS());
 
 		// nodeCount
 		assertEquals("nodeCount (1)", 0, jdd.nodeCount( 0));
@@ -254,10 +254,10 @@ public class TestBDD {
 		BDD jdd = new BDD(7);
 		int v1 = jdd.createVar();
 		int v2 = jdd.createVar();
-		int tmp = jdd.work_stack[jdd.work_stack_tos++] = jdd.and(v1,v2); // use one node...
+		int tmp = jdd.nstack.push(jdd.and(v1,v2)); // use one node...
 		jdd.gc();
 		assertTrue("intermediate node not garbage collected", jdd.isValid( tmp));
-		jdd.work_stack_tos --;
+		jdd.nstack.pop();
 		jdd.gc();
 		assertTrue("previously intermediate node garbage collected", !jdd.isValid( tmp));
 	}
