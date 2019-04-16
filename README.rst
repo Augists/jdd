@@ -21,7 +21,7 @@ To import JDD in maven::
     <dependency>
         <groupId>org.bitbucket.vahidi</groupId>
         <artifactId>JDD</artifactId>
-        <version>108</version>
+        <version>109</version>
     </dependency>
 
 
