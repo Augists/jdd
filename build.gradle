@@ -47,14 +47,14 @@ artifacts {
 // based on https://github.com/bintray/bintray-examples/blob/master/gradle-bintray-plugin-examples/configurations-example/build.gradle
 bintray {
 // add to gradle.properties:
-// sonatypeUsername=xxx
-// sonatypePassword=yyy
+// bintrayUser=xxx
+// bintrayApiKey=yyy
 	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
 	key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 	configurations = ['archives']
 	pkg {
 		repo = 'maven'
-		name = 'jdd'
+		name = 'org.bitbucket.vahidi:jdd'
 		licenses = ['ZLIB']
 		vcsUrl = 'https://bitbucket.org/vahidi/jdd'
 		version {
