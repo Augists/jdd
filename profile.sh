@@ -52,7 +52,7 @@ do
 
 
         *)
-            echo "Unkown target"
+            echo "Unknown target"
             exit 20
             ;;
    esac

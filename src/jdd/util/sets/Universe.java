@@ -6,12 +6,11 @@ package jdd.util.sets;
  * This is the generic interface for finite universe consisting of
  * a set of subdomain.
  *
- *
  * <p> This is a good representation for n-tupples in a discrete space.
  * The space is specified during construction with an int-vector of length n,
  * defining the number of elements in each subdomain.
  *
- * Each element in the space is represented by an int-vector of length n.
+ * <p>Each element in the space is represented by an int-vector of length n.
  *
  * @see Set
  * @see jdd.bdd.sets.BDDUniverse

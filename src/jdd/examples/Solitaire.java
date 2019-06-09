@@ -11,13 +11,13 @@ import jdd.util.*;
 
 This is the solitare.cxx example copied from BuDDy source distribution
 convert to Java and JDD:
-<br><br>
+<p>
 <b>Note:</b> you <u>can not</u> run this example with the default JVM parameters
 (8 million nodes would require at least 256 MB RAM)!!
-<br><br>
+<p>
 Jorn Lind-Nielsen Included this in BuDDy as  very good pedagogic example on sequential models.
 HOWEVER, bear in mind that this is a very INEFFICIENT way of solving a very simple problem.
-<br><br>
+<p>
 from BuDDy README:
 
 <i><pre>

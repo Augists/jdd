@@ -10,8 +10,6 @@ import jdd.bdd.*;
 /**
  * ZDD with graph algorithms from Coudert's paper.
  *
- * This class is not yet fully implemneted, due to lack of time :(
- *
  */
 
 public class ZDDGraph  extends ZDD  {
@@ -64,9 +62,7 @@ public class ZDDGraph  extends ZDD  {
 	// ------------------------------------------------------------------------
 
     /**
-     *
      * noSubset(F, C) = {f \in F | \lnot \exist c \in C. f \subseteq c }
-     *
      */
 
     public final int noSubset(int F, int C) {

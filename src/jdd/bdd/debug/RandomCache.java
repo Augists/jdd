@@ -9,13 +9,9 @@ import jdd.util.math.*;
 import java.util.*;
 
 /**
- * RandomCache.java:
+ * Random Cache, for development only.
  *
- * like SimpleCache but used changing random numbers instead of large prime number
- * to distribute the hash value. may help to avoid weird situation when cache
- * is stuck in a local minima (kinda of).
- *
- * do not use, <b>for JDD developers only!!</b>
+ * <p>This is a variation of SimpleCache with randomized parameters.
  */
 
 /* package */ public final class RandomCache extends CacheBase {

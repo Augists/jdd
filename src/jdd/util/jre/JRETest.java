@@ -8,10 +8,8 @@ import java.util.*;
 
 
 /**
- * <pre>
  * this files times some operations and checks if JRE implementation
- * faster the straight forward java code
- * </pre>
+ * is faster the plain java code
  */
 public class JRETest {
 

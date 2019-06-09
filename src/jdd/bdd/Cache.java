@@ -5,13 +5,9 @@ import jdd.util.math.*;
 
 import java.util.*;
 
-
-// DONE: add a ref-count for entries so we dont remove the most useds
-// DONE: let cache_size be a power of two and use bitwise AND instead of MOD
-
 /**
  * A cache :)
- * This is the old operation-cache used in JDD. it is being replaced with SimpleCache.java
+ * <p>This is the old operation-cache used in JDD. it is being replaced with SimpleCache.java
  * that is somehow simpler (in its implementation) and saves a byte or two in memory...
  */
 

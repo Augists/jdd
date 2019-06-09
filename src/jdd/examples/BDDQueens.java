@@ -4,16 +4,12 @@ import jdd.bdd.*;
 import jdd.util.*;
 import jdd.util.math.*; // for Digits
 
-/** <pre>
+/**
  * The N Queens on a N * N chessboard...
- * we have borrowed this from JavaBDD, to see how much of the [lack of] speed depends
+ * <p> we have borrowed this from JavaBDD, to see how much of the [lack of] speed depends
  * on Java...
  *
- * Note that this problem can be solved far faster with a more intelligent use of BDDs.
- *
- * [e-mail Arash and ask for an explanation, because none of us knows why he claims such a thing...]
- *
- * </pre>
+ * <p> Note that this problem can be solved far faster with a more intelligent use of BDDs.
  */
 
 public class BDDQueens extends BDD implements Queens

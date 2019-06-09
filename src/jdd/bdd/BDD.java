@@ -1,26 +1,12 @@
 
 // TODO:
 //
+// * BDDTrace does very bad on dme1.trace, it stopps at "and(lv_1870, lv_1877); % 17867" !!!
+//   (check it out in the jdd.internal.bug package)
 //
-// 1. examining the PCK-rate [procent cache entries kept after garbage collection] is
-//    much higher for op_cache [90 % for 10xQueens] than neg_cache [<3% same example].
-//    yhis must have to do with the loadrate [100% and 2.5% resp.], do we really need to
-//    test-and-invalidate caches when the load-factor is so low??
+// * possible bug: if the number of variables is changed, do we need to clear the sat_cache??
 //
-// 2. BDDTrace does very bad on dme1.trace, it stopps at "and(lv_1870, lv_1877); % 17867" !!!
-//     (check it out in the jdd.internal.bug package)
-//
-// 3. possible bug: if the number of variables is changed, do we need to clear the sat_cache??
-//
-// 4. replace and company look a bit sloow. try to optimize it
-//
-// 5. see if we can share some caches
-//
-// 6. why are not we partially cleaning the "relprod_cache"?
-//
-// 7. SAT is slow, find out why!
-//
-//
+// * why are not we partially cleaning the "relprod_cache"?
 
 package jdd.bdd;
 
@@ -32,13 +18,10 @@ import jdd.bdd.debug.IdealCache;
 import jdd.bdd.debug.VerifiedCache;
 
 /**
- * <b>BDD main class. All BDD code uses this</b> .<br>
- * This is not a "bdd tree" or "bdd node", but the Java objects that handles _ALL_ BDD operations
+ * BDD main class. All BDD code uses this.
+ * <p>This is not a "bdd tree" or "bdd node", but the Java objects that handles _ALL_ BDD operations
  * for a given universe.
  *
- * <br><b>For power-users only:</b><br>
- * 1. meta-developers writing their own decision-diagrams should override NodeTabe instead.<br>
- * 2. you can tweak BDD internal heuristics by changing the values in Configuration.<br>
  * @see NodeTable
  * @see jdd.util.Configuration
  */
@@ -221,8 +204,8 @@ public class BDD extends NodeTable {
 	// Note 2: i think we just modified cube(), so the statement above wont hold anymore
 
 	/**
-	 * create a bdd <i>cube</i>, which is simply a conjunction of a set of variables.<br><br>
-	 * given a list of variables <i>v[]</i>, it vill return <i>v[0] AND v[1] AND ...</i>.
+	 * create a bdd <i>cube</i>, which is simply a conjunction of a set of variables.
+	 * <p>given a list of variables <i>v[]</i>, it vill return <i>v[0] AND v[1] AND ...</i>.
 	 * this cube is then used in operations such as exists and forall
 	 * @see #exists
 	 * @see #forall
@@ -239,7 +222,6 @@ public class BDD extends NodeTable {
 	}
 
 	/**
-	 * <b>developement code</b>, do not use!<br>
 	 * a cube over a set of variables represented as a mintem. for example the string "11-1"
 	 * over four variables will return the cube <tt>v1 AND v3 AND v4</tt>.
 	 * @see #cube
@@ -256,8 +238,8 @@ public class BDD extends NodeTable {
 	}
 
 	/**
-	 * returns an unary minterm based on a vector of boolean assignments.<br>
-	 * for example <i>minterm([true, false]) </i> will return <i>NOT v1 and v2</i>.
+	 * returns an unary minterm based on a vector of boolean assignments.
+	 * <p>for example <i>minterm([true, false]) </i> will return <i>NOT v1 and v2</i>.
 	 * @see #minterm
 	 */
 	public final int minterm(boolean [] v) {
@@ -273,8 +255,7 @@ public class BDD extends NodeTable {
 
 
 	/**
-	 * <b>developement code</b>, do not use!<br>
-	 * returns a unary minterm based on a vector of boolean assignments.<br>
+	 * <p>returns a unary minterm based on a vector of boolean assignments.
 	 * for example <i>minterm([true, false]) </i> will return <i>NOT v1 and v2</i>.
 	 * @see #minterm
 	 */
@@ -294,9 +275,9 @@ public class BDD extends NodeTable {
 	// ---------------------------------------------------------------------
 
 	/**
-	 * this is the <tt>If-Then-Else</tt> BDD function.<br><br>
-	 * it can be used to (inefficiently) simulate and binary operation.<br>
-	 * (i think it is described in the "Long" paper).<br><br>
+	 * this is the <tt>If-Then-Else</tt> BDD function.
+	 * <p>it can be used to (inefficiently) simulate and binary operation.
+	 * (i think it is described in the "Long" paper).
 	 *
 	 * @return <tt>(f AND then_) OR (NOT f AND else_)</tt>
 	 */
@@ -315,7 +296,7 @@ public class BDD extends NodeTable {
 	}
 
 	/**
-	  * internal ITE recursive function.<br>
+	  * internal ITE recursive function.
 	  * note that are ITE terminal cases differs from BuDDy since our 0/1 constant variables differs
 	  */
 	private final int ite_rec(int f, int g, int h) {
@@ -744,11 +725,11 @@ public class BDD extends NodeTable {
 
 	// ---- [ quantification ] -------------------------------------------------------
 	/**
-	 * binary EXISTS, existential quantification.<br>
-	 * Let <i>exists(bdd, variable)</i> to be
+	 * binary EXISTS, existential quantification.
+	 * <p>Let <i>exists(bdd, variable)</i> to be
 	 * <i>bdd(variable) OR bdd(NOT variable)</i>. Then <i>exists(bdd, cube)</i>
-	 * does this for every (combination of) variable in the cube.<br><br>
-	 * Note that all references of <i>variable</i> and the variables in <i>cube</i>
+	 * does this for every (combination of) variable in the cube.
+	 * <p>Note that all references of <i>variable</i> and the variables in <i>cube</i>
 	 * will be removed from the resulting bdd.
 	 *
 	 * @see #forall
@@ -766,11 +747,11 @@ public class BDD extends NodeTable {
 	}
 	// ----------------------------------------------------------------
 	/**
-	 * binary FOR-ALL, universal quantification.<br>
-	 * Let <i>forall(bdd, variable)</i> to be
+	 * binary FOR-ALL, universal quantification.
+	 * <p>Let <i>forall(bdd, variable)</i> to be
 	 * <i>bdd(variable) AND bdd(NOT variable)</i>. Then <i>foral(bdd, cube)</i>
-	 * does this for every (combination of) variable in the cube.<br><br>
-	 * Note that all references of <i>variable</i> and the variables in <i>cube</i>
+	 * does this for every (combination of) variable in the cube.
+	 * <p>Note that all references of <i>variable</i> and the variables in <i>cube</i>
 	 * will be removed from the resulting bdd.
 	 *
 	 * @see #exists
@@ -857,11 +838,10 @@ public class BDD extends NodeTable {
 
 	// ----[ relational product ] ------------------------------------
 	/**
-	 * This is the relational-product of <i>Clarke et al.</i>.<br>
-	 * It combines a conjunction and existential quantification that is often
-	 * seen in image computation:<br>
-	 * <i>EXISTS c. (u1 AND u2)</i><br>
-	 * <br>
+	 * This is the relational-product of <i>Clarke et al.</i>.
+	 *
+	 * <p>It combines a conjunction and existential quantification that is often
+	 * seen in image computation.
 	 * Use this operation for better runtime performance!
 	 */
 	public int relProd(int u1, int u2, int c) {
@@ -953,15 +933,8 @@ public class BDD extends NodeTable {
 
 
 	/** 3. internal recursive function for relProd: this versions is optimized and made unreadable :( */
-	// XXX: there is a bug in here somewehere makeing the algorithm to not terminate
-	//      * we can re-produce the bug with code in the jdd.internal.bugs package
-	//      * the line with and_rec seems never to get called in this particular example
-	//         (NOTE: this is ok, since the very last variable is quantified, so we wont ever end at and_rec())
-	//      * we know that this is not a faulty cache problem (but relprod_cache hitrate is low, ~ 25 %)
-	//      * we dont think this has todo with quant_rec and its cache (??)
-	//      * it has nothing (?) to do with Yangs optimization, since the unoptimized versions has the same problem (see above)
-
-
+	// XXX: there was very hard-to-reproduce a bug in here somewhere but
+	//      re-writing work stack seems to have fixed that.
 	private final int relProd_rec(int u1, int u2) {
 		if(u1 == 0 || u2 == 0) return 0;
 		if(u1 == u2 || u2 == 1) return quant_rec(u1);
@@ -1006,10 +979,10 @@ public class BDD extends NodeTable {
 	private int perm_last, perm_var, perm_id;
 
 	/**
-	 * create a Permutation vector for a given variable permutation.<br>
-	 * A permutation is used by <tt>replace</tt> to re-label nodes in a BDD.<br>
-	 * <br>
-	 * <b>NOTE:</b> the from and to-cubes must not overlap!
+	 * create a Permutation vector for a given variable permutation.
+	 * <p>A permutation is used by <tt>replace</tt> to re-label nodes in a BDD.
+	 *
+	 * <p><b>NOTE:</b> the from and to-cubes must not overlap!
 	 * @see Permutation
 	 * @see #replace
 	 */
@@ -1048,7 +1021,7 @@ public class BDD extends NodeTable {
 	}
 
 	/**
-	 * recusrive part of replace.
+	 * recursive part of replace.
 	 * <p> uses the variables perm_vec, perm_id and perm_last and sets perm_var
 	 */
 	private final int replace_rec(int bdd) {
@@ -1138,8 +1111,8 @@ public class BDD extends NodeTable {
 
 	// ----[ simplify ] -----------------------------
 	/**
-	 * The BDD simplification operation. Work like the restrict operation.<br><br>.
-	 * Check out Andersens BDD lecture notes for detailed information on this one.
+	 * The BDD simplification operation. Work like the restrict operation.
+	 * <p>Check out Andersens BDD lecture notes for detailed information on this one.
 	 *
 	 * XXX: we have no cache for it yet!
 	 *
@@ -1199,7 +1172,7 @@ public class BDD extends NodeTable {
 	 *
 	 * <p>
 	 * Important note:
-	 * this works becuase getVar() returns "numbers of variables plus one" for the
+	 * this works because getVar() returns "numbers of variables plus one" for the
 	 * terminal nodes!
 	 */
 	public double satCount(int bdd) {
@@ -1277,10 +1250,10 @@ public class BDD extends NodeTable {
 		}
 	}
 	// ---- [oneSat, vector version] -----------------------------------
-	/**  <pre>
+	/**
 	 * oneSat(bdd, buffer) returns an int vector
 	 * x where x[i] is 0/1 or -1 for neg cofactor/pos cofactor and dont care
-	 * if buffer is null, a new vector is created otherwise  buffer is used an returned </pre>
+	 * <p>if buffer is null, a new vector is created otherwise  buffer is used an returned
 	 */
 	public int [] oneSat(int bdd, int [] buffer) {
 		if(buffer == null) buffer = new int[num_vars];
@@ -1304,9 +1277,9 @@ public class BDD extends NodeTable {
 		}
 	}
 	// ---- [ support ] ---------------------------------------------
-	/** <pre>
+	/**
 	 * returns the support set of a variable, that is a cube C where each of its variables
-	 * are used somewhere in the ibpu bdd.</pre>
+	 * are used somewhere in the ibpu bdd.
 	 */
 	public int support(int bdd) {
 		Array.set(support_buffer, false);
@@ -1331,7 +1304,7 @@ public class BDD extends NodeTable {
 	/**
 	 * returns true if the given minterm is a included in the bdd.
 	 *
-	 * <b>Note:</b> This method is far far more efficient than computing the "minterm" as BDD,
+	 * <p><b>Note:</b> This method is far far more efficient than computing the "minterm" as BDD,
 	 * then OR it to "bdd" and see if the result is not equal to "bdd"!
 	 */
 	public boolean member(int bdd, boolean [] minterm ) {
@@ -1343,8 +1316,8 @@ public class BDD extends NodeTable {
 
 	// ---------------------- common BDD operation shortcuts ----------------------
 	/**
-	 * the operation bdd1 |= bdd2;  is equal to bdd1 = orTo(bdd1, bdd2);<br>
-	 * this operation also handles the ref-counting
+	 * the operation bdd1 |= bdd2;  is equal to bdd1 = orTo(bdd1, bdd2);
+	 * <p>this operation also handles the ref-counting
 	 */
 	public int orTo(int bdd1, int bdd2) {
 		int tmp = ref( or(bdd1, bdd2) );
@@ -1353,8 +1326,8 @@ public class BDD extends NodeTable {
 	}
 
 	/**
-	 * the operation bdd1 &= bdd2;  is equal to bdd1 = andTo(bdd1, bdd2);<br>
-	 * this operation also handles the ref-counting
+	 * the operation bdd1 &= bdd2;  is equal to bdd1 = andTo(bdd1, bdd2);
+	 * <p>this operation also handles the ref-counting
 	 */
 	public int andTo(int bdd1, int bdd2) {
 		int tmp = ref( and(bdd1, bdd2) );

@@ -5,7 +5,9 @@ import jdd.bdd.*;
 import jdd.util.*;
 import jdd.util.sets.*;
 
-/** BDD representation of a set (of a product of few small subsets) */
+/**
+ * BDD representation of a set (of a product of few small subsets)
+ */
 
 public class BDDSet implements Set {
 	private BDDUniverse universe;

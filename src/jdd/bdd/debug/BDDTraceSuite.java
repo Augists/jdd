@@ -9,12 +9,9 @@ import java.io.*;
 import java.util.zip.*;
 
 /**
- * <pre>
  * This class opens and runs a suite of BDD traces from a zip file.
- * A trace file is assumed to have the '.trace' posfix. Any file with the 'README' posfix
+ * <p>A trace file is assumed to have the '.trace' posfix. Any file with the 'README' posfix
  * is assumed to be an information file and is dumped to stdout.
- *
- * </pre>
  *
  */
 

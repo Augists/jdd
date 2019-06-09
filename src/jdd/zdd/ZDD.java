@@ -8,9 +8,8 @@ import jdd.bdd.debug.*;
 
 import java.util.*;
 
-
 /**
- * Base implementation for Zero-Supressed Binary Decision Diagrams (Z-BDDs).
+ * Base implementation for Zero-Suppressed Binary Decision Diagrams (Z-BDDs).
  * Z-BDDs are a special type of BDDs that are more suited for sparse sets.
  * For example, if you are working with a set that is most of the time empty,
  * you might want to use Z-BDDs instead of BDDs.
@@ -27,9 +26,8 @@ import java.util.*;
 // Zero-suppressed BDDs use INVERSE variable order: v_last at top, v_0 at
 //      bottom just above 0 and 1.
 //
-//	  To make implementaion easier,
+//	  To make implementation easier,
 //	  v_0 has t_var of 0 while 0 and 1 are assigned t_var of -1.
-
 
 public class ZDD extends NodeTable  {
 	private static final int CACHE_SUBSET0 = 0, CACHE_SUBSET1 = 1, CACHE_CHANGE = 2,
@@ -94,7 +92,7 @@ public class ZDD extends NodeTable  {
 		unary_cache.free_or_grow(this);
 	}
 
-	/** Zero-supressed MK operator */
+	/** Zero-suppressed MK operator */
 	protected final int mk(int i, int l, int h) {
 		if(h == 0) return l; /* ZDD node elimination */
 		return add(i,l,h);
@@ -283,7 +281,7 @@ public class ZDD extends NodeTable  {
 		if(getVar(p) > getVar(q)) return union(q,p);
 		if(p == 0) return q;
 		if(q == 0 || q == p) return p;
-		// NOT USEFULL HERE: if(p == 1) 	return insert_base(q);
+		// NOT USEFUL HERE: if(p == 1) 	return insert_base(q);
 
 
 		if(binary_cache.lookup(p, q, CACHE_UNION)) return binary_cache.answer;

@@ -8,7 +8,7 @@ import jdd.util.sets.*;
 
 public class TestBDDSet {
 	final float EPSILON = 0.0001f;
-	
+
 	@Test public void testAll() {
 		final int [] dum = { 3, 4, 5 , 2};
 		BDDUniverse u = new BDDUniverse(dum);

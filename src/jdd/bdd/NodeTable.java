@@ -13,13 +13,12 @@ import java.util.*;
  *
  */
 
-// the nodes are unique, which is guranteed by a double linked list hash-table-alike structure.
-// this structure is very similiar to the double-hashed list in BuDDy.
+// the nodes are unique, which is guaranteed by a double linked list hash-table-alike structure.
+// this structure is very similar to the double-hashed list in BuDDy.
 //
 // we divide the node list and the linked-list into to parts (t_nodes, t_list).
 // this gives a bad cache performance (CPU cache, not BDD operation caches),
 // but it might help to keep the memory peek down a little bit.
-
 
 public class NodeTable {
 
@@ -301,7 +300,7 @@ public class NodeTable {
 		// 3.c) clear the rest.
 		clearPrev(0, old_size); // XXX: how do we embed this in the loop below??
 
-		// 3.d) now seperate the old and new invalid nodes
+		// 3.d) now separate the old and new invalid nodes
 		for(int i = old_size; i > 2; ) {
 			i--;
 			if(isValid(i)) {
@@ -321,7 +320,7 @@ public class NodeTable {
 		// 5. force all caches to be wiped out!
 		signal_removed();
 
-		// 6. and statictics...
+		// 6. and statistics...
 		time = System.currentTimeMillis() - time;
 		stat_grow_time += time;
 
@@ -595,7 +594,7 @@ public class NodeTable {
 	private final void mark_tree_stack(int bdd) {
 		// ok, it works like this:
 		// we dont want to do recursive calls in such a tight functions so we do an
-		// artifical recursive call by haveing out own stack. the stack is "mstack"
+		// artificial recursive call by having out own stack. the stack is "mstack"
 		// and it is important to have the right size. this is why the user must call
 		// recursive_mark_tree() as soon as the tree depth changes
 

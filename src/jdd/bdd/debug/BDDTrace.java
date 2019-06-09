@@ -9,24 +9,18 @@ import java.io.*;
 import java.util.*;
 
 /**
- * This is a simple BDD trace driver<br>
- * It reads trace files a subset of Bwolen Yang's "BDD Trace Driver" file format.<br>
- * It is used to verify the integrity and efficiency of a BDD package against another without<br>
+ * This is a simple BDD trace driver.
+ * <p> It reads trace files a subset of Bwolen Yang's "BDD Trace Driver" file format.
+ * It is used to verify the integrity and efficiency of a BDD package against another without
  * creating a whole new application for it...
  *
- * Note: we have added the following commands<br>
- * <b>print_bdd(variable);</b> print the BDD strcutre in the java console.<br>
- * <b>show_bdd(variable);</b> save an image for this BDD in current directory (default is variable.png)<br>
- * <b>save_bdd(variable);</b> save this BDD in the current directory.<br>
- * <br> If you are using an applet, only <tt>print_bdd</tt> will work.
- *<br><br>
- * This is a very quick-and-dirty implementation, so don't expect anything stable :(
+ * <p>Note: we have added the following commands:<br>
+ * <b>print_bdd(variable)</b> print the BDD strcutre in the java console.
+ * <b>show_bdd(variable)</b> save an image for this BDD in current directory (default is variable.png).
+ * <b>save_bdd(variable)</b> save this BDD in the current directory.
+ * <p> If you are using an applet, only <tt>print_bdd</tt> will work.
  *<br>
  */
-
-// XXX: switch from Vector to LinkedList
-// XXX: todo: the non-binary version of operators need an scheduler!!
-// XXX: showcode() creates JavaBDD code, convert it to CUDD or BuDDy code ...
 
 public class BDDTrace {
 	class TracedNames extends BDDNames {
@@ -171,10 +165,10 @@ public class BDDTrace {
 				int size2 = node_count(ret);
 				if(size != size2) {
 					JDDConsole.out.println("\n*************************************************************************");
-					JDDConsole.out.println("Size comparision failed after " + op + " ( wanted " + size + ", got " + size2 + ")");
+					JDDConsole.out.println("Size comparison failed after " + op + " ( wanted " + size + ", got " + size2 + ")");
 					show();
 					JDDConsole.out.println("\n");
-					throw new IOException("Size comparision failed");
+					throw new IOException("Size comparison failed");
 
 				}
 			}

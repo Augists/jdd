@@ -9,7 +9,7 @@ import jdd.bdd.*;
  * ZDD operations for CSP problems.
  * based on "On the properties of combination set operations", by Okuno, Minato and Isozaki.
  *
- * I am also thankfull to Paolo Bonzini who suggested
+ * <p>I am also thankfull to Paolo Bonzini who suggested
  * replaceing the slow Exclude() with noSubset() :)
  */
 public class ZDDCSP  extends ZDD2  {

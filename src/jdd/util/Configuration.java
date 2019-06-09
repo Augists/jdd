@@ -9,7 +9,7 @@ package jdd.util;
 
 public class Configuration {
 
-	// ---- [ dont change the defualt values here ] --------------------------------
+	// ---- [ dont change the default values here ] --------------------------------
 
 	/**
 	 * number of garbage collection we will wait before giving up an unused partial cache.
@@ -131,7 +131,7 @@ public class Configuration {
     public final static int ZDD_GRAPH_CACHE_DIV = 2; /** see #zddGraphCacheDiv */
 
 
-	
+
 
 	/** how small the unary (subset/change)  cache is, range: 2-8 */
 	public static int zddUnaryCacheDiv = ZDD_UNARY_CACHE_DIV;
@@ -144,12 +144,12 @@ public class Configuration {
 
 	/** how small the CSP (restrict/exclude) cache is, range: 2-8 */
 	public static int zddCSPCacheDiv = ZDD_CSP_CACHE_DIV;
-    
-    
+
+
 	/** how small the Graph cache is, range: 2-8 */
 	public static int zddGraphCacheDiv = ZDD_GRAPH_CACHE_DIV;
-    
-    
+
+
 
 
 	// --------- NodeTable.java

@@ -9,7 +9,7 @@ import jdd.util.sets.*;
 
 /**
  * Enumerator for the BDD-sets.
- * <p> Notice the very important <tt>free</tt> function !
+ * <p> Notice the very important <tt>free</tt> function!
  */
 public class BDDSetEnumeration implements SetEnumeration {
 	private BDDUniverse universe;

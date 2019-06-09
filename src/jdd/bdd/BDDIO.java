@@ -12,22 +12,20 @@ import java.io.*;
 
 /**
  * BDDIO is used to save and load binary decision diagrams independent of the BDD managers.
- *<br><br>
- * The format used is the following:
+ *
+ * <p>The format used is the following:
  *
  * <pre>
  * MAGIC STRING: "FORMAT:JDD.BDD"
  * SIZE, ID
  * ID VAR LOW HIGH (repeated SIZE times)
  * </pre>
- *<br>
- * where each element (besides magic) is a little-endian 32 bit number.
- *<br>
- * the first ID represents the saved BDD while the rest build the
+ *
+ * <p>where each element (besides magic) is a little-endian 32 bit number.
+ *
+ * <p>the first ID represents the saved BDD while the rest build the
  * involved table entries which the top BDD depends on.
  * To save space, the file is automatically compressed with "gzip".
- *
- *
  */
 
 public class BDDIO {
@@ -101,20 +99,17 @@ public class BDDIO {
 		return ret;
 	}
 
-
-
 	// ----- [ SAVE BDDs ]---------------------------------------------
 	/**
 	 * Save a BDD to a file using the native JDD format.
-	 * <br><br>
-	 * This format is preferred over the BuDDy format since
+	 *
+	 * <p>This format is preferred over the BuDDy format since
 	 * (1) you can load it back into JDD
-	 * and (2) it takes less space on your harddrive since it is compressed.
+	 * and (2) it takes less space on your hard drive since it is compressed.
 	 */
 	public static void save(BDD manager, int bdd, String filename)
 		throws IOException
 	{
-
 		OutputStream fos = new FileOutputStream(filename);
 		BDDIO.os = new GZIPOutputStream(fos);
 		try {
@@ -167,8 +162,8 @@ public class BDDIO {
 	/**
 	 * Load a BDD (in the native JDD format) from a file.
 	 * The file must have been created with the BDDIO.save() function.
-	 * <br><br>
-	 * <b>Important note:</b> you must ref-count this BDD by yourself.
+	 *
+	 * <p><b>Important note:</b> you must ref-count this BDD by yourself.
 	 * The returned BDD will have refount 0, and may (will) be garbage collected
 	 * if you don't refcount it right away!
 	 *
@@ -257,17 +252,15 @@ public class BDDIO {
 
 	// ----- [ SAVE BuDDy BDDs ]---------------------------------------------
 	/**
-	 * Save a BDD to a file. use the format BuDDy uses.<br>
-	 * If you save a BDD in this format, you <u>can not</u> load it into JDD again.
+	 * Save a BDD to a file. use the format BuDDy uses.
+	 * <p>If you save a BDD in this format, you <u>can not</u> load it into JDD again.
 	 * You can however load the saved BDD in BuDDy using the function<br>
 	 * <tt>int      bdd_fnload(char *, BDD *);</tt>
 	 *
-	 * <br><br>
-	 * For the sake of clearness, we suggest that you the *.bdd extension for the
+	 * <p>For the sake of clearness, we suggest that you the *.bdd extension for the
 	 * JDD format and the *.buddy extension for the BuDDy format.
-	 * <br><br>
 	 *
-	 * The BuDDy format is best bescribed by this comment from bddio.c in buddy:
+	 * <p>The BuDDy format is best bescribed by this comment from bddio.c in buddy:
 	 * <pre>
 	 * Loads a BDD from a file into the BDD pointed to by <tt>r</tt>.
 	 * The file can either be the file <tt>ifile</tt> which must be opened
@@ -289,8 +282,7 @@ public class BDDIO {
 	 * high node must be defined before it is mentioned.
 	 * </pre>
 	 *
-	 * <br><br>
-	 * <b>NOTE: this method is completely untested!</b>
+	 * <p><b>NOTE: this method is completely untested!</b>
    */
 	public static void saveBuDDy(BDD manager, int bdd, String filename)
 			throws IOException

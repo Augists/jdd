@@ -9,10 +9,8 @@ import java.util.*;
 
 
 /**
- * This cache verifis the SimpleCache on the fly by testing it against an ideal cache.
- *
- * it is used by the developers to find bugs in the complex SimpleCache/OptimizedCache
- * classes. should not be used by users
+ * This cache verifies the SimpleCache on the fly by testing it against an ideal cache.
+  * For development only.
  *
  * @see IdealCache
  * @see SimpleCache

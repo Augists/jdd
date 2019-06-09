@@ -8,9 +8,7 @@ import java.util.*;
 
 
 /**
- * <pre>
  * print some info about the JRE...
- * </pre>
  */
 public class JREInfo {
 	public static Runtime rt = Runtime.getRuntime();
@@ -24,7 +22,7 @@ public class JREInfo {
 	/** print out some info about the system and JVM etc. */
 	public static void show() {
 		Properties prop = System.getProperties();
-            
+
 		JDDConsole.out.println("Using JDD version " + jdd.Version.VERSION +" on " + (new Date()).toString() + "\n");
 		JDDConsole.out.print("Using " + prop.getProperty("java.vendor") + " JRE " + prop.getProperty("java.version"));
 		String jit = prop.getProperty("java.compiler");

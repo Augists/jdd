@@ -69,7 +69,7 @@ public class TestBDD {
 		jdd.deref(res0);
 
 
-		// and, or, not [MUST REF INTERMEDIATE STUFF OR THEY WILL DISSAPPEAR DURING GC]
+		// and, or, not [MUST REF INTERMEDIATE STUFF OR THEY WILL DISAPPEAR DURING GC]
 		int n1 = jdd.ref(jdd.and(v1,v2));
 		int orn12 = jdd.ref( jdd.or(nv1, nv2));
 		int n2 = jdd.ref( jdd.not(orn12) );
@@ -100,7 +100,7 @@ public class TestBDD {
 		jdd.deref(a1);
 		int na2 = jdd.ref( jdd.nand( v1, v2) );
 		int naeq = jdd.ref( jdd.biimp(na1, na2) );
-		assertTrue("NAND consitency", na1 ==  na2);
+		assertTrue("NAND consistency", na1 ==  na2);
 		jdd.deref(na1);
 		jdd.deref(na2);
 		jdd.deref(naeq);
@@ -112,7 +112,7 @@ public class TestBDD {
 		jdd.deref(o1);
 		int no2= jdd.ref( jdd.nor( v1, v2) );
 		int noeq = jdd.ref( jdd.biimp(no1, no2) );
-		assertTrue("NOR consitency", no2 ==  no1);
+		assertTrue("NOR consistency", no2 ==  no1);
 		jdd.deref(no1);
 		jdd.deref(no2);
 		jdd.deref(noeq);

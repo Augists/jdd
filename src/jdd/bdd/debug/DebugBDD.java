@@ -5,13 +5,13 @@ import jdd.bdd.*;
 import jdd.util.*;
 
 /**
-The only function of the class is to verify the integrity of your BDD app by doing extensive
-tests on every BDD operation. Not to be used in production (slow!!)
-*/
+ * The only function of the class is to verify the integrity of your BDD app by doing extensive
+ * tests on every BDD operation. Not to be used in production (it is slow).
+ */
 public class DebugBDD extends BDD {
 	private NodeTableChecker ntc;
 
-	public DebugBDD(int nodesize) { 
+	public DebugBDD(int nodesize) {
 		this(nodesize, Configuration.DEFAULT_BDD_CACHE_SIZE);
 	}
 

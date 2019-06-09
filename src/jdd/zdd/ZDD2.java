@@ -6,7 +6,7 @@ import jdd.util.*;
 import jdd.bdd.*;
 
 /**
- * ZDD2 extends ZDD with some additional operations for unate cube set algerba
+ * ZDD2 extends ZDD with some additional operations for unate cube set algebra
  * @see ZDD
  */
 public class ZDD2  extends ZDD  {
@@ -88,44 +88,6 @@ public class ZDD2  extends ZDD  {
 		unate_cache.insert(hash, p, q, CACHE_MUL, ret);
 		return ret;
 	}
-    /*
-	public final int mul_old(int p, int q) {
-		if(q == 0 || p == 0) return 0;
-		if(q == 1) return p;
-		if(getVar(p) < getVar(q)) return mul(q,p);
-
-		if(unate_cache.lookup(p, q, CACHE_MUL)) return unate_cache.answer;
-		int hash = unate_cache.hash_value;
-
-
-		int tmp1 = 0, tmp2 = 0, v = getVar(p);
-		int pl = nstack.push( subset0( p, v));
-		int ph = nstack.push( subset1( p, v));
-
-		if(v == getVar(q)) { // ql = getVar(q), qh = getHigh(q)
-			tmp1 = nstack.push( mul(ph, getHigh(q)));
-			tmp2 = nstack.push( mul(ph, getLow(q)));
-			tmp1 = union(tmp1, tmp2);		// p1*q1 + p1*q0
-			nstack.drop(2);
-			nstack.push( tmp1);
-
-			tmp2 = nstack.push( mul(pl, getHigh(q)));
-			tmp1 = union(tmp1, tmp2); // p1*q1 + p1*q0 + p0*q1
-			nstack.drop(2);
-			nstack.push( tmp1);
-			tmp2 = nstack.push( mul(pl, getLow(q))); // p0*q0
-		} else { // ql = q, qh = 0  == >mul(ph,qh) =  0
-			tmp1 = nstack.push( mul(ph, q)); // p1 * q0
-			tmp2 = nstack.push( mul(pl, q)); // p0 * q0
-		}
-
-		tmp1 = mk(v, tmp2, tmp1); // v(p1*q1 + p1*q0 + p0*q1) + p0*q1
-		nstack.drop(2 + 2);
-
-		unate_cache.insert(hash, p, q, CACHE_MUL, tmp1);
-		return tmp1;
-       }
-     */
 
 	// ----------------------------------------------------------------
 	/**
@@ -166,34 +128,6 @@ public class ZDD2  extends ZDD  {
         unate_cache.insert(hash, p, q, CACHE_DIV, ret);
 		return ret;
     }
-/*
-	public final int div_old(int p, int q) {
-		if(q == 1) return p;
-		if(p < 2) return 0;
-		if(p == q) return p;
-
-		if(unate_cache.lookup(p, q, CACHE_DIV)) return unate_cache.answer;
-		int hash = unate_cache.hash_value;
-
-		int v = getVar(q);
-		int ql = nstack.push( subset0( q, v));
-		int qh = nstack.push( subset1( q, v));
-		int pl = nstack.push( subset0( p, v));
-		int ph = nstack.push( subset1( p, v));
-
-		int tmp = div(ph, qh);
-		if(tmp != 0 && ql != 0) {
-			nstack.push( tmp);
-			int tmp2 = nstack.push( div(pl, ql));
-			tmp = intersect(tmp, tmp2);
-			nstack.drop(2);
-		}
-		nstack.drop(4);
-
-		unate_cache.insert(hash, p, q, CACHE_DIV, tmp);
-		return tmp;
-   }
- */
 
 	/** if q contains a single literal, this equals subset0(p, getVar(q)) */
 	public final int mod(int p, int q) { // P % Q = P - Q * (P / Q)

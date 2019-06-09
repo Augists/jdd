@@ -11,7 +11,9 @@ import jdd.util.sets.*;
 import jdd.util.math.*;
 
 
-/**  this class is class accessible only in package */
+/**
+ * SubDomain represents a dimension in the Universe. This class is class accessible only in package
+ */
 
 /* package */ class SubDomain {
 	private BDDUniverse universe;
@@ -61,9 +63,9 @@ import jdd.util.math.*;
  * Universe class for the BDD sets
  * <p> insert() and member() functions are memory but not time efficient.
  * The opposite of the mixed-radix package.
- * <p>The set operators (unions, diff, etc) are however very efficient (BDDs, remember?).
- *
+ * <p>The set operators (unions, diff, etc) are however very efficient (standard BDD operations).
  */
+
 public class BDDUniverse extends BDD implements Universe {
 	private int [] int_subdomains, int_bits;
 	private double domainsize;

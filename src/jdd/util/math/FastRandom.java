@@ -5,8 +5,6 @@ import jdd.util.*;
 
 /**
  * A class for fast random number generation.
- *
- *
  * <p> Currently, we only have an implementation of the  Mersenne Twister PRNG.
  */
 public class FastRandom {

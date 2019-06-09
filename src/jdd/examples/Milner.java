@@ -7,7 +7,7 @@ import jdd.util.*;
 
 /**
  * BDD simulation of N milner cyclers.
- * This program computes the reachable state subset of the Milner scheduler.
+ * <p>This program computes the reachable state subset of the Milner scheduler.
  * Check out Andersens lecture notes, where it is explained in detail.
  * <p>
  * The original code from BuDDy also includes a deadlock detection part which

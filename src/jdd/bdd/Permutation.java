@@ -6,14 +6,14 @@ import jdd.util.math.*;
 
 
 /**
- * BDD permutation, a function p:N -> N
+ * BDD permutation, a function p: N -> N
  * @see BDD
  */
 
 // a permutations is identified with its unique ID.
-// the ID is used in cacheing  so it is important the equal permutations are given the same ID.
+// the ID is used in caching  so it is important the equal permutations are given the same ID.
 // therefore, we keep track of the permutations by saving (from,to) and its hash for fatser
-// comparision
+// comparison
 
 public class Permutation {
 	private static int id_c = 0;

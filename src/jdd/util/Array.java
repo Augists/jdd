@@ -83,7 +83,7 @@ public final class Array {
 	 * unrolled code for copying in an array of integers where the source and destination
 	 * may/may not overlap without creating any problems
 	 */
-	private static final void fast_copy_foward( int [] y, int o1, int []x, int o2, int len) {
+	private static final void fast_copy_forward( int [] y, int o1, int []x, int o2, int len) {
 		for(int i = 0; i < len; i++)
 			x[o2+i] = y[o1+i];
 	}
@@ -93,7 +93,7 @@ public final class Array {
 	 * unrolled code for copying in an array of short integers, where the source and destination
 	 * may/may not overlap without creating any problems
 	 */
-	private static final void fast_copy_foward( short [] y, int o1, short []x, int o2, int len) {
+	private static final void fast_copy_forward( short [] y, int o1, short []x, int o2, int len) {
 		for(int i = 0; i < len; i++)
 			x[o2+i] = y[o1+i];
 	}
@@ -274,5 +274,5 @@ public final class Array {
 	public static final boolean equals(int []v1, int []v2, int len) {
 			for(int i = 0; i < len; i++) if(v1[i] != v2[i]) return false;
 			return true;
-	}	
+	}
 }

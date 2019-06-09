@@ -6,13 +6,11 @@ import jdd.zdd.*;
 import jdd.util.math.*; // for Digits
 
 /**
- * <pre>
  * N Queen with Z-BDDs and the CSP procedures.
- * The implementation comes directly from a famous Z-BDD paper [Okuno's ].
+ * <p>The implementation comes directly from a famous Z-BDD paper [Okuno's ].
  *
- * It will probably go much faster if we can figure out how to make the exclude-operator
+ * <p>It will probably go much faster if we can figure out how to make the exclude-operator
  * native [current version makes calls to restrict and diff]...
- * </pre>
  *
  * @see ZDD
  * @see ZDDCSP

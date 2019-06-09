@@ -37,7 +37,7 @@ public final class OptimizedCache extends SimpleCache {
 	/** the number of access when the last GC was done */
 	private long access_last_gc;
 
-	/** the number of garbage collection we have seen without the cache beeing used */
+	/** the number of garbage collection we have seen without the cache being used */
 	private int cache_not_used_count;
 
 

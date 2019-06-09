@@ -1,13 +1,4 @@
 
-
-// XXX:	if you improve/correct anything here, you mightwant to change DoubleCache too!!
-
-// XXX: todo: we need a more soft MAX_HITRATE, that is, if the load-rate is very high,
-//            then we should allow even a hitrate about 30-35% to trigger a grow!
-
-// XXX: our good_hash() is not that good :(
-
-
 package jdd.bdd;
 
 import jdd.util.*;
@@ -17,13 +8,17 @@ import java.util.*;
 
 
 /**
- * A cache class that is [we belive] faster and uses less memory than Cache.java.
+ * A cache class that (we believe) is faster and uses less memory than Cache.java.
  *
  * @see Cache
  * @see DoubleCache
  * @see OptimizedCache
  */
 
+// XXX: todo: we need a more soft MAX_HITRATE, that is, if the load-rate is very high,
+//            then we should allow even a hitrate about 30-35% to trigger a grow!
+
+// XXX: our good_hash() is not that good :(
 
 
 // The new SimpleCache works like this:
@@ -175,7 +170,7 @@ public class SimpleCache extends CacheBase {
 	/**
 	 * either _partially_ wipe the cache or try to grow it.
 	 *
-	 * XXX: at the moment, if cache is grown all current data is lost
+	 * <p>XXX: at the moment, if cache is grown all current data is lost
 	 *
 	 * @see #free_or_grow
 	 */
@@ -259,8 +254,8 @@ public class SimpleCache extends CacheBase {
 
 	/**
 	 * lookup the element associated with (a,b)
-	 * returns true if element found (stored in SimpleCache.answer)
-	 * returns false if element not found. user should copy the hash value
+	 * <p>returns true if element found (stored in SimpleCache.answer)
+	 * <p>returns false if element not found. user should copy the hash value
 	 * from SimpleCache.hash_value before doing any more cache-operations!
 	 */
 	public final boolean lookup(int a, int b) {
@@ -280,8 +275,8 @@ public class SimpleCache extends CacheBase {
 
 	/**
 	 * lookup the element associated with (a,b,c)
-	 * returns true if element found (stored in SimpleCache.answer)
-	 * returns false if element not found. user should copy the hash value
+	 * <p>returns true if element found (stored in SimpleCache.answer)
+	 * <p>returns false if element not found. user should copy the hash value
 	 * from SimpleCache.hash_value before doing any more cache-operations!
 	 */
 	public final boolean lookup(int a, int b, int c) {

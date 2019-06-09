@@ -26,7 +26,7 @@ public final class DoubleCache extends CacheBase {
 	private int cache_bits, shift_bits, cache_size, cache_mask;
 	private int possible_bins_count, num_clears, num_partial_clears, num_grows;
 	private long  num_access, partial_count, partial_kept;
-	private long hit,miss, last_hit, last_access; // cache hits and misses, hit/acces-count since last grow
+	private long hit,miss, last_hit, last_access; // cache hits and misses, hit/access-count since last grow
 
 	/**
 	 * the arguments are:

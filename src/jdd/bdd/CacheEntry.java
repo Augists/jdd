@@ -22,9 +22,6 @@ public final  class CacheEntry {
 		found = 0;
 	} // empty position
 
-
-
-
 	public final boolean invalid() { return op1 == -1; }
 
 	public final void clear() {

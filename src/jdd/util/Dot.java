@@ -76,7 +76,7 @@ public class Dot {
 		}
 	}
 
-	public static boolean scaleable() {
+	public static boolean scalable() {
 		return (dot_type == TYPE_DOT) || (dot_type == TYPE_EPS) || (dot_type == TYPE_FIG);
 	}
 	public static void setType(int t) { dot_type = t; }
