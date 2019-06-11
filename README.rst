@@ -5,10 +5,29 @@ JDD is a decision diagram library written in pure java. It supports
 `Binary Decision Diagrams <https://en.wikipedia.org/wiki/Binary_decision_diagram>`_ (BDD) and
 `Zero-suppressed Decision Diagram <https://en.wikipedia.org/wiki/Zero-suppressed_decision_diagram>`_ (Z-BDD or just ZDD).
 
+Binary Decision Diagrams (BDDs) are used in formal verification, CSP and optimisation.
+To work with BDDs, you need a BDD library. JDD is my java implementation of a decision
+diagram library inspired by BuDDy (a BDD package written in C).
+It also includes support for Zero-suppressed BDDs.
 
 
-Using JDD
----------
+License
+-------
+
+JDD is free software under the zlib license. You may use it free of charge in research or even commercial projects.
+
+If you are publishing an academic paper, feel free to use a bibtex entry similar to this for citation::
+
+    @MISC{jdd,
+        author = {Arash Vahidi},
+        title = {JDD: a pure Java BDD and Z-BDD library},
+        howpublished = "\url{https://bitbucket.org/vahidi/jdd}",
+        year = 2015
+    }
+
+
+Getting JDD
+-----------
 
 To import JDD in gradle::
 
@@ -25,4 +44,26 @@ To import JDD in maven::
     </dependency>
 
 
-See the wiki for developer manual.
+Or simply use git::
+
+    git clone git@bitbucket.org:vahidi/jdd.git
+
+
+
+Using JDD
+---------
+
+The `tutorial <TUTORIAL.rst>`_ is probably a good place to start.
+
+The source code contains a number of examples under src/jdd/examples:
+
+* BDDQueens, ZDDQueens and ZDDCSPQueens: N-Queens problem solved with BDDs, Z-BDDs and Z-BDDs with CSP operators
+* Solitaire: The solitaire example from the BuDDy distribution
+* Adder: Yet another example stolen from the BuDDy distribution
+* Milner: Milner's scheduler, from BuDDy...
+
+
+
+If you encounter any problems make sure to check out the `Frequently Asked Questions <FAQ.rst>`_.
+
+
