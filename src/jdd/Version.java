@@ -9,7 +9,7 @@ package jdd;
  */
 
 public class Version {
-	public static final String VERSION = "109";
+	public static final String VERSION = "110";
 	public static void main(String[] ignored) {
 		System.out.println("Version " + VERSION);
 	}
