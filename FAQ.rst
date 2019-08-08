@@ -167,7 +167,7 @@ By default, when you create a DOT file you will get a PNG-image. to get the sour
   [...]
   Dot.setRemoveDotFile(false);
   Dot.setExecuteDot(false);
-  bddobject.printDot("filename.dot", somebdd);
+  bdd.printDot("filename.dot", somebdd);
 
 **Whats wrong with this code?**
 ::
@@ -188,7 +188,7 @@ This code is dead wrong! Since you are not adding a ref-count to "bdd1", it may 
   bdd.deref(bdd2);
   bdd.deref(bdd1);
 
-One way to catch such problems is to use a "DebugBDD" object instead of "BDD". Beware however that it is very slow and might not catch all problems.
+One way to catch such problems is to use a "DebugBDD" manager instead of "BDD". Beware however that it is very slow and might not catch all problems.
 
 **Whats wrong with this other code?**
 ::
