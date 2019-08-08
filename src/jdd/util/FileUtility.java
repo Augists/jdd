@@ -1,7 +1,6 @@
 
 package jdd.util;
 
-import java.util.*;
 import java.io.*;
 
 /**
@@ -15,18 +14,20 @@ public class FileUtility {
 	 * such as shell characters.
 	 */
 	public static boolean invalidFilename(String file) {
+		if(file.length() == 0)
+			return true;
 
 		// lets say \xxx is only invalid if we are not using windows ??
 		if(File.separatorChar != '\\' && file.indexOf('\\') != -1 )
 			return false;
 
-		return
-			file.indexOf('\"') != -1 ||			file.indexOf('\'') != -1 ||
-			file.indexOf(';') != -1 ||			file.indexOf('&') != -1 ||
-			file.indexOf('|') != -1 ||			file.indexOf('>') != -1 ||
-			file.indexOf('<') != -1 ||			file.indexOf('#') != -1
-			;
+		final char [] badchars = "\"\';&|<>#!$".toCharArray();
 
+		for(char badchar : badchars) {
+			if(file.indexOf(badchar) != -1)
+				return true;
+		}
+		return false;
 	}
 
 	/**

@@ -124,7 +124,7 @@ public class BDDPrinter {
 			BDDPrinter.nn = nn;
 
 			printSet_rec(bdd, 0);
-			JDDConsole.out.println();
+			JDDConsole.out.printf("\n");
 			helpGC();
 		}
 	}
@@ -140,7 +140,7 @@ public class BDDPrinter {
 						JDDConsole.out.print(" " + nn.variable(i));
 			}
 
-			JDDConsole.out.println();
+			JDDConsole.out.printf("\n");
 			return;
 		}
 

@@ -87,7 +87,7 @@ public class ConfigExample {
 		// we are done
 		JDDConsole.out.println("\n\nThe results wasn't what you were expecting huh?");
 		JDDConsole.out.println("Hope this example has learned you the importance of BDD tuning!");
-		JDDConsole.out.println();
+		JDDConsole.out.printf("\n");
 
 	}
 }

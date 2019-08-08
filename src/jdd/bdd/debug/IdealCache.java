@@ -159,13 +159,9 @@ import java.util.*;
 
 	public void showStats() {
 		if(num_access != 0) {
-			JDDConsole.out.print(getName() + "-cache ");
-			JDDConsole.out.print("ld=" + computeLoadFactor() + "% ");
-			JDDConsole.out.print("sz="); Digits.printNumber( ht.size() );
-			JDDConsole.out.print("accs="); Digits.printNumber(num_access);
-			JDDConsole.out.print("clrs=" + num_clears+ "/0 ");
-			JDDConsole.out.print("hitr=" + computeHitRate() + "% ");
-			JDDConsole.out.println();
+			JDDConsole.out.printf("%s-cache: ld=%.2f %% sz=%s acces=%s clrs=%d/0 hitr=%.2f %%\n",
+				getName(), computeLoadFactor(), Digits.prettify(ht.size()),
+				Digits.prettify(num_access), num_clears, computeHitRate());
 		}
 	}
 

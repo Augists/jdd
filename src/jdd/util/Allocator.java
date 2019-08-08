@@ -1,111 +1,171 @@
 
 package jdd.util;
 
+import jdd.util.math.*;
+
 /**
  * handles all allocation of *DD related large arrays.
  * This way, we can keep track of the allocated memory during the lifetime of JDD.
  */
 
 public class Allocator {
-	private static long int_s = 0, int_c = 0, short_s = 0, short_c = 0, double_c = 0;
-	private static long char_s = 0, char_c = 0, byte_s = 0, byte_c = 0, double_s = 0;
-	private static long int_t = 0, short_t = 0, char_t = 0, byte_t = 0, double_t = 0;
+	public final static int
+		TYPE_INT = 0, TYPE_SHORT = 1, TYPE_BYTE = 2,
+		TYPE_DOUBLE = 3, TYPE_CHAR = 4, TYPE_BOOLEAN = 5,
+		TYPE_COUNT = 6;
+
+	public final static String [] TYPE_NAMES = {
+		"int", "short", "byte", "double", "char", "boolean"
+	};
+	public final static int [] TYPE_SIZES = {
+		// could use Integer.BYTES etc but thats JDK 1.8+
+		4, 2, 1, 8, 2, 1
+	};
 
 
-	/** This function is called when memory allocation fails */
-	private static void fail(long size, String type, OutOfMemoryError ex) {
-		ex.printStackTrace();
-		JDDConsole.out.print("FAILED to allocate " + size + " bytes (" );
-		jdd.util.math.Digits.printNumber1024(size);
-		JDDConsole.out.println(") for an " + type+"[]");
-		JDDConsole.out.println("Allocator statistics so far:");
+	private static long []stats_count = new long[TYPE_COUNT];
+	private static long []stats_total = new long[TYPE_COUNT];
+	private static long []stats_max = new long[TYPE_COUNT];
+	private static long stats_total_bytes = 0;
+
+	public static long getStatsCount(int type) {
+		return stats_count[type];
+	}
+
+	public static long getStatsTotal(int type) {
+		return stats_total[type];
+	}
+
+	public static long getStatsMax(int type) {
+		return stats_max[type];
+	}
+
+	public static long getStatsTotalBytes() {
+		return stats_total_bytes;
+	}
+
+	/**
+	 * This function is called when memory allocation succeeds .
+	 *
+	 */
+	private static void register(int type, long size) {
+		stats_count[type]++;
+		stats_total[type] += size;
+		stats_max[type] = Math.max( stats_max[type], size);
+		stats_total_bytes += size * TYPE_SIZES[type];
+	}
+
+	/**
+	 * This function is called when memory allocation fails.
+	 *
+	 * Note that in general OutOfMemoryError cannot be cought, so this function
+	 * will probably never be called...
+	 */
+	private static void fail(long size, int type, OutOfMemoryError ex) {
+		long size_total = size * TYPE_SIZES[type];
+		String typeName = TYPE_NAMES[type];
+
+		JDDConsole.out.printf("FAILED to allocate %s[%d] (%d bytes)\n",
+			typeName, size, size_total);
 		showStats();
 		throw ex;
-		// System.exit(20);
 	}
 
 	// --------------------------------------------------------------------
 
 	/** allocate an array of integers */
 	public static int [] allocateIntArray(int size) {
-
-		if(int_s < size) int_s = size;
-		int_c ++;
-		int_t += size;
 		try {
-			// System.gc();
-			return new int[size];
-		} catch(OutOfMemoryError ex) {fail(size*4L,"int",ex);return null;}
+			int [] ret = new int[size];
+			register(TYPE_INT, size);
+			return ret;
+		} catch(OutOfMemoryError ex) {
+			fail(size, TYPE_INT, ex);
+			return null;
+		}
 	}
 
 	/** allocate an array of double precision floating points */
 	public static double [] allocateDoubleArray(int size) {
 
-		if(double_s < size) double_s = size;
-		double_c ++;
-		double_t += size;
 		try {
-			// System.gc();
-			return new double[size];
-		} catch(OutOfMemoryError ex) {fail(size*8L,"double",ex);return null;}
+			double []ret = new double[size];
+			register(TYPE_DOUBLE, size);
+			return ret;
+		} catch(OutOfMemoryError ex) {
+			fail(size,TYPE_DOUBLE,ex);
+			return null;
+		}
 	}
 
 
 	/** allocate an array of short integers */
 	public static short [] allocateShortArray(int size) {
-		if(short_s < size) short_s = size;
-		short_c ++;
-		short_t += size;
 		try {
-			// System.gc();
-			return new short[size];
-		} catch(OutOfMemoryError ex) {fail(size*2L,"short",ex);return null;}
+			short [] ret =  new short[size];
+			register(TYPE_SHORT, size);
+			return ret;
+		} catch(OutOfMemoryError ex) {
+			fail(size,TYPE_SHORT,ex);
+			return null;
+		}
 	}
 
 	/** allocate an array of chars */
 	public static char [] allocateCharArray(int size) {
-		if(char_s < size) char_s = size;
-		char_c ++;
-		char_t += size;
 		try {
-			// System.gc();
-			return new char[size];
-		} catch(OutOfMemoryError ex) {fail(size*2L,"char",ex);return null;}
+			char [] ret = new char[size];
+			register(TYPE_CHAR, size);
+			return ret;
+		} catch(OutOfMemoryError ex) {
+			fail(size, TYPE_CHAR, ex);
+			return null;
+		}
 	}
 
 	/** allocate an array of bytes */
 	public static byte [] allocateByteArray(int size) {
-		if(byte_s < size) byte_s = size;
-		byte_c ++;
-		byte_t += size;
+
 		try {
-			// System.gc();
-			return new byte[size];
-		} catch(OutOfMemoryError ex) {fail(size,"byte",ex);return null;}
+			byte []ret = new byte[size];
+			register(TYPE_BYTE, size);
+			return ret;
+		} catch(OutOfMemoryError ex) {
+			fail(size, TYPE_BYTE, ex);
+			return null;
+		}
 	}
 
 	/** allocate an array of boolean */
 	public static boolean [] allocateBooleanArray(int size) {
-		// NO statistics yet
-		return new boolean[size];
+
+		try {
+			boolean []ret = new boolean[size];
+			register(TYPE_BOOLEAN, size);
+			return ret;
+		} catch(OutOfMemoryError ex) {
+			fail(size, TYPE_BOOLEAN, ex);
+			return null;
+		}
 	}
 
 	/** show the current memory allocation statistics */
 	public static void showStats() {
-		JDDConsole.out.print("Allocator , total mem: " + (int_t * 4 + short_t * 4 + char_t * 2 + byte_t));
-		JDDConsole.out.println(", stats (type,count,max,total):");
-		if(int_c > 0) JDDConsole.out.print( "(int," + int_c + "," + int_s + "," + int_t + ")");
-		if(short_c > 0) JDDConsole.out.print( " (short," + short_c + "," + short_s + "," + short_t + ")");
-		if(char_c > 0) JDDConsole.out.print( " (char," + char_c + "," + char_s + "," + char_t + ")");
-		if(byte_c > 0) JDDConsole.out.print( " (byte," + byte_c + "," + byte_s + "," + byte_t + ")");
-		if(double_c > 0) JDDConsole.out.print( " (double," + double_c + "," + double_s + "," + double_t + ")");
-		JDDConsole.out.println();
+		JDDConsole.out.printf("Allocator total memory: %d, stats (type,count,max,total):\n",
+			stats_total_bytes);
 
-		JDDConsole.out.print("Total / Max / Used / Free memory: ");
-		jdd.util.math.Digits.printNumber1024( jdd.util.jre.JREInfo.totalMemory() );	JDDConsole.out.print("/ ");
-		jdd.util.math.Digits.printNumber1024( jdd.util.jre.JREInfo.maxMemory() );	JDDConsole.out.print("/ ");
-		jdd.util.math.Digits.printNumber1024( jdd.util.jre.JREInfo.usedMemory() );	JDDConsole.out.print("/ ");
-		jdd.util.math.Digits.printNumber1024( jdd.util.jre.JREInfo.freeMemory() );
-		JDDConsole.out.println();
+		for(int i = 0; i < TYPE_COUNT; i++) {
+			if(stats_count[i] > 0)
+				JDDConsole.out.printf( "(%s, %d, %d, %d)\n", TYPE_NAMES[i],
+					stats_count[i], stats_max[i], stats_total[i]);
+		}
+		JDDConsole.out.printf("\n");
+
+		JDDConsole.out.printf("Total=%s max=%s used=%s free=%s\n",
+			Digits.prettify1024( jdd.util.jre.JREInfo.totalMemory() ),
+			Digits.prettify1024( jdd.util.jre.JREInfo.maxMemory() ),
+			Digits.prettify1024( jdd.util.jre.JREInfo.usedMemory() ),
+			Digits.prettify1024( jdd.util.jre.JREInfo.freeMemory() )
+			);
 	}
 }

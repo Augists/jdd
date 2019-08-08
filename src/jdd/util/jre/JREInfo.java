@@ -30,9 +30,8 @@ public class JREInfo {
 		JDDConsole.out.println(" "+ prop.getProperty("java.vm.name") );
 
 		JDDConsole.out.println("OS " + prop.getProperty("os.name") + " on " + rt.availableProcessors() + " " + prop.getProperty("os.arch") + " CPU(s)");
-		JDDConsole.out.print("Total JRE memory: " ); Digits.printNumber1024(rt.maxMemory());
-		JDDConsole.out.print(", memory currently reserved by the JRE: " ); Digits.printNumber1024(usedMemory());
-		JDDConsole.out.println("\n");
+		JDDConsole.out.printf("JRE memory: total=%s, reserved=%s\n",
+			Digits.prettify1024(rt.maxMemory()),  Digits.prettify1024(usedMemory()));
 	}
 
 	public static void main(String [] args) {

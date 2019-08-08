@@ -110,8 +110,8 @@ public class ZDDQueens extends ZDD2 implements Queens {
 			final int n = Integer.parseInt(str );
 
 			ZDDQueens q = new ZDDQueens( n );
-			double mem = Digits.numberDivided( q.getMemory(), 1024 * 1024);
-			JDDConsole.out.println("ZDD-Queen\tSolutions=" + q.numberOfSolutions() + "\tN=" + n + "\tmem=" + mem + "\ttime=" + q.getTime()  );
+			JDDConsole.out.printf("ZDD-Queen\tSolutions=%.0f\tN=%d\tmem=%s\ttime=%d\n",
+				q.numberOfSolutions(), n, Digits.prettify1024((long) q.getMemory()), q.getTime());
 		}
 	}
 }

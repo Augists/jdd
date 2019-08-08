@@ -28,7 +28,7 @@ public class BDDTraceSuite {
 			InputStream  is = new FileInputStream (filename);
 			ZipInputStream zis = new ZipInputStream(is);
 
-			JDDConsole.out.println("\n***** [ " + filename + " ] *****");
+			JDDConsole.out.printf("\n***** [%s] *****\n", filename);
 			JREInfo.show();
 
 			ZipEntry ze = zis.getNextEntry();
@@ -45,7 +45,7 @@ public class BDDTraceSuite {
 			zis.close();
 			is.close();
 		} catch(IOException exx) {
-			JDDConsole.out.println("FAILED: " + exx.getMessage() + "\n");
+			JDDConsole.out.printf("FAILED: %s\n", exx.getMessage());
 			exx.printStackTrace();
 			System.exit(20);
 		}
@@ -59,8 +59,7 @@ public class BDDTraceSuite {
 			if(size == -1) new BDDTrace(name, is);
 			else new BDDTrace(name, is, size);
 		} catch(Exception ex) {
-			JDDConsole.out.println("FAILED when running " + name + ":" +
-				ex.getMessage()  + "\n\n");
+			JDDConsole.out.printf("FAILED when running %s: %s\n", ex.getMessage());
 			ex.printStackTrace();
 		}
 
@@ -72,13 +71,13 @@ public class BDDTraceSuite {
 	}
 
 	private void showFile(String name, InputStream is) throws IOException {
-		JDDConsole.out.println("File " + name);
+		JDDConsole.out.printf("File %s\n", name);
 		byte [] buffer = new byte[10240];
 
 		for(;;) {
 			int i = is.read(buffer, 0, buffer.length);
 			if(i <= 0) return;
-			JDDConsole.out.println(new String(buffer, 0, i));
+			JDDConsole.out.printf("%s\n", new String(buffer, 0, i));
 		}
 	}
 

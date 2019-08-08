@@ -408,10 +408,7 @@ public class NodeTable {
 			t_nodes = Array.resize(t_nodes, NODE_WIDTH * table_size, NODE_WIDTH * new_size);
 			t_list = Array.resize(t_list, LIST_WIDTH * table_size, LIST_WIDTH * new_size);
 		} catch(OutOfMemoryError ignored) {
-			if(Options.verbose) {
-				JDDConsole.out.println("NodeTable.resize failed...");
-			}
-                    System.exit(20);
+			fatal("NodeTable.resize failed...");
 		}
 	}
 
@@ -688,7 +685,16 @@ public class NodeTable {
 		return ret;
 	}
 
-
+	/**
+	 * Called when a fatal error is detected.
+	 *
+	 * Override this if you want to change the behavior of fatal events,
+	 * but beware that at this point you can not resuce the JDD objects.
+ 	 */
+	public void fatal(String message) {
+		JDDConsole.out.println("FATAL ERROR: " + message);
+		System.exit(20);
+	}
 
 	/**
 	 * count the number of ROOT bdd nodes.

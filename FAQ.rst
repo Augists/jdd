@@ -54,7 +54,7 @@ Beside, not including variable re-ordering made the JDD code less complex...
 
 **Why does JDD fail to allocate more memory even when large chunks are available?**
 
-This has to do with the heap-compacting algorithm of the Java virtual machine. 
+This has to do with the heap-compacting algorithm of the Java virtual machine.
 
 In earlier versions JDD would try to remedy this by using fragmented compressed memory.
 This did not work very well in practice and we removed it.
@@ -184,7 +184,7 @@ This code is dead wrong! Since you are not adding a ref-count to "bdd1", it may 
   int bdd1 = bdd.ref( bdd.and(somevariable, anothervaribale) );
   int bdd2 = bdd.ref( bdd.and(thirdvariable, andsoon) );
   int bdd3 = bdd.ref( bdd.or( bdd1, bdd2) ); // yes, this one too. you will need it later on, wont you?
-  
+
   bdd.deref(bdd2);
   bdd.deref(bdd1);
 
@@ -210,6 +210,10 @@ Misc.
 **Can several BDD managers simultaneously exist in JDD?**
 
 Yes. In fact, it is easy to implement routines to even move BDD trees between different packages. You must now mix them, thought.
+
+**JDD calls System.exit() on fatal errors. How can I change that?**
+
+Override NodeTable.fatal() and throw an Error instead of calling System.exit().
 
 **Are Z-BDDs better than BDDs?**
 

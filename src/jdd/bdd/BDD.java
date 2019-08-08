@@ -1,12 +1,6 @@
 
-// TODO:
-//
-// * BDDTrace does very bad on dme1.trace, it stopps at "and(lv_1870, lv_1877); % 17867" !!!
-//   (check it out in the jdd.internal.bug package)
-//
-// * possible bug: if the number of variables is changed, do we need to clear the sat_cache??
-//
-// * why are not we partially cleaning the "relprod_cache"?
+// TODO: if the number of variables is changed, do we need to clear the sat_cache??
+// TODO: why are not we partially cleaning the "relprod_cache"?
 
 package jdd.bdd;
 

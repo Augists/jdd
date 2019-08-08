@@ -219,7 +219,7 @@ public class ProfiledBDD2 extends BDD {
 			sb.append(" : "+ count + " times");
 			while(sb.length() < 48) sb.append(' ');
 			sb.append(" " + time + " [ms]");
-			JDDConsole.out.println(sb.toString() );
+			JDDConsole.out.printf("%s\n", sb.toString() );
 		}
 	}
 	public void showStats() {

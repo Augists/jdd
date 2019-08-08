@@ -22,7 +22,7 @@ public class NodeTableChecker {
 	// --------------------------------------------------------------------
 
 	private void show_tuple(int i) {
-		JDDConsole.out.println("" + i + "\t" + nt.getVar(i) + "\t" + nt.getLow(i) + "\t" + nt.getHigh(i) + "\t: " + nt.getRef(i) );
+		JDDConsole.out.printf("%d\t%d\t%d\t%d\n", i, nt.getVar(i), nt.getLow(i), nt.getHigh(i), nt.getRef(i) );
 	}
 
 	public void showTable(boolean complete) {

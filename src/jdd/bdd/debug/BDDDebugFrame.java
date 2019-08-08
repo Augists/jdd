@@ -106,7 +106,7 @@ public class BDDDebugFrame
 		TextAreaTarget taa = new TextAreaTarget(statistics);
 		PrintTarget save = JDDConsole.out;
 		JDDConsole.out = taa;
-		JDDConsole.out.println("\nPackage statistics:\n==================\n");
+		JDDConsole.out.printf("\nPackage statistics:\n==================\n");
 		nodetable.showStats();
 		JDDConsole.out = save;
 

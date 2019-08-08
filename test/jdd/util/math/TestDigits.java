@@ -21,4 +21,18 @@ public class TestDigits {
 		assertEquals("closest_log2 (5)", 4, Digits.closest_log2(17));
 		assertEquals("closest_log2 (6)", 5, Digits.closest_log2(31));
 	}
+
+
+	@Test public void testPrettify() {
+		assertEquals("prettify(500)", "500", Digits.prettify(500));
+		assertEquals("prettify(1200)", "1.20K", Digits.prettify(1200));
+		assertEquals("prettify(5555)", "5.56K", Digits.prettify(5555));
+		assertEquals("prettify(5555555)", "5.56M", Digits.prettify(5555555));
+	}
+
+
+	@Test public void testPrettify1024() {
+		assertEquals("prettify1024(500)", "500", Digits.prettify1024(500));
+		assertEquals("prettify1024(1200)", "1.17K", Digits.prettify1024(1200));
+	}
 }

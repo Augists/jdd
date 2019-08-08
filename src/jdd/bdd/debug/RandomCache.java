@@ -326,30 +326,27 @@ import java.util.*;
 
 	public void showStats() {
 		if(num_access != 0) {
-			JDDConsole.out.print(getName() + "-cache ");
-			JDDConsole.out.print("ld=" + computeLoadFactor() + "% ");
-			JDDConsole.out.print("sz="); Digits.printNumber(cache_size);
-			JDDConsole.out.print("accs="); Digits.printNumber(num_access);
-			JDDConsole.out.print("clrs=" + num_clears+ "/0 ");
-			JDDConsole.out.print("hitr=" + computeHitRate() + "% ");
-			if(num_grows > 0) JDDConsole.out.print("grws=" + num_grows + " ");
-
-			JDDConsole.out.println();
+			JDDConsole.out.printf(
+				"%s-cache: ld=%.2f %% sz=%s acces=%s clrs=%d/0 hitr=%.2f %% grws=%d\n",
+			    getName(), computeLoadFactor(), Digits.prettify(cache_size),
+			    Digits.prettify(num_access), num_clears,
+				computeHitRate(), num_grows);
 		}
 	}
 
 	// XXX: other BDD members not checked yet...
-	public void check_cache(int [] t_var) {
+	public boolean check_cache(int [] t_var) {
 		for( int i = 0; i < cache_size; i++) {
 			if(in1[i] != -1) {
 				if(t_var[ out[i]] == -1) {
 					JDDConsole.out.println("Invalied cache entry at position " + i);
 					JDDConsole.out.println("" + i + " --> " +  in1[i]+ "/" +  out[i]);
 					showStats();
-					System.exit(20);
+					return false;
 				}
 			}
 		}
+		return true;
 	}
 
 }

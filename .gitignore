@@ -3,3 +3,11 @@ target
 *~
 .gradle
 gradle.properties
+
+
+# vscode
+.classpath
+.project
+.settings
+.vscode
+bin

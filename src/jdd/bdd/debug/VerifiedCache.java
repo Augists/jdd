@@ -130,13 +130,13 @@ import java.util.*;
 	public int getNumberOfClears() { return cache.getNumberOfClears(); }
 	public int getNumberOfPartialClears() { return cache.getNumberOfPartialClears(); }
 	public int getNumberOfGrows() { return cache.getNumberOfGrows(); }
-	public void check_cache(NodeTable nt) { cache.check_cache(nt); }
+	public boolean check_cache(NodeTable nt) { return cache.check_cache(nt); }
 
 	// --------------------------------------------------------------
 
 	public void showStats() {
-		JDDConsole.out.print("IDEAL:"); ideal.showStats();
-		JDDConsole.out.print("NORMAL:"); cache.showStats();
+		JDDConsole.out.printf("IDEAL:"); ideal.showStats();
+		JDDConsole.out.printf("NORMAL:"); cache.showStats();
 	}
 
 }

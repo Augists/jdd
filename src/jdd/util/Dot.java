@@ -16,8 +16,6 @@ public class Dot {
 
 	private static final String DOT_COMMAND = "dot";
 	private static final String [] DOT_TYPES = { "ps", "png", "dot", "fig", "gif", "jpg" };
-	private static final String GV_COMMAND = "";
-
 
 	private static Runtime rt = Runtime.getRuntime();
 	private static int dot_type = TYPE_PNG; /** output type */
@@ -28,16 +26,22 @@ public class Dot {
 	/**
 	 * Create a DOT file from a String
 	 */
-	public static void showString(String file, String string)  {
+	public static String showString(String file, String string)  {
 		try {
+			if (FileUtility.invalidFilename(file)) {
+				System.err.println("[Dot] The filename '" + file + "' is invalid.");
+				System.err.println("[Dot] Maybe it contains characters we don't like?");
+				return null;
+			}
 			FileOutputStream fs = new FileOutputStream (file);
 			fs.write(string.getBytes() );
 			fs.flush();
 			fs.close();
-			showDot(file);
+			return showDot(file);
 		} catch(IOException exx) {
 			JDDConsole.out.println("Unable to save graph to the file "+ file + "\nReason: " + exx.toString() );
 		}
+		return null;
 	}
 
 	/**
@@ -45,35 +49,36 @@ public class Dot {
 	 *
 	 * <p>
 	 * NOTE: unless you call Dot.setRemoveDotFile(false), the file will be REMOVED
+	 *
 	 * @see #setRemoveDotFile
 	 */
-	public static void showDot(String file) {
+	public static String showDot(String infile) {
 
 		// first, check for shell characters
-		if(FileUtility.invalidFilename(file) ) {
-			System.err.println("[Dot] The filename '" + file + "' is invalid.");
+		if (FileUtility.invalidFilename(infile)) {
+			System.err.println("[Dot] The filename '" + infile + "' is invalid.");
 			System.err.println("[Dot] Maybe it contains characters we don't like?");
-			return;
+			return null;
 		}
 
-
 		try {
-
-			if(run_dot) {
-				String cmd = DOT_COMMAND + " -T" + DOT_TYPES[dot_type] + " \"" + file + "\" -o \"" + file + "." + DOT_TYPES[dot_type] + "\"";
+			String outfile = infile + "." + DOT_TYPES[dot_type];
+			if (run_dot) {
+				String [] cmd = new String [] {DOT_COMMAND, "-T", DOT_TYPES[dot_type], infile, "-o", outfile};
 				Process p = rt.exec(cmd);
 				p.waitFor();
 			}
 
-			if(remove_dot_file) {
-				FileUtility.delete(file);
+			if (remove_dot_file) {
+				FileUtility.delete(infile);
 			}
-
-		} catch(IOException exx) {
-			JDDConsole.out.println("Unable to run DOT on " + file + "\nReason: " + exx.toString() );
-		}catch(InterruptedException exx) {
-			JDDConsole.out.println("DOT interrupted when processing " + file + "\nReason: " + exx.toString() );
+			return outfile;
+		} catch (IOException exx) {
+			JDDConsole.out.println("Unable to run DOT on " + infile + "\nReason: " + exx.toString());
+		} catch (InterruptedException exx) {
+			JDDConsole.out.println("DOT interrupted when processing " + infile + "\nReason: " + exx.toString());
 		}
+		return null;
 	}
 
 	public static boolean scalable() {

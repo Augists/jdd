@@ -128,10 +128,10 @@ public class BDDQueens extends BDD implements Queens
 	public void showOneSolution() {
 		if(solvec == null) return; // no solutions
 		for(int x = 0; x < solvec.length; x++) {
-			if( (x % N) == 0) JDDConsole.out.println();
-			JDDConsole.out.print( solvec[x] ? "*|" : "_|");
+			if( (x % N) == 0) JDDConsole.out.printf("\n");
+			JDDConsole.out.printf( "%c|", solvec[x] ? '*' : '_');
 		}
-		JDDConsole.out.println();
+		JDDConsole.out.printf("\n");
 	}
 
 	// ---------------------------------------
@@ -148,8 +148,9 @@ public class BDDQueens extends BDD implements Queens
 			final int n = Integer.parseInt(str );
 			BDDQueens q = new BDDQueens( n );
 			// q.showOneSolution();
-			double mem = Digits.numberDivided( q.getMemory(), 1024 * 1024);
-			JDDConsole.out.println("BDD-Queen\tSolutions=" + q.numberOfSolutions() + "\tN=" + n + "\tmem=" + mem + "\ttime=" + q.getTime()  );
+
+			JDDConsole.out.printf("BDD-Queen\tSolutions=%.0f\tN=%d\tmem=%s\ttime=%d\n",
+				q.numberOfSolutions(), n, Digits.prettify1024((long) q.getMemory()), q.getTime());
 		}
 	}
 }

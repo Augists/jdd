@@ -221,7 +221,7 @@ public final class Cache {
 
 	// ------------------------------------------------------
 	/** cache load factor, slow! */
-	public double computeLoadFactor() { // just see howmany buckts are in use
+	public double computeLoadFactor() { // just see how many buckets are in use
 		int bins = 0;
 		for( int i = 0; i < cache_size; i++) if(!entries[i].invalid() )	bins++;
 		return ((int)(bins * 10000) / cache_size) / 100.0;
@@ -239,23 +239,14 @@ public final class Cache {
 
 	public void showStats(String type) {
 		if(num_access != 0) {
-			JDDConsole.out.print(type + "-cache ");
-			JDDConsole.out.print("ld=" + computeLoadFactor() + "% ");
-			JDDConsole.out.print("sz="); 	Digits.printNumber(cache_size);
-
-			JDDConsole.out.print("accs=");	Digits.printNumber(num_access);
-			JDDConsole.out.print("clrs=" + num_clears+ "/" + num_partial_clears + " ");
-
-			JDDConsole.out.print("hitr=" + computeHitRate() + "% ");
-			if(num_grows > 0) JDDConsole.out.print("grws=" + num_grows + " ");
-
-
-			showDeviation();
-			JDDConsole.out.println();
+			JDDConsole.out.printf("%s-cache: ld=%.2f %% sz=%s acces=%s clrs=%d/%d hitr=%.2f %% dev=%s grws=%d\n",
+				type, computeLoadFactor(), Digits.prettify(cache_size),
+				Digits.prettify(num_access), num_clears, num_partial_clears,
+				computeHitRate(), calcDeviation(), num_grows);
 		}
 	}
 
-	private void showDeviation() {
+	private String calcDeviation() {
 		double mean = 0.0, meansq = 0.0;
 		int max = 0, min = Integer.MAX_VALUE, used = 0;
 		for( int i = 0; i < cache_size; i++) {
@@ -271,24 +262,22 @@ public final class Cache {
 
 		double stddev = Math.sqrt( meansq  - mean * mean);
 		double e_stddev = Math.sqrt(( 1.0 - 1.0 / cache_size) * num_access / cache_size);
-		JDDConsole.out.print("use/exp=" + (100 * used / cache_size) + "/" +
-			(int)(100 * (1 - Math.pow(Math.E, -mean))) + "%");
-
-		// JDDConsole.out.print("\nmin=" + min + ", max = " + max);
+		return "use/exp=" + (100 * used / cache_size) + "/" + (int)(100 * (1 - Math.pow(Math.E, -mean))) + "%";
 	}
 
 
 	/** check if a cached answer is a valid node. ONLY VALID FOR BDD-ANSWER CACHES! */
-	public void check_cache(int [] t_var) {
+	public boolean check_cache(int [] t_var) {
 		for( int i = 0; i < cache_size; i++) {
 			if(!entries[i].invalid()) {
 				if(t_var[ entries[i].ret] <0) {
 					JDDConsole.out.println("Invalied cache entry at position " + i);
 					JDDConsole.out.println("" + i + " --> " +  entries[i].op1 + "/" +  entries[i].op2 + "/"+ entries[i].ret + "  " +  entries[i].type);
-					System.exit(20);
+					return false;
 				}
 			}
 		}
+		return true;
 	}
 	// --------------------------- misc
 

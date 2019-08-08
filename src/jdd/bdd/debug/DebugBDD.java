@@ -29,8 +29,7 @@ public class DebugBDD extends BDD {
 		else
 			err = ntc.checkNode(bdd, msg);
 		if(err != null) {
-			JDDConsole.out.println("nodeCheck failed: " + err);
-			System.exit(20);
+			fatal("nodeCheck failed: " + err);
 		}
 	}
 
@@ -106,10 +105,17 @@ public class DebugBDD extends BDD {
 	protected void post_removal_callbak() {
 		super.post_removal_callbak();
 		// TODO: add the other caches here:
-		quant_cache.check_cache(this);
-		replace_cache.check_cache(this);
-		not_cache.check_cache(this);
-		op_cache.check_cache(this);
+		if(!quant_cache.check_cache(this))
+			fatal("quant_cache sanity check failed");
+
+		if(!replace_cache.check_cache(this))
+			fatal("replace_cache sanity check failed");
+
+		if(!not_cache.check_cache(this))
+			fatal("not_cache sanity check failed");
+
+		if(!op_cache.check_cache(this))
+			fatal("op_cache sanity check failed");
 	}
 	// --------------------------------------------
 	/*

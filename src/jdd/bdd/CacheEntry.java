@@ -10,7 +10,7 @@ import jdd.util.*;
  * @see Cache
  * @see SimpleCache
  */
-public final  class CacheEntry {
+public final class CacheEntry {
 
 	public int op1, op2, ret, found, overwrite;
 	// public byte type, hits;

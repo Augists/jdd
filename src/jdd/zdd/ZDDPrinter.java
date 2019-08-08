@@ -39,15 +39,15 @@ public class ZDDPrinter {
 	/* package */static void print(int dd, NodeTable nt, NodeName nn) {
 		// if(dd == 0) JDDConsole.out.println("0. empty");
 		// else if(dd == 1) JDDConsole.out.println("1. {0}");
-		if(dd == 0) JDDConsole.out.println("0. " + nn.zero());
-		else if(dd == 1) JDDConsole.out.println("1. "+ nn.one());
+		if(dd == 0) JDDConsole.out.printf("0. %s", nn.zero());
+		else if(dd == 1) JDDConsole.out.printf("1. %s", nn.one());
 		else {
 			ZDDPrinter.nt = nt;
 			ZDDPrinter.nn = nn;
 			print_rec(dd);
 			nt.unmark_tree(dd);
 			helpGC();
-			JDDConsole.out.println();
+			JDDConsole.out.printf("\n");
 		}
 	}
 	private static void print_rec(int dd) {

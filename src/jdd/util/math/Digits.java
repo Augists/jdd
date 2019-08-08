@@ -2,9 +2,7 @@
 package jdd.util.math;
 
 import jdd.util.*;
-import jdd.bdd.*;
 
-import java.util.*;
 
 /**
  * some common simple operations involving numbers are gathered here
@@ -50,31 +48,21 @@ public class Digits {
 	}
 
 
-	/** print the number <tt>n</tt> in the format xxx K/G/M */
-	public static void printNumber(long n) { printNumberWith(n, 1000); }
-
-	/** same as printNumber, bit  this time, K = 1024, not 1000 */
-	public static void printNumber1024(long n) { 	printNumberWith(n, 1024);	}
-
-	/** internal function to write numbers */
-	private static void printNumberWith(long n, long k_) {
+	public static String prettify(long n) {
+		return prettifyWith(n, 1000);
+	}
+	public static String prettify1024(long n) {
+		return prettifyWith(n, 1024);
+	}
+	private static String prettifyWith(long n, long k_) {
 		final long m_ =  k_ * k_;
 		final long g_ =  k_ * m_;
 		final long t_ =  k_ * g_;
 
-		if(n > t_)  JDDConsole.out.print(numberDivided(n,t_)  +"T ");	else
-		if(n > g_)  JDDConsole.out.print(numberDivided(n,g_)  +"G ");	else
-		if(n > m_)  JDDConsole.out.print(numberDivided(n,m_)  +"M ");	else
-		if(n > k_)  JDDConsole.out.print(numberDivided(n,k_)  +"k ");	else
-		JDDConsole.out.print(n + " ");
-	}
-
-
-	/**
-	 * return <tt>n'</tt> in as  n' = n * div, with two decimals
-	 */
-	public static double numberDivided(double n, long div) {
-		int i = (int) (100 * ( n + div / 200) / div); // 2 for rounding, 100 for two decimals
-		return ((double)i) / 100;
+		if(n > t_)  return String.format("%.2fT", n / (double)t_);
+		if(n > g_)  return String.format("%.2fG", n / (double)g_);
+		if(n > m_)  return String.format("%.2fM", n / (double)m_);
+		if(n > k_)  return String.format("%.2fK", n / (double)k_);
+		return n + "";
 	}
 }

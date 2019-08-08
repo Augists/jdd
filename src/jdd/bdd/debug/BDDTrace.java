@@ -42,7 +42,7 @@ public class BDDTrace {
 		public void show(BDD bdd) {
 			JDDConsole.out.print("\n\t");
 			show();
-			JDDConsole.out.println();
+			JDDConsole.out.printf("\n");
 			bdd.printSet(this.bdd);
 		}
 	}
@@ -129,7 +129,7 @@ public class BDDTrace {
 			}
 
 			if(size != -1) JDDConsole.out.print("\t% " + size);
-			JDDConsole.out.println();
+			JDDConsole.out.printf("\n");
 		}
 
 		public void execute() throws IOException {
@@ -389,7 +389,7 @@ public class BDDTrace {
 		this.vars = vars;
 		nodes = (int)Math.min( MAX_NODES, nodes * (1 + Math.log(1+vars)) );
 
-		JDDConsole.out.println();
+		JDDConsole.out.printf("\n");
 		JDDConsole.out.println("loading " + module + " from " + filename + " (" + nodes + " nodes, " + vars + " vars)");
 
 		// bdd = new ProfiledBDD(nodes, cache);
@@ -491,7 +491,7 @@ public class BDDTrace {
 		for (Enumeration e = variables.elements() ; e.hasMoreElements() ;) {
 			TracedVariable v = (TracedVariable)e.nextElement();
 			if(v.last_use >= op_count) {
-				// v.show();JDDConsole.out.println();
+				// v.show();JDDConsole.out.printf("\n");
 				// bdd.check_node(v.bdd, v.name); // DEBUG
 			}
 		}

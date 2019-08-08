@@ -356,44 +356,38 @@ public class SimpleCache extends CacheBase {
 
 	public void showStats() {
 		if(num_access != 0) {
-			JDDConsole.out.print(getName() + "-cache ");
-			JDDConsole.out.print("ld=" + computeLoadFactor() + "% ");
-			JDDConsole.out.print("sz="); Digits.printNumber1024(cache_size);
-			JDDConsole.out.print("accs="); Digits.printNumber1024(num_access);
-			JDDConsole.out.print("clrs=" + num_clears+ "/0 ");
-			JDDConsole.out.print("hitr=" + computeHitRate() + "% ");
-			if(num_grows > 0) JDDConsole.out.print("grws=" + num_grows + " ");
-
-			JDDConsole.out.println();
+			JDDConsole.out.printf(
+				"%s-cache: ld=%0.2f %% sz=%s acces=%s clrs=%d/0 hitr=%.2f %% grws=%d\n",
+				getName(), computeLoadFactor(), Digits.prettify(cache_size),
+				Digits.prettify(num_access), num_clears, computeHitRate(),
+				num_grows);
 		}
 	}
 	public void show_tuple(int bdd) {
 		JDDConsole.out.print(""  + bdd + ":   " + getOut(bdd));
 		for(int i = 0; i < members; i++) JDDConsole.out.print("\t" + getIn(bdd, 1 + i) );
-		JDDConsole.out.println();
+		JDDConsole.out.printf("\n");
 	}
 
 	// XXX: other BDD members not checked yet...
-
-	public void check_cache(NodeTable nt) {
+	public boolean check_cache(NodeTable nt) {
 		for( int i = 0; i < cache_size; i++) {
 			if( isValid(i)) {
-
 				if(! nt.isValid( getOut(i) ) ) {
 					JDDConsole.out.println("Invalied cache output entry");
 					show_tuple(i);
-					System.exit(20);
+					return false;
 				}
 
 				for(int m = 0; m < bdds; m++) {
 					if(! nt.isValid( getIn(i, m + 1)) ) {
 						JDDConsole.out.println("Invalied cache member " + m + " entry");
 						show_tuple(i);
-						System.exit(20);
+						return false;
 					}
 				}
-
 			}
 		}
+		return true;
 	}
 }

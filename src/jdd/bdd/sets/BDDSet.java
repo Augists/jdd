@@ -136,7 +136,7 @@ public class BDDSet implements Set {
 				JDDConsole.out.print("\n  ");
 			} else 	JDDConsole.out.print(" ");
 		}
-		if(j != 0) JDDConsole.out.println();
+		if(j != 0) JDDConsole.out.printf("\n");
 		JDDConsole.out.println("\r}");
 		se.free();
 	}
