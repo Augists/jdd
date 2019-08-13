@@ -10,7 +10,6 @@ import java.util.*;
 /**
  * A cache class that (we believe) is faster and uses less memory than Cache.java.
  *
- * @see Cache
  * @see DoubleCache
  * @see OptimizedCache
  */

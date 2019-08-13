@@ -62,7 +62,6 @@ import jdd.util.math.*;
 /**
  * Universe class for the BDD sets
  * <p> insert() and member() functions are memory but not time efficient.
- * The opposite of the mixed-radix package.
  * <p>The set operators (unions, diff, etc) are however very efficient (standard BDD operations).
  */
 

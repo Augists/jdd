@@ -7,7 +7,6 @@ import jdd.util.*;
  * A cache entry used by Cache, but not SimpleCache.
  * we try cache-entry saturation by using hit() and save(),
  * but this doesnt seem to work ...
- * @see Cache
  * @see SimpleCache
  */
 public final class CacheEntry {

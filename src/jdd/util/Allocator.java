@@ -168,4 +168,9 @@ public class Allocator {
 			Digits.prettify1024( jdd.util.jre.JREInfo.freeMemory() )
 			);
 	}
+	public static void resetStats() {
+		for(int i = 0; i < TYPE_COUNT; i++) {
+			stats_count[i]  = stats_max[i] = stats_total[i] = 0;
+		}
+	}
 }

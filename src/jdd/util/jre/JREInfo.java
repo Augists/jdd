@@ -23,13 +23,16 @@ public class JREInfo {
 	public static void show() {
 		Properties prop = System.getProperties();
 
-		JDDConsole.out.println("Using JDD version " + jdd.Version.VERSION +" on " + (new Date()).toString() + "\n");
-		JDDConsole.out.print("Using " + prop.getProperty("java.vendor") + " JRE " + prop.getProperty("java.version"));
-		String jit = prop.getProperty("java.compiler");
-		if(jit != null)  JDDConsole.out.print(", " + jit +  " JIT in");
-		JDDConsole.out.println(" "+ prop.getProperty("java.vm.name") );
+		JDDConsole.out.printf("Using JDD version=%s compiled=%s\n",
+			jdd.Version.VERSION, new Date());
 
-		JDDConsole.out.println("OS " + prop.getProperty("os.name") + " on " + rt.availableProcessors() + " " + prop.getProperty("os.arch") + " CPU(s)");
+		JDDConsole.out.printf("Java vendor=%s version=%s compiler=%s name=%s\n",
+			prop.getProperty("java.vendor"), prop.getProperty("java.version"),
+			prop.getProperty("java.compiler"), prop.getProperty("java.vm.name") );
+
+		JDDConsole.out.printf("OS name=%s arch=%s cpus=%d\n",
+			 prop.getProperty("os.name"), prop.getProperty("os.arch"), rt.availableProcessors());
+
 		JDDConsole.out.printf("JRE memory: total=%s, reserved=%s\n",
 			Digits.prettify1024(rt.maxMemory()),  Digits.prettify1024(usedMemory()));
 	}

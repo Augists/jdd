@@ -7,10 +7,6 @@ package jdd.bdd;
 import jdd.util.*;
 import jdd.util.math.*;
 
-// for debugging only!
-import jdd.bdd.debug.IdealCache;
-import jdd.bdd.debug.VerifiedCache;
-
 /**
  * BDD main class. All BDD code uses this.
  * <p>This is not a "bdd tree" or "bdd node", but the Java objects that handles _ALL_ BDD operations

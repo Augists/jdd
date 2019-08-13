@@ -16,7 +16,6 @@ import java.util.*;
  * SimpleCache + some optimization
  *
  * @see SimpleCache
- * @see Cache
  * @see DoubleCache
  */
 

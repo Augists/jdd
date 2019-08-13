@@ -7,8 +7,11 @@ public class TestAllocator {
 
    @Test public void testStats() {
 
+		// needed for our CI, but should not really be needed with proper test isolation
+		Allocator.resetStats();
+
 		assertEquals("No allocation at begining",
-			Allocator.getStatsCount(Allocator.TYPE_INT), 0);
+			0, Allocator.getStatsCount(Allocator.TYPE_INT));
 
 		Allocator.allocateIntArray(10);
 		Allocator.allocateIntArray(12);
@@ -16,14 +19,14 @@ public class TestAllocator {
 		Allocator.showStats();
 
 		assertEquals("int allocator stats: count",
-			Allocator.getStatsCount(Allocator.TYPE_INT), 3);
+			3, Allocator.getStatsCount(Allocator.TYPE_INT));
 		assertEquals("int allocator stats: size",
-			Allocator.getStatsTotal(Allocator.TYPE_INT), 30);
+			30, Allocator.getStatsTotal(Allocator.TYPE_INT));
 		assertEquals("int allocator stats: max",
-			Allocator.getStatsMax(Allocator.TYPE_INT), 12);
+			12, Allocator.getStatsMax(Allocator.TYPE_INT));
 
 			assertEquals("int allocator stats: total bytes",
-			Allocator.getStatsTotalBytes(), 30 * 4);
+			30 * 4, Allocator.getStatsTotalBytes());
     }
 
 

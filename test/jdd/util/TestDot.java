@@ -3,14 +3,23 @@ package jdd.util;
 
 import java.io.*;
 import org.junit.Test;
+import org.junit.Before;
 import static org.junit.Assert.*;
 
 public class TestDot {
 	private static final String TESTGRAPH = "graph { a -- b ; a -- c; }";
 
 
+	@Before public void setup(){
+		// Another CI fix, should not be needed
+		File f = new File("build");
+		if(! f.exists()) {
+			f.mkdirs();
+		}
+	}
+
 	@Test public void testBadFilename() {
-		String []names = new String[] { "", "/etc/cantwritehere", "a|b", "../mamma-mia!"};
+		String []names = new String[] { "", "/idontexist/cantwritehere", "a|b", "../mamma-mia!"};
 
 		Dot.setExecuteDot(false);
 		for(String name : names){
