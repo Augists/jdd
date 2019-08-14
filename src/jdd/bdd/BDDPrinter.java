@@ -48,6 +48,9 @@ public class BDDPrinter {
 	// -----------------------------------------------------
 
 	public static void printDot(String filename, int bdd, NodeTable nt, NodeName nn)  {
+		if(nn == null) {
+			nn = new BDDNames();
+		}
 		try {
 			ps = new PrintStream( new FileOutputStream(filename));
 			had_0 = had_1 = false;

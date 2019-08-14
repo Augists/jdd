@@ -155,7 +155,7 @@ It contains all the basic operations, which are::
   int union(int p, int q)
   int intersect(int p, int q)
   int diff(int p, int q)
-  
+
 
 This sequence of code builds all the examples found in Minato's original paper::
 
@@ -172,7 +172,7 @@ This sequence of code builds all the examples found in Minato's original paper::
   int g = zdd.diff(f,c);
 
 
-Note that in contrast to BDDs, Z-BDD variables (here v1 and v2) are just number and no Z-BDD trees. You can't do stuff like "int a = zdd.union(v1,v2)" here!!!
+Note that in contrast to BDDs, Z-BDD variables (here v1 and v2) are just numbers not Z-BDD trees. You can't do things like "int a = zdd.union(v1,v2)" here!
 
 As with BDDs, you can inspect Z-BDD trees using the print functions::
 
@@ -226,10 +226,17 @@ ZDDGraph is intended to [in near future] include common ZDD operations used in g
 Graphviz dot support
 ********************
 
+.. image:: zdd.png
+   :align: center
+
 Graphviz from AT&T is a public domain package for generating graphs from a textual description.
 
-In JDD, each package that supports dot, has a class named XXXPrinter, e.g. ZDDPrinter. These classes in turn use the jdd.util.Dot class for operations related to dot.
+For BDDs, BDDPrinter.printDot() is used to generated DOT represenations and images from BDDs.
+For ZDDs, ZDD.printDot() should be used (instead of ZDDPrinter.printDot()).
+
+Both functions in turn use the jdd.util.Dot class for operations related to dot.
 You can access the Dot class to modify the way this is handled, for example you can change the output format from PNG to EPS::
 
     Dot.setType( Dot.TYPE_EPS);
+
 
