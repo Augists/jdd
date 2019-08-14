@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 class DebugBDDNonFatal extends DebugBDD {
 	public int errorCount = 0;
 	public DebugBDDNonFatal(int a, int b) { super(a, b); }
-	public void fatal(String message) {
+	public void fatal(Error e, String message) {
 		errorCount ++;
 	}
 }

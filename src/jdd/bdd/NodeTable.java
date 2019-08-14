@@ -407,8 +407,8 @@ public class NodeTable {
 		try {
 			t_nodes = Array.resize(t_nodes, NODE_WIDTH * table_size, NODE_WIDTH * new_size);
 			t_list = Array.resize(t_list, LIST_WIDTH * table_size, LIST_WIDTH * new_size);
-		} catch(OutOfMemoryError ignored) {
-			fatal("NodeTable.resize failed...");
+		} catch(OutOfMemoryError e) {
+			fatal(e, "NodeTable.resize failed...");
 		}
 	}
 
@@ -691,8 +691,11 @@ public class NodeTable {
 	 * Override this if you want to change the behavior of fatal events,
 	 * but beware that at this point you can not resuce the JDD objects.
  	 */
-	public void fatal(String message) {
-		JDDConsole.out.println("FATAL ERROR: " + message);
+	public void fatal(Error e, String message) {
+		JDDConsole.out.printf("FATAL ERROR: %s\n", message);
+		if(e != null) {
+			JDDConsole.out.printf("ERROR: %s\n", e);
+		}
 		System.exit(20);
 	}
 
