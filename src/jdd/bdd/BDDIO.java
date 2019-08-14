@@ -47,7 +47,6 @@ public class BDDIO {
 	private static int safe_read(InputStream is, int size, byte [] b)
 		throws IOException
 	{
-
 		int got = 0, errors = 0;
 		while(got < size) {
 			int len = is.read(b, got, size - got);
@@ -61,16 +60,6 @@ public class BDDIO {
 			}
 		}
 		return got;
-
-		/*
-		// the teach-yourself-java-in-24-days way:
-		for(int i = 0; i < size; i++) {
-			int c = is.read();
-			if(c == -1) return i;
-			b[i] = (byte)c;
-		}
-		return size;
-		*/
 	}
 
 	// --- [internal: reading and writing 32bit numbers ] ------------------------------------------
@@ -125,7 +114,7 @@ public class BDDIO {
 			fos.flush();
 			fos.close();
 		} catch(IOException exx) {
-			JDDConsole.out.println("BDDIO.save Failed: " + exx.getMessage() );
+			JDDConsole.out.printf("BDDIO.save Failed: %s\n", exx);
 			throw exx;
 		} finally {
 			manager.unmark_tree(bdd); // must do it  before we go on
@@ -242,7 +231,7 @@ public class BDDIO {
 				manager.deref( i.intValue() );
 			}
 		} catch(IOException exx) {
-			JDDConsole.out.println("BDDIO.bddLoad Failed: " + exx.getMessage() );
+			JDDConsole.out.printf("BDDIO.bddLoad Failed: %s\n", exx);
 			throw exx;
 		} finally {
 			is.close();
@@ -310,7 +299,7 @@ public class BDDIO {
 				}
 				wr.close();
 			} catch(IOException exx) {
-				JDDConsole.out.println("BDDIO.save Failed: " + exx.getMessage() );
+				JDDConsole.out.printf("BDDIO.save Failed: %s\n", exx);
 				throw exx;
 			} finally {
 				manager.unmark_tree(bdd); // must do it  before we go on

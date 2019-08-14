@@ -14,6 +14,6 @@ public class BDDNames implements NodeName {
 
 	public String variable(int n) {
 		if(n < 0) return "(none)";
-		return "v" + (n + 1);
+		return String.format("v%d", n + 1);
 	}
 }

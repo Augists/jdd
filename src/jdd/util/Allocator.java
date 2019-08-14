@@ -169,6 +169,7 @@ public class Allocator {
 			);
 	}
 	public static void resetStats() {
+		stats_total_bytes = 0;
 		for(int i = 0; i < TYPE_COUNT; i++) {
 			stats_count[i]  = stats_max[i] = stats_total[i] = 0;
 		}

@@ -9,15 +9,6 @@ import static org.junit.Assert.*;
 public class TestDot {
 	private static final String TESTGRAPH = "graph { a -- b ; a -- c; }";
 
-
-	@Before public void setup(){
-		// Another CI fix, should not be needed
-		File f = new File("build");
-		if(! f.exists()) {
-			f.mkdirs();
-		}
-	}
-
 	@Test public void testBadFilename() {
 		String []names = new String[] { "", "/idontexist/cantwritehere", "a|b", "../mamma-mia!"};
 
@@ -29,26 +20,36 @@ public class TestDot {
 	}
 
 	@Test public void testExtension() {
-		Dot.setExecuteDot(false);
+		try {
+			Dot.setExecuteDot(false);
+			Dot.setType(Dot.TYPE_EPS);
+			String filename1 = Dot.showString("graph", "{}");
+			assertEquals("EPS filename", "graph.ps", filename1);
 
-		Dot.setType(Dot.TYPE_EPS);
-		String filename1 = Dot.showString("build/graph", "{}");
-		assertEquals("EPS filename", "build/graph.ps", filename1);
-
-		Dot.setType(Dot.TYPE_PNG);
-		String filename2 = Dot.showString("build/graph", "{}");
-		assertEquals("PNG filename", "build/graph.png", filename2);
+			Dot.setType(Dot.TYPE_PNG);
+			String filename2 = Dot.showString("graph", "{}");
+			assertEquals("PNG filename", "graph.png", filename2);
+		} finally {
+			FileUtility.delete("graph");
+			FileUtility.delete("graph.ps");
+			FileUtility.delete("graph.png");
+		}
 	}
 
 	@Test public void testExecute() {
-		Dot.setExecuteDot(true);
-		Dot.setType(Dot.TYPE_PNG);
-		Dot.setRemoveDotFile(false);
+		try {
+			Dot.setExecuteDot(true);
+			Dot.setType(Dot.TYPE_PNG);
+			Dot.setRemoveDotFile(false);
 
-		String filename = Dot.showString("build/graph", TESTGRAPH);
-		assertEquals("PNG filename", "build/graph.png", filename);
+			String filename = Dot.showString("graph", TESTGRAPH);
+			assertEquals("PNG filename", "graph.png", filename);
 
-		File f = new File(filename);
-		assertEquals("created PNG", true, f.exists());
+			File f = new File(filename);
+			assertEquals("created PNG", true, f.exists());
+		} finally {
+			FileUtility.delete("graph");
+			FileUtility.delete("graph.png");
+		}
 	}
 }

@@ -207,7 +207,8 @@ public class NodeTable {
 		stat_gc_freed  += new_free ;
 
 		if(Options.verbose) {
-			JDDConsole.out.println("Garbage collection #" + stat_gc_count + ": " + table_size + " nodes, " + new_free + " freed, time " + stat_gc_time +"+"+ stat_notify_time );
+			JDDConsole.out.printf("Garbage collection #%d: %d nodes, %d freed, time=%d+%d\n",
+				stat_gc_count, table_size, new_free,  stat_gc_time, stat_notify_time );
 		}
 
 		return new_free;
@@ -273,17 +274,6 @@ public class NodeTable {
 		resize(new_size);
 		table_size = new_size;
 
-
-
-		// 3. update the new array to become a unique node table
-		/*
-		// this is what we had before (kinda inefficient ha?)
-		for(int i = old_size; i < new_size; i++)  invalidate(i);
-		clearPrev(0, new_size);
-		recompute_hash();
-		*/
-
-
 		// 3.a) start clean
 		first_free_node =  free_nodes_count = 0;
 
@@ -325,7 +315,8 @@ public class NodeTable {
 		stat_grow_time += time;
 
 		if(Options.verbose) {
-			JDDConsole.out.println("Node-table grown #" + stat_nt_grow + ": " + old_size + " -> " + new_size  + " nodes, time " + stat_grow_time);
+			JDDConsole.out.printf("Node-table grown #%d: %d -> %d nodes, time=%d\n",
+				stat_nt_grow, old_size, new_size, stat_grow_time);
 		}
 	}
 
@@ -714,16 +705,15 @@ public class NodeTable {
 	/** show some statistics ... */
 	public void showStats() {
 
-		JDDConsole.out.println("NT nodes/free/#grow/grow-time/dead/root: " +
-			table_size + "/" + free_nodes_count + "/" + stat_nt_grow + "/" + stat_grow_time +
-			"/" + dead_nodes + "/" + debug_compute_root_nodes() );
+		JDDConsole.out.printf("NT nodes=%d free =%d #grow=%d grow-time=%d dead=%d root=%d\n",
+			table_size, free_nodes_count, stat_nt_grow, stat_grow_time,
+			dead_nodes, debug_compute_root_nodes() );
 
+		JDDConsole.out.printf("HT chain=%d access=%d\n",
+			ht_chain, stat_lookup_count);
 
-		JDDConsole.out.println("HT chain/access: "
-		+ ht_chain + "/" + stat_lookup_count);
-
-		JDDConsole.out.println("GC #times/#freed/signal-time/gc-time: " +
-			stat_gc_count + "/" + stat_gc_freed + "/" + stat_notify_time + "/" + stat_gc_time );
+		JDDConsole.out.printf("GC #times=%d /#freed=%d signal-time=%d gc-time=%d\n",
+			stat_gc_count, stat_gc_freed, stat_notify_time, stat_gc_time );
 	}
 
 }

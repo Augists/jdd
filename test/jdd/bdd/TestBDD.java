@@ -8,6 +8,29 @@ import static org.junit.Assert.*;
 
 public class TestBDD {
 
+
+	@Test public void testCreateVar() {
+		BDD jdd = new BDD(100);
+		assertEquals("Initial variable cound correct ", 0, jdd.numberOfVariables());
+
+		int v0 = jdd.createVar();
+		int v1 = jdd.createVar();
+		assertEquals("Variable cound correct (1) ", 2, jdd.numberOfVariables());
+
+		int [] v23 = jdd.createVars(2);
+		assertEquals("Variable cound correct (2) ", 4, jdd.numberOfVariables());
+
+		// check these are all variables:
+		int []v03 = new int[] { v0, v1, v23[0], v23[1]};
+		for(int i = 0; i < v03.length; i++) {
+			final int v = v03[i];
+			assertTrue("variable type", jdd.isVariable(v));
+			assertEquals("Variable id", jdd.getVar(v), i);
+			assertEquals("Variable low", jdd.getLow(v), 0);
+			assertEquals("Variable high", jdd.getHigh(v), 1);
+		}
+
+	}
 	@Test public void testGC() {
 		BDD jdd = new BDD(2); // <-- want garbage collections
 

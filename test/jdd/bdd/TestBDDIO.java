@@ -10,7 +10,7 @@ import jdd.util.*;
 public class TestBDDIO {
 	final float EPSILON = 0.001f;
 
-	@Test public void testAll() {
+	@Test public void testLoadSave() {
 		try {
 			BDD bdd = new BDD(100,10);
 			int v1 = bdd.createVar();
@@ -29,20 +29,20 @@ public class TestBDDIO {
 			assertEquals("sat-count (1)", sat, bdd2.satCount(x), EPSILON);
 			assertEquals("node-count (1)", nodes, bdd2.nodeCount(x), EPSILON);
 
-
 			BDDIO.save(bdd2, x, "test.bdd");
 			int x2 = BDDIO.load(bdd, "test.bdd");
 			assertEquals("BDD consistency failed", test, x2);
 
-
-			// and cleanup...
-			FileUtility.delete("test.bdd");
-
-			// XXX: how do we test saveBuDDy ???
-
 		} catch(IOException exx) {
 			assertTrue("EXCEPTION CAUGHT: " + exx.getMessage(), false);
+		} finally {
+			// and cleanup...
+			FileUtility.delete("test.bdd");
 		}
+	}
+
+	@Test public void testBuddy() {
+		// TODO: how do we test saveBuDDy ???
 	}
 }
 

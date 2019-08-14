@@ -39,7 +39,7 @@ public class Dot {
 			fs.close();
 			return showDot(file);
 		} catch(IOException exx) {
-			JDDConsole.out.println("Unable to save graph to the file "+ file + "\nReason: " + exx.toString() );
+			JDDConsole.out.printf("Unable to save graph to the file %s. Reason: %s\n", file, exx);
 		}
 		return null;
 	}
@@ -74,9 +74,11 @@ public class Dot {
 			}
 			return outfile;
 		} catch (IOException exx) {
-			JDDConsole.out.println("Unable to run DOT on " + infile + "\nReason: " + exx.toString());
+			JDDConsole.out.printf("Unable to run DOT on %s. Reason: %s\n", infile, exx);
 		} catch (InterruptedException exx) {
-			JDDConsole.out.println("DOT interrupted when processing " + infile + "\nReason: " + exx.toString());
+			JDDConsole.out.printf("DOT interrupted when processing %s. Reason: %s\n", infile, exx);
+		} catch(Exception exx) {
+			JDDConsole.out.printf("Unknown error when DOT processing %s. Reason: %s\n", infile, exx);
 		}
 		return null;
 	}

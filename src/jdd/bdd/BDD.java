@@ -160,6 +160,14 @@ public class BDD extends NodeTable {
 		return var;
 	}
 
+	/** helper function to create multiple variables */
+	public int [] createVars(int n) {
+		int [] ret = new int[n];
+		for(int i = 0; i < n; i++) {
+			ret[i] = createVar();
+		}
+		return ret;
+	}
 
 	/**
 	 * this function is called after the garbage collector hash changed some internal data.
@@ -370,35 +378,6 @@ public class BDD extends NodeTable {
 		return l;
 	}
 
-	// this is the original one from buddy
-	private final int and_rec_original(int u1, int u2) {
-		if(u1 == u2) return u1;
-		if(u1 == 0 || u2 == 0) return 0;
-		if(u1 == 1) return u2;
-		if(u2 == 1) return u1;
-
-
-		if(op_cache.lookup(u1, u2, CACHE_AND)) return op_cache.answer;
-		int hash = op_cache.hash_value;
-
-		int ret;
-		if( getVar(u1) == getVar(u2)) {
-			int l = nstack.push( and_rec(getLow(u1), getLow(u2)));
-			int h = nstack.push( and_rec(getHigh(u1), getHigh(u2)));
-			ret = mk( getVar(u1), l, h);
-		} else if( getVar(u1) < getVar(u2) ) {
-			int l = nstack.push( and_rec(getLow(u1), u2));
-			int h = nstack.push( and_rec(getHigh(u1), u2));
-			ret = mk( getVar(u1), l, h);
-		} else {
-			int l = nstack.push( and_rec(u1, getLow(u2)));
-			int h = nstack.push( and_rec(u1, getHigh(u2)));
-			ret = mk( getVar(u2), l, h);
-		}
-		nstack.drop(2);
-		op_cache.insert(hash, u1, u2, CACHE_AND, ret);
-		return ret;
-	}
 
 	// ---------------------------------------------------------------------
 	/**
@@ -757,30 +736,6 @@ public class BDD extends NodeTable {
 		return quant_rec(bdd);
 	}
 
-	/** EXPRIMENT: quant rec from javabdd */
-	private final int quant_rec_JAVABDD(int r) {
-		int entry;
-		int res;
-
-		if (r < 2 || getVar(r) > varset_last)
-			return r;
-
-		if(quant_cache.lookup(r, quant_cube, quant_id)) return quant_cache.answer;
-		entry = quant_cache.hash_value;
-
-
-
-		int a = nstack.push( quant_rec( getLow(r) ));
-		int b = nstack.push( quant_rec( getHigh(r) ));
-
-		if(varset_vec[ getVar(r)]) {
-			res = quant_conj ? and_rec(a,b) : or_rec(a,b);
-		} else res = mk( getVar(r), a, b);
-		nstack.drop(2);
-
-		quant_cache.insert(entry, r, quant_cube, quant_id, res );
-		return res;
-	}
 
 	/** internal quantificator, optimized and unreadable :) */
 	private final int quant_rec(int bdd) {
@@ -854,77 +809,6 @@ public class BDD extends NodeTable {
 		return relProd_rec(u1, u2);
 	}
 
-
-
-	/** 1. the simplest relProd_rec without input re-ordering */
-	private final int relProd_rec_ORG(int u1, int u2) {
-
-		if(u1 == 0 || u2 == 0) return 0; // a & 0 = 0
-		if(u1 == u2 || u2 == 1) return quant_rec(u1); // a & 1 = a & a = a
-		if(u1 == 1) return quant_rec(u2);	// b & 1 = b
-
-		if(getVar(u1) > varset_last && getVar(u2) > varset_last) return and_rec(u1, u2);
-
-		if(relprod_cache.lookup(u1, u2, quant_cube))  return relprod_cache.answer;
-		int hash = relprod_cache.hash_value;
-
-		int l, h;
-
-		if(getVar(u1) == getVar(u2)) {
-			l = nstack.push( relProd_rec( getLow(u1), getLow(u2)));
-			h = nstack.push( relProd_rec( getHigh(u1), getHigh(u2)));
-			l = varset_vec[ getVar(u2) ] ? or_rec(l,h) : mk(getVar(u2), l, h);
-		} else if(getVar(u1) > getVar(u2))  {
-			l = nstack.push( relProd_rec( u1, getLow(u2)));
-			h = nstack.push( relProd_rec( u1, getHigh(u2)));
-			l = varset_vec[ getVar(u2) ]  ? or_rec(l,h) : mk(getVar(u2), l, h);
-		} else /* (getVar(u1) < getVar(u2)) */ {
-			l = nstack.push( relProd_rec( getLow(u1), u2));
-			h = nstack.push( relProd_rec( getHigh(u1), u2));
-			l = varset_vec[ getVar(u1) ]  ? or_rec(l,h) : mk(getVar(u1), l, h);
-		}
-
-		relprod_cache.insert(hash, u1, u2, quant_cube, l );
-		nstack.drop(2);
-		return l;
-	}
-
-	/** 2. the unoptimized relProd operator, but with order-swap */
-	// XXX: same bug as in the optimizer versions!!
-	private final int relProd_rec_OPT(int u1, int u2) {
-
-		if(u1 == 0 || u2 == 0) return 0; // a & 0 = 0
-		if(u1 == u2 || u2 == 1) return quant_rec(u1); // a & 1 = a & a = a
-		if(u1 == 1) return quant_rec(u2);	// b & 1 = b
-
-		if(getVar(u1) > varset_last && getVar(u2) > varset_last) return and_rec(u1, u2);
-
-
-		if(getVar(u1) < getVar(u2)) { int tmp = u1; u1 = u2; u2 = tmp; } // SWAP
-
-		if(relprod_cache.lookup(u1, u2, quant_cube))  return relprod_cache.answer;
-		int hash = relprod_cache.hash_value;
-
-		int l, h;
-		if(getVar(u1) == getVar(u2)) {
-			l = nstack.push( relProd_rec( getLow(u1), getLow(u2)));
-			h = nstack.push( relProd_rec( getHigh(u1), getHigh(u2)));
-		} else /* (getVar(u1) > getVar(u2)) */ {
-			l = nstack.push( relProd_rec( u1, getLow(u2)));
-			h = nstack.push( relProd_rec( u1, getHigh(u2)));
-		}
-
-		l = varset_vec[ getVar(u2) ]  ? or_rec(l,h) : mk(getVar(u2), l, h);
-
-		relprod_cache.insert(hash, u1, u2, quant_cube, l );
-		nstack.drop(2);
-		return l;
-	}
-
-
-	/** 3. internal recursive function for relProd: this versions is optimized and made unreadable :( */
-	// XXX: there was very hard-to-reproduce a bug in here somewhere but
-	//      re-writing work stack seems to have fixed that.
 	private final int relProd_rec(int u1, int u2) {
 		if(u1 == 0 || u2 == 0) return 0;
 		if(u1 == u2 || u2 == 1) return quant_rec(u1);
@@ -949,7 +833,6 @@ public class BDD extends NodeTable {
 			if(l == getHigh(u1)) return l;
 			if(l == getHigh(u2) && getVar(u2) == v) return l;
 		}
-
 
 		nstack.push(l);
 		h = nstack.push( relProd_rec( getHigh(u1), (v == getVar(u2)) ? getHigh(u2) : u2));
