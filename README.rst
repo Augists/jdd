@@ -36,7 +36,7 @@ Getting JDD
 To import JDD in gradle::
 
     dependencies {
-        compile 'org.bitbucket.vahidi.jdd:110'
+        compile 'org.bitbucket.vahidi.jdd:111'
     }
 
 To import JDD in maven::
@@ -44,7 +44,7 @@ To import JDD in maven::
     <dependency>
         <groupId>org.bitbucket.vahidi</groupId>
         <artifactId>JDD</artifactId>
-        <version>110</version>
+        <version>111</version>
     </dependency>
 
 

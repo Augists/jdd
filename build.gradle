@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'org.bitbucket.vahidi'
-version = '110'
+version = '111'
 
 allprojects {
 	repositories {
