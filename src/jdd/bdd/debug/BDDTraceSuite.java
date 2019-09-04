@@ -59,7 +59,7 @@ public class BDDTraceSuite {
 			if(size == -1) new BDDTrace(name, is);
 			else new BDDTrace(name, is, size);
 		} catch(Exception ex) {
-			JDDConsole.out.printf("FAILED when running %s: %s\n", ex.getMessage());
+			JDDConsole.out.printf("FAILED when running %s: %s\n", name, ex.getMessage());
 			ex.printStackTrace();
 		}
 

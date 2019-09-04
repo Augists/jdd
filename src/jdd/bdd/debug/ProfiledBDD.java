@@ -77,24 +77,22 @@ public class ProfiledBDD extends BDD {
 
 	public void showStats() {
 		if(p_and > 0 || p_or > 0 || p_not > 0)
-			JDDConsole.out.println("# calls to and/or/not:                    " + p_and + "/" + p_or + "/" + p_not);
+			JDDConsole.out.printf("# calls to and/or/not:                    %d/%d/%d\n", p_and, p_or, p_not);
 
 		if(p_biimp > 0 || p_imp > 0 ||p_xor > 0)
-			JDDConsole.out.println("# calls to biimp/imp/xor:                 " + p_biimp + "/" + p_imp + "/" + p_xor);
+			JDDConsole.out.printf("# calls to biimp/imp/xor:                 %d/%d/%d\n", p_biimp, p_imp, p_xor);
 
 		if(p_nand > 0 || p_nor > 0 || p_ite > 0)
-			JDDConsole.out.println("# calls to nand/nor/ite:                  " + p_nand + "/" + p_nor+ "/" + p_ite);
+			JDDConsole.out.printf("# calls to nand/nor/ite:                  %d/%d/%d\n", p_nand, p_nor, p_ite);
 
 		if(p_replace > 0 || p_exists > 0 || p_forall > 0 || p_relprod > 0)
-			JDDConsole.out.println("# calls to replace/exists/forall/relProd: " + p_replace + "/" + p_exists + "/" + p_forall + "/" + p_relprod);
+			JDDConsole.out.printf("# calls to replace/exists/forall/relProd: %d/%d/%d/%d\n", p_replace, p_exists, p_forall, p_relprod);
 
 		if(p_support > 0 || p_restrict > 0 || p_simplify > 0)
-			JDDConsole.out.println("# calls to support/restrict/simplify:     " + p_support + "/" + p_restrict + "/" + p_simplify);
+			JDDConsole.out.printf("# calls to support/restrict/simplify:     %d/%d/%d\n", p_support, p_restrict, p_simplify);
 
 		if(p_satcount > 0)
-			JDDConsole.out.println("# calls to satCount:     " + p_satcount);
-
-
+			JDDConsole.out.printf("# calls to satCount:     %d\n",p_satcount);
 
 		super.showStats();
 	}

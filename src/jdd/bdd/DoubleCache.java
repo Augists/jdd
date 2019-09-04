@@ -245,16 +245,16 @@ public final class DoubleCache extends CacheBase {
 	public void showStats() {
 		if(num_access != 0) {
 			JDDConsole.out.printf(
-				"%s-cache: ld=%.2f %% sz=%s acces=%s clrs=%d/%d ",
+				"%s-cache: ld=%.2f%% sz=%s acces=%s clrs=%d/%d ",
 				getName(), computeLoadFactor(), Digits.prettify(cache_size),
 				Digits.prettify(num_access), num_clears, num_partial_clears);
 
 			if(partial_count > 0) {
 				double pck = ((int)(10000.0 * partial_kept / partial_count)) / 100.0;
-				JDDConsole.out.printf("pclr=%.2f %% ", pck);
+				JDDConsole.out.printf("pclr=%.2f%% ", pck);
 			}
 
-			JDDConsole.out.printf("hitr=%.2f %% grws=%d\n", computeHitRate(), num_grows);
+			JDDConsole.out.printf("hitr=%.2f%% #grow=%d\n", computeHitRate(), num_grows);
 		}
 	}
 }

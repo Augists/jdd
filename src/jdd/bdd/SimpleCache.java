@@ -356,7 +356,7 @@ public class SimpleCache extends CacheBase {
 	public void showStats() {
 		if(num_access != 0) {
 			JDDConsole.out.printf(
-				"%s-cache: ld=%0.2f %% sz=%s acces=%s clrs=%d/0 hitr=%.2f %% grws=%d\n",
+				"%s-cache: ld=%0.2f%% sz=%s acces=%s clrs=%d/0 hitr=%.2f%% #grow=%d\n",
 				getName(), computeLoadFactor(), Digits.prettify(cache_size),
 				Digits.prettify(num_access), num_clears, computeHitRate(),
 				num_grows);

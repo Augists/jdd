@@ -705,15 +705,15 @@ public class NodeTable {
 	/** show some statistics ... */
 	public void showStats() {
 
-		JDDConsole.out.printf("NT nodes=%d free =%d #grow=%d grow-time=%d dead=%d root=%d\n",
+		JDDConsole.out.printf("NT nodes=%d free=%d #grow=%d grow-time=%d dead=%d root=%d\n",
 			table_size, free_nodes_count, stat_nt_grow, stat_grow_time,
 			dead_nodes, debug_compute_root_nodes() );
 
 		JDDConsole.out.printf("HT chain=%d access=%d\n",
 			ht_chain, stat_lookup_count);
 
-		JDDConsole.out.printf("GC #times=%d /#freed=%d signal-time=%d gc-time=%d\n",
-			stat_gc_count, stat_gc_freed, stat_notify_time, stat_gc_time );
+		JDDConsole.out.printf("GC count=%d #freed=%d time=%d signal-time=%d\n",
+			stat_gc_count, stat_gc_freed, stat_gc_time, stat_notify_time);
 	}
 
 }
