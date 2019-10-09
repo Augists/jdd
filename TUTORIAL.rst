@@ -19,16 +19,18 @@ Unless you plan to use maven/gradle, you should manually add this file to your p
 BDD tutorial
 ************
 
-This part explains the basic BDD operations. It assumes however, that you are familiar with BDDs & co.
+This part explains the basic BDD operations. It assumes however that you are familiar with BDDs & co.
 
 **Creating a BDD manager**
 
 The first thing to do is to create a BDD manager, which will hold all your variables and BDDs.
 You may have several BDD managers in the same applications. But you cannot directly exchange information between them.
 
-To create your a BDD manager, you must specify the size of initial node table and cache. In this example we will use the values 10000 and 1000::
+To create your BDD manager, you must specify how large the initial node table and cache are. In this example we will use 10000 and 1000::
 
-  BDD bdd = new BDD(1000,1000);
+  import jdd.bdd.*;
+  ...
+  BDD bdd = new BDD(10000,1000);
 
 
 **Allocating variables**
@@ -50,12 +52,12 @@ BDD operations are carried out by simply calling the corresponding function in t
   int y = bdd.xor(v1,v3);
   int z = bdd.not(v2);
 
-You have now created three BDD trees.
+You have now created three BDDs representing (v1 AND v2), (v1 XOR v3) and (NOT v2).
 
 
 **Reference counting**
 
-Each BDD tree has a reference count. if this number is zero, your BDD tree may be removed by the garbage collector. The rule of thumb when working with BDDs is to reference your trees as soon as you get them, then de-reference them when you don need them anymore and they will be removed by the garbage collector at some future point::
+Each BDD has a reference count. if this number is zero, your BDD may be removed by the garbage collector. The rule of thumb when working with BDDs is to reference your trees as soon as you get them, then de-reference them when you don need them anymore and they will be removed by the garbage collector at some future point::
 
   // note: this is still wrong, see below
   bdd.ref(x);
@@ -64,7 +66,7 @@ Each BDD tree has a reference count. if this number is zero, your BDD tree may b
 
 And when you are done with them, you just do this::
 
-  bdd.deref(i_dont_need_this_bdd_anymore);
+  bdd.deref(z);
 
 
 As garbage collection can happen at any time, it is important that BDDs are references as soon as possible.
@@ -76,9 +78,9 @@ Hence the previous example was incorrect and the right way to do it would be som
   int z = bdd.ref( bdd.not(v2) );
 
 
-**Examining BDD trees**
+**Examining BDDs**
 
-It might be useful to actually see your BDDs. For that, JDD contains a set of functions. You can print the BDD as a set or a cube::
+It might be useful to actually see your BDDs. You can print the BDD as a set or a cube::
 
   bdd.printSet(y);
   0-1
@@ -88,7 +90,7 @@ It might be useful to actually see your BDDs. For that, JDD contains a set of fu
    v3
    v1
 
-However, the best way to visualize a BDD is to draw it.
+However, the best way to visualize a (small) BDD is to draw it.
 To do this, JDD uses the "graphviz" tool "dot" which must be installed in your system and available from your shell prompt [i.e. in your $PATH]::
 
   bdd.printDot("x", x);
@@ -106,7 +108,7 @@ For example, lets compute (x2 = forall c. x) where c uses the variables v1 and v
   int x2 = jdd.ref( jdd.forall(x,cube) );
 
 
-The exists(X,C) function works similarly. Furthermore, the relProd(X,Y,C) function efficiently computes the relational product,  (exists C. X and Y).
+The exists(x,c) function works similarly. Furthermore, the relProd(x,y,c) function efficiently computes the relational product,  (Exists c. x AND y).
 
 There also exists a createCube function that you might find useful.
 
@@ -172,9 +174,9 @@ This sequence of code builds all the examples found in Minato's original paper::
   int g = zdd.diff(f,c);
 
 
-Note that in contrast to BDDs, Z-BDD variables (here v1 and v2) are just numbers not Z-BDD trees. You can't do things like "int a = zdd.union(v1,v2)" here!
+Note that in contrast to BDDs, Z-BDD variables (here v1 and v2) are just numbers not Z-BDDs. You can't do things like "int a = zdd.union(v1,v2)" here!
 
-As with BDDs, you can inspect Z-BDD trees using the print functions::
+As with BDDs, you can inspect Z-BDDs using the print functions::
 
   zdd.print(g);
   zdd.printSet(g);
@@ -231,11 +233,11 @@ Graphviz dot support
 
 Graphviz from AT&T is a public domain package for generating graphs from a textual description.
 
-For BDDs, BDDPrinter.printDot() is used to generated DOT represenations and images from BDDs.
-For ZDDs, ZDD.printDot() should be used (instead of ZDDPrinter.printDot()).
+Internally, BDDPrinter.printDot() is used to generated DOT represenations and images from BDDs.
+Similarly, ZDDPrinter is used when printing ZDDs.
 
-Both functions in turn use the jdd.util.Dot class for operations related to dot.
-You can access the Dot class to modify the way this is handled, for example you can change the output format from PNG to EPS::
+Both in turn use the jdd.util.Dot class for operations related to dot.
+You can access the Dot class and modify the way this is handled, for example you can change the output format from PNG to EPS::
 
     Dot.setType( Dot.TYPE_EPS);
 
