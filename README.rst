@@ -37,7 +37,7 @@ Getting JDD
 
 Get the code and compile it yourself::
 
-    git clone git@bitbucket.org:vahidi/jdd.git
+    git clone https://bitbucket.org/vahidi/jdd.git
 
 ... or import it in Gradle::
 
@@ -55,6 +55,26 @@ Get the code and compile it yourself::
 
 
 
+Building JDD
+------------
+
+We use Gradle to build JDD::
+
+    git clone https://bitbucket.org/vahidi/jdd.git
+    
+    cd jdd
+    ./gradlew build
+    
+    ls build/libs/
+
+
+
+Or, as JDD has no external dependencies, you can just "javac" source files like this::
+
+    mkdir -p build
+    find src/ -name "*.java"  -exec javac -d build {} \+
+    ls -l build/jdd
+
 
 
 License
@@ -62,7 +82,7 @@ License
 
 JDD is free software under the zlib license. You may use it free of charge in research or even commercial projects.
 
-If you are publishing an academic paper, feel free to use a bibtex entry similar to this for citation::
+For academic publications, feel free to use a bibtex entry similar to this for citation::
 
     @MISC{jdd,
         author = {Arash Vahidi},

@@ -36,7 +36,7 @@ Performance
 
 **How fast is JDD Compared to other packages?**
 
-It is written in Java. For many people it is fast enough.
+It is written in Java. Often it is fast enough.
 
 **Why is JDD so slow on some benchmark problems??**
 
@@ -48,7 +48,7 @@ The size of a BDD representing a boolean functions may differ drastically depend
 
 **Why doesn't JDD support dynamic variable re-ordering??**
 
-*For some problems*, a good initial variable ordering is much more efficient than using dynamic variable re-ordering. In fact, as Bwolen Yang's PhD thesis showed, re-ordering often costs too costly. This is specially true for sequential problems, which was the main target of JDD.
+*For some (most?) problems*, a good initial variable ordering is much more efficient than using dynamic variable re-ordering. In fact, as Bwolen Yang's PhD thesis showed, re-ordering is often too costly. This is specially true for sequential problems, which JDD was initially written for.
 
 Beside, not including variable re-ordering made the JDD code less complex...
 
@@ -88,7 +88,7 @@ Depth first
 Somewhere between 2^26 and 2^31 nodes, but this is all just theoretical.
 
 It should be noted that the largest practical problem we have seen so far required about 10 million nodes.
-A general guideline is that if you are above 3 million nodes, then you should either re-think your algorithm or use another technique than BDDs...
+A general rule of thumb is that if you are above 3 million nodes, then you should either re-think your algorithm or use another technique than BDDs...
 
 **What is the maximal number of variables that can be used in JDD?**
 
@@ -101,18 +101,11 @@ Development
 
 There are several ways:
 
-* Implement some fancy BDD algorithms.
+* Implement some fancy BDD algorithms
 * Submit bug reports!
-* Write your own benchmark
+* Write a benchmark
 * Find a nice way to solve some well known problem with BDDs
 * ...
-
-The very least thing you could do is to run the following commands and email the results to us::
-
-  java -cp jdd.jar jdd.util.jre.JRETest
-  java -cp jdd.jar jdd.examples.BDDQueens 8
-  java -cp jdd.jar jdd.examples.BDDQueens 10
-  java -cp jdd.jar jdd.examples.BDDQueens 12
 
 **What version of JDD am I running?**
 
@@ -209,7 +202,9 @@ Misc.
 
 **Can several BDD managers simultaneously exist in JDD?**
 
-Yes. In fact, it is easy to implement routines to even move BDD trees between different packages. You must now mix them, thought.
+Yes. 
+
+Note however that you cannot move things freely between different managers, you will need to implement some routine that transforms variables and trees first.
 
 **JDD calls System.exit() on fatal errors. How can I change that?**
 
