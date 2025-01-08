@@ -1,6 +1,21 @@
 JDD
 ===
 
+This is a modified version of `jdd library <https://bitbucket.org/vahidi/jdd>`_.
+
+Now in `NodeTable.java <src/jdd/bdd/NodeTable.java>`_ you can find a new variable::
+    
+    public static int mkCount = 0;
+
+which counts the number of BDD nodes created. And in the `BDD.java <src/jdd/bdd/BDD.java>`_ you can find a new method::
+
+    public BitSet minAssignment(int bdd) {}
+
+which returns the minimum assignment of the BDD. It is required by `JavaNDD <https://github.com/LZC-xjtu/network-decision-diagram>`_ (will be public later).
+
+JDD Description
+---------
+
 .. image:: bdd.png
    :align: center
 
