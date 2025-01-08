@@ -7,6 +7,8 @@ package jdd.bdd;
 import jdd.util.*;
 import jdd.util.math.*;
 
+import java.util.BitSet;
+
 /**
  * BDD main class. All BDD code uses this.
  * <p>This is not a "bdd tree" or "bdd node", but the Java objects that handles _ALL_ BDD operations
@@ -1100,6 +1102,25 @@ public class BDD extends NodeTable {
 	public final int quasiReducedNodeCount(int bdd) {
 		if(bdd < 2) return 0;
 		return 1 + quasiReducedNodeCount(getLow(bdd)) + quasiReducedNodeCount(getHigh(bdd));
+	}
+
+	public BitSet minAssignment(int bdd) {
+		BitSet set = new BitSet(num_vars);
+		minAssignment_rec(set, bdd);
+		return set;
+	}
+
+	private void minAssignment_rec(BitSet set, int bdd) {
+		if (bdd < 2) return;
+		int lo = getLow(bdd);
+		int hi = getHigh(bdd);
+		boolean useHi = lo == 0;
+		if (useHi) {
+			set.set(getVar(bdd));
+			minAssignment_rec(set, hi);
+		} else {
+			minAssignment_rec(set, lo);
+		}
 	}
 
 	// ---- [oneSat ] -----------------------------------

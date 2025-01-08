@@ -2,7 +2,8 @@ build
 target
 *~
 .gradle
-gradle.properties
+.idea
+# gradle.properties    # here is an example of gradle proxy settings
 
 
 # vscode

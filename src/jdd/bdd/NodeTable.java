@@ -22,6 +22,8 @@ import java.util.*;
 
 public class NodeTable {
 
+	public static int mkCount = 0;
+
 	/** used to mark/unmark BDD nodes */
 	public static final int NODE_MARK = 0x80000000, NODE_UNMARK = 0x7FFFFFFF;
 	public static final short MAX_REFCOUNT = 32767; /** the largest possible ref-count */
@@ -334,12 +336,13 @@ public class NodeTable {
 
 		}
 
-
 		// see if we have room for it!
 		if(free_nodes_count < 2 ) { // dont change "2" to "0" !
 			grow();
 			hash = compute_hash(v,l,h); // table_size might have changed (or not if we only did a GC)
 		}
+
+		mkCount++;
 
 		// takke next free node
 		curr = first_free_node;
