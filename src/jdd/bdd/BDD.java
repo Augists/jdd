@@ -8,6 +8,10 @@ import jdd.util.*;
 import jdd.util.math.*;
 
 import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * BDD main class. All BDD code uses this.
@@ -114,7 +118,6 @@ public class BDD extends NodeTable {
 	}
 
 	// ---------------------------------------------------------------
-
 
 	/** the symbolic ONE */
 	public final int getOne() { return 1; }
@@ -1270,6 +1273,41 @@ public class BDD extends NodeTable {
 
 		return ret;
 	}
+
+	public int toZero(int bdd) {
+        Set<Integer> vi = new HashSet();
+        Map<Integer, Integer> dis = new HashMap();
+        dis.put(bdd, 0);
+        return this.toZero_rec(bdd, vi, dis, 0);
+    }
+
+    private int toZero_rec(int bdd, Set<Integer> vi, Map<Integer, Integer> dis, int d) {
+        if (bdd == 0) {
+            return d;
+        }
+		vi.add(bdd);
+		int low = this.getLow(bdd);
+		int high = this.getHigh(bdd);
+		if (!dis.containsKey(low) || (Integer)dis.get(low) > d + 1) {
+			dis.put(low, d + 1);
+		}
+
+		if (!dis.containsKey(high) || (Integer)dis.get(high) > d) {
+			dis.put(high, d);
+		}
+
+		int nxtV = 0;
+		int nxtD = Integer.MAX_VALUE;
+
+		for(Map.Entry<Integer, Integer> entry : dis.entrySet()) {
+			if (!vi.contains(entry.getKey()) && (Integer)entry.getValue() < nxtD) {
+				nxtD = (Integer)entry.getValue();
+				nxtV = (Integer)entry.getKey();
+			}
+		}
+
+		return this.toZero_rec(nxtV, vi, dis, nxtD);
+    }
 
 	// --------------------------------------------------------
 	/** printthis BDD to console (prints internal structure) */
