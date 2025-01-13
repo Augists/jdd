@@ -1,7 +1,7 @@
 JDD
 ===
 
-This is a modified version of `jdd library <https://bitbucket.org/vahidi/jdd>`_.
+This is a modified version of `jdd library <https://bitbucket.org/vahidi/jdd>`_ (bitbucket).
 
 Now in `NodeTable.java <src/jdd/bdd/NodeTable.java>`_ you can find a new variable::
     
@@ -14,7 +14,7 @@ which counts the number of BDD nodes created. And in the `BDD.java <src/jdd/bdd/
     public int toZero(int bdd) {}
 
 where the first one returns the minimum assignment of the BDD. It is required by `JavaNDD <https://github.com/LZC-xjtu/network-decision-diagram>`_ (will be public later).
-The second `toZero` method is used in bdd vector.
+The second `toZero` method is used in bdd vector, required by SRE.
 
 JDD Description
 ---------
